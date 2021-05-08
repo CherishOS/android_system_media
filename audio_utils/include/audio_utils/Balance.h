@@ -71,6 +71,13 @@ public:
     }
 
     /**
+     * \brief Returns whether volume change is ramped.
+     */
+    bool getRamp() const {
+        return mRamp;
+    }
+
+    /**
      * \brief Sets the channel mask for data passed in.
      *
      * setChannelMask() must called before process() to set
@@ -93,6 +100,13 @@ public:
      *
      */
     void setBalance(float balance);
+
+    /**
+     * \brief Returns the current balance.
+     */
+    float getBalance() const {
+        return mBalance;
+    }
 
     /**
      * \brief Processes balance for audio data.

@@ -8,6 +8,25 @@ package {
     default_applicable_licenses: ["system_media_license"],
 }
 
+cc_test {
+    name: "balance_tests",
+    host_supported: true,
+
+    srcs: [
+        "balance_tests.cpp",
+    ],
+
+    static_libs: [
+        "libaudioutils",
+    ],
+
+    cflags: [
+        "-Wall",
+        "-Werror",
+        "-Wextra",
+    ],
+}
+
 cc_binary {
     name: "biquad_filter",
     host_supported: true,

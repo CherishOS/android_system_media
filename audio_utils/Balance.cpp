@@ -77,17 +77,36 @@ void Balance::setChannelMask(audio_channel_mask_t channelMask)
         1, // AUDIO_CHANNEL_OUT_TOP_BACK_RIGHT        = 0x20000u,
         0, // AUDIO_CHANNEL_OUT_TOP_SIDE_LEFT         = 0x40000u,
         1, // AUDIO_CHANNEL_OUT_TOP_SIDE_RIGHT        = 0x80000u,
+        0, // AUDIO_CHANNEL_OUT_BOTTOM_FRONT_LEFT     = 0x100000u,
+        2, // AUDIO_CHANNEL_OUT_BOTTOM_FRONT_CENTER   = 0x200000u,
+        1, // AUDIO_CHANNEL_OUT_BOTTOM_FRONT_RIGHT    = 0x400000u,
+        2, // AUDIO_CHANNEL_OUT_LOW_FREQUENCY_2       = 0x800000u,
      };
 
     mSides.resize(mChannelCount);
+    // If LFE and LFE2 both exist, it should be L and R in 22.2
+    int lfe = -1;
+    int lfe2 = -1;
+    constexpr unsigned LFE_CHANNEL_INDEX = 3;
+    constexpr unsigned LFE2_CHANNEL_INDEX = 23;
     for (unsigned i = 0, channel = channelMask; channel != 0; ++i) {
         const int index = __builtin_ctz(channel);
         if (static_cast<std::size_t>(index) < std::size(sideFromChannel)) {
             mSides[i] = sideFromChannel[index];
+            // Keep track of LFE indices
+            if (index == LFE_CHANNEL_INDEX) {
+                lfe = i;
+            } else if (index == LFE2_CHANNEL_INDEX) {
+                lfe2 = i;
+            }
         } else {
             mSides[i] = 2; // consider center
         }
         channel &= ~(1 << index);
+    }
+    if (lfe >= 0 && lfe2 >= 0) { // if both LFEs exist assign to L and R.
+        mSides[lfe] = 0;
+        mSides[lfe2] = 1;
     }
     setBalance(balance); // recompute balance
 }
