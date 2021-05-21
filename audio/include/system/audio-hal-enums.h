@@ -520,7 +520,7 @@ enum {
     AUDIO_FORMAT_MPEGH_SUB_LC_L4       = 0x24u,
 };
 
-#define AUDIO_FORMAT_LIST_DEF(V) \
+#define AUDIO_FORMAT_LIST_UNIQUE_DEF(V) \
     V(AUDIO_FORMAT_DEFAULT, AUDIO_FORMAT_PCM_MAIN) \
     V(AUDIO_FORMAT_PCM_16_BIT, AUDIO_FORMAT_PCM_MAIN | AUDIO_FORMAT_PCM_SUB_16_BIT) \
     V(AUDIO_FORMAT_PCM_8_BIT, AUDIO_FORMAT_PCM_MAIN | AUDIO_FORMAT_PCM_SUB_8_BIT) \
@@ -608,6 +608,10 @@ enum {
     V(AUDIO_FORMAT_DTS_UHD, 0x2E000000u) \
     V(AUDIO_FORMAT_DRA, 0x2F000000u)
 
+#define AUDIO_FORMAT_LIST_DEF(V) \
+    AUDIO_FORMAT_LIST_UNIQUE_DEF(V) \
+    V(VX_AUDIO_FORMAT_LC3, AUDIO_FORMAT_LC3)
+
 typedef enum {
     AUDIO_FORMAT_LIST_DEF(AUDIO_DEFINE_ENUM_SYMBOL_V)
     // These values must be part of the enum, but they are not valid formats,
@@ -618,7 +622,7 @@ typedef enum {
 
 inline const char* audio_format_to_string(audio_format_t t) {
     switch (t) {
-    AUDIO_FORMAT_LIST_DEF(AUDIO_DEFINE_STRINGIFY_CASE_V)
+    AUDIO_FORMAT_LIST_UNIQUE_DEF(AUDIO_DEFINE_STRINGIFY_CASE_V)
     default:
         return "";
     }
@@ -630,7 +634,7 @@ inline bool audio_format_from_string(const char* s, audio_format_t* t) {
 }
 
 #undef AUDIO_FORMAT_LIST_DEF
-
+#undef AUDIO_FORMAT_LIST_UNIQUE_DEF
 
 #define AUDIO_GAIN_MODE_LIST_DEF(V) \
     V(AUDIO_GAIN_MODE_JOINT, 1) \
