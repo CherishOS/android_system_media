@@ -42,7 +42,7 @@ cc_library {
 
     srcs: [
         "Balance.cpp",
-        "channels.c",
+        "channels.cpp",
         "ErrorLog.cpp",
         "fifo.cpp",
         "fifo_index.cpp",
