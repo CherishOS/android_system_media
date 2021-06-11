@@ -217,6 +217,12 @@ enum {
     FCC_8 = 8,
     FCC_12 = 12,
     FCC_24 = 24,
+    // FCC_LIMIT is the maximum PCM channel count supported through
+    // the mixing pipeline to the audio HAL.
+    //
+    // This can be adjusted onto a value such as FCC_12 or FCC_24
+    // if the device HAL can support it.  Do not reduce below FCC_8.
+    FCC_LIMIT = FCC_8,
 };
 
 /* A channel mask per se only defines the presence or absence of a channel, not the order.
@@ -1573,15 +1579,10 @@ static inline audio_channel_mask_t audio_channel_in_mask_from_count(uint32_t cha
     case 2:
         bits = AUDIO_CHANNEL_IN_STEREO;
         break;
-    case 3:
-    case 4:
-    case 5:
-    case 6:
-    case 7:
-    case 8:
-        // FIXME FCC_8
-        return audio_channel_mask_for_index_assignment_from_count(channel_count);
     default:
+        if (channel_count <= FCC_LIMIT) {
+            return audio_channel_mask_for_index_assignment_from_count(channel_count);
+        }
         return AUDIO_CHANNEL_INVALID;
     }
     return audio_channel_mask_from_representation_and_bits(
