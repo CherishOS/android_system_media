@@ -1802,7 +1802,7 @@ xsi:schemaLocation="http://schemas.android.com/service/camera/metadata/ metadata
               barcode value.
               </notes>
             </value>
-            <value deprecated="true" optional="true" ndk_hidden="true">HIGH_SPEED_VIDEO
+            <value deprecated="true" optional="true" visibility="java_public">HIGH_SPEED_VIDEO
               <notes>
               This is deprecated, please use {@link
               android.hardware.camera2.CameraDevice#createConstrainedHighSpeedCaptureSession}
@@ -1926,7 +1926,7 @@ xsi:schemaLocation="http://schemas.android.com/service/camera/metadata/ metadata
               the SCENE_MODE was not enabled at all.
               </notes>
             </value>
-            <value optional="true" hidden="true">FACE_PRIORITY_LOW_LIGHT
+            <value optional="true" visibility="hidden">FACE_PRIORITY_LOW_LIGHT
               <notes>Same as FACE_PRIORITY scene mode, except that the camera
               device will choose higher sensitivity values (android.sensor.sensitivity)
               under low light conditions.
@@ -1952,14 +1952,14 @@ xsi:schemaLocation="http://schemas.android.com/service/camera/metadata/ metadata
               remain active when FACE_PRIORITY_LOW_LIGHT is set.
               </notes>
             </value>
-            <value optional="true" hidden="true" id="100">DEVICE_CUSTOM_START
+            <value optional="true" visibility="hidden" id="100">DEVICE_CUSTOM_START
               <notes>
                 Scene mode values within the range of
                 `[DEVICE_CUSTOM_START, DEVICE_CUSTOM_END]` are reserved for device specific
                 customized scene modes.
               </notes>
             </value>
-            <value optional="true" hidden="true" id="127">DEVICE_CUSTOM_END
+            <value optional="true" visibility="hidden" id="127">DEVICE_CUSTOM_END
               <notes>
                 Scene mode values within the range of
                 `[DEVICE_CUSTOM_START, DEVICE_CUSTOM_END]` are reserved for device specific
@@ -3200,7 +3200,7 @@ xsi:schemaLocation="http://schemas.android.com/service/camera/metadata/ metadata
               priority, such as video recording.
               </notes>
             </value>
-            <value hidden="true" id="0x40">VENDOR_START
+            <value visibility="hidden" id="0x40">VENDOR_START
               <notes>
                 Vendor defined extended scene modes. These depend on vendor implementation.
               </notes>
@@ -5498,7 +5498,7 @@ xsi:schemaLocation="http://schemas.android.com/service/camera/metadata/ metadata
                 by the camera device.
               </notes>
             </value>
-            <value optional="true" ndk_hidden="true">PRIVATE_REPROCESSING
+            <value optional="true" visibility="java_public">PRIVATE_REPROCESSING
               <notes>
               The camera device supports the Zero Shutter Lag reprocessing use case.
 
@@ -5626,7 +5626,7 @@ xsi:schemaLocation="http://schemas.android.com/service/camera/metadata/ metadata
               consistent image output.
               </ndk_notes>
             </value>
-            <value optional="true" ndk_hidden="true">YUV_REPROCESSING
+            <value optional="true" visibility="java_public">YUV_REPROCESSING
               <notes>
               The camera device supports the YUV_420_888 reprocessing use case, similar as
               PRIVATE_REPROCESSING, This capability requires the camera device to support the
@@ -5706,7 +5706,7 @@ xsi:schemaLocation="http://schemas.android.com/service/camera/metadata/ metadata
               rate, including depth stall time.
               </notes>
             </value>
-            <value optional="true" ndk_hidden="true">CONSTRAINED_HIGH_SPEED_VIDEO
+            <value optional="true" visibility="java_public">CONSTRAINED_HIGH_SPEED_VIDEO
               <notes>
               The device supports constrained high speed video recording (frame rate >=120fps) use
               case. The camera device will support high speed capture session created by {@link
@@ -5969,7 +5969,7 @@ xsi:schemaLocation="http://schemas.android.com/service/camera/metadata/ metadata
                 addition to android.permission.CAMERA in order to connect to this camera device.
               </notes>
             </value>
-            <value optional="true" ndk_hidden="true" hal_version="3.5">OFFLINE_PROCESSING
+            <value optional="true" visibility="java_public" hal_version="3.5">OFFLINE_PROCESSING
               <notes>
               The camera device supports the OFFLINE_PROCESSING use case.
 
@@ -6024,7 +6024,7 @@ xsi:schemaLocation="http://schemas.android.com/service/camera/metadata/ metadata
                 `android.scaler.streamConfigurationMapMaximumResolution`.
               </notes>
             </value>
-            <value optional="true" ndk_hidden="true" hal_version="3.6">REMOSAIC_REPROCESSING
+            <value optional="true" visibility="java_public" hal_version="3.6">REMOSAIC_REPROCESSING
               <notes>
               The device supports reprocessing from the `RAW_SENSOR` format with a bayer pattern
               given by android.sensor.info.binningFactor (m x n group of pixels with the same
@@ -9392,11 +9392,11 @@ xsi:schemaLocation="http://schemas.android.com/service/camera/metadata/ metadata
 
               For example:
 
-                  android.control.testPatternData = [0, 0xFFFFFFFF, 0xFFFFFFFF, 0]
+                  android.sensor.testPatternData = [0, 0xFFFFFFFF, 0xFFFFFFFF, 0]
 
               All green pixels are 100% green. All red/blue pixels are black.
 
-                  android.control.testPatternData = [0xFFFFFFFF, 0, 0xFFFFFFFF, 0]
+                  android.sensor.testPatternData = [0xFFFFFFFF, 0, 0xFFFFFFFF, 0]
 
               All red pixels are 100% red. Only the odd green pixels
               are 100% green. All blue pixels are 100% black.
@@ -9472,6 +9472,16 @@ xsi:schemaLocation="http://schemas.android.com/service/camera/metadata/ metadata
               The generator should be reset at the beginning of each frame,
               and thus each subsequent raw frame with this test pattern should
               be exactly the same as the last.
+              </notes>
+            </value>
+            <value visibility="test" hal_version="3.6">BLACK
+              <notes>
+              All pixel data is replaced by 0% intensity (black) values.
+
+              This test pattern is identical to SOLID_COLOR with a value of `[0, 0, 0, 0]` for
+              android.sensor.testPatternData.  It is recommended that devices implement full
+              SOLID_COLOR support instead, but BLACK can be used to provide minimal support for a
+              test pattern suitable for privacy use cases.
               </notes>
             </value>
             <value id="256">CUSTOM1

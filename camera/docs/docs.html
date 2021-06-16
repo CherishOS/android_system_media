@@ -4323,6 +4323,7 @@ barcode value.<wbr/></p></span>
                     <span class="entry_type_enum_name">HIGH_SPEED_VIDEO (v3.2)</span>
                     <span class="entry_type_enum_deprecated">[deprecated]</span>
                     <span class="entry_type_enum_optional">[optional]</span>
+                    <span class="entry_type_enum_hidden">[java_public]</span>
                     <span class="entry_type_enum_notes"><p>This is deprecated,<wbr/> please use <a href="https://developer.android.com/reference/android/hardware/camera2/CameraDevice.html#createConstrainedHighSpeedCaptureSession">CameraDevice#createConstrainedHighSpeedCaptureSession</a>
 and <a href="https://developer.android.com/reference/android/hardware/camera2/CameraConstrainedHighSpeedCaptureSession.html#createHighSpeedRequestList">CameraConstrainedHighSpeedCaptureSession#createHighSpeedRequestList</a>
 for high speed video recording.<wbr/></p>
@@ -9985,6 +9986,7 @@ barcode value.<wbr/></p></span>
                     <span class="entry_type_enum_name">HIGH_SPEED_VIDEO (v3.2)</span>
                     <span class="entry_type_enum_deprecated">[deprecated]</span>
                     <span class="entry_type_enum_optional">[optional]</span>
+                    <span class="entry_type_enum_hidden">[java_public]</span>
                     <span class="entry_type_enum_notes"><p>This is deprecated,<wbr/> please use <a href="https://developer.android.com/reference/android/hardware/camera2/CameraDevice.html#createConstrainedHighSpeedCaptureSession">CameraDevice#createConstrainedHighSpeedCaptureSession</a>
 and <a href="https://developer.android.com/reference/android/hardware/camera2/CameraConstrainedHighSpeedCaptureSession.html#createHighSpeedRequestList">CameraConstrainedHighSpeedCaptureSession#createHighSpeedRequestList</a>
 for high speed video recording.<wbr/></p>
@@ -18378,6 +18380,7 @@ raw sensor images.<wbr/></p>
                   <li>
                     <span class="entry_type_enum_name">PRIVATE_REPROCESSING (v3.2)</span>
                     <span class="entry_type_enum_optional">[optional]</span>
+                    <span class="entry_type_enum_hidden">[java_public]</span>
                     <span class="entry_type_enum_notes"><p>The camera device supports the Zero Shutter Lag reprocessing use case.<wbr/></p>
 <ul>
 <li>One input stream is supported,<wbr/> that is,<wbr/> <code><a href="#static_android.request.maxNumInputStreams">android.<wbr/>request.<wbr/>max<wbr/>Num<wbr/>Input<wbr/>Streams</a> == 1</code>.<wbr/></li>
@@ -18448,6 +18451,7 @@ megapixels,<wbr/> or the maximum resolution of the device,<wbr/> whichever is sm
                   <li>
                     <span class="entry_type_enum_name">YUV_REPROCESSING (v3.2)</span>
                     <span class="entry_type_enum_optional">[optional]</span>
+                    <span class="entry_type_enum_hidden">[java_public]</span>
                     <span class="entry_type_enum_notes"><p>The camera device supports the YUV_<wbr/>420_<wbr/>888 reprocessing use case,<wbr/> similar as
 PRIVATE_<wbr/>REPROCESSING,<wbr/> This capability requires the camera device to support the
 following:</p>
@@ -18517,6 +18521,7 @@ rate,<wbr/> including depth stall time.<wbr/></p></span>
                   <li>
                     <span class="entry_type_enum_name">CONSTRAINED_HIGH_SPEED_VIDEO (v3.2)</span>
                     <span class="entry_type_enum_optional">[optional]</span>
+                    <span class="entry_type_enum_hidden">[java_public]</span>
                     <span class="entry_type_enum_notes"><p>The device supports constrained high speed video recording (frame rate &gt;=120fps) use
 case.<wbr/> The camera device will support high speed capture session created by <a href="https://developer.android.com/reference/android/hardware/camera2/CameraDevice.html#createConstrainedHighSpeedCaptureSession">CameraDevice#createConstrainedHighSpeedCaptureSession</a>,<wbr/> which
 only accepts high speed request lists created by <a href="https://developer.android.com/reference/android/hardware/camera2/CameraConstrainedHighSpeedCaptureSession.html#createHighSpeedRequestList">CameraConstrainedHighSpeedCaptureSession#createHighSpeedRequestList</a>.<wbr/></p>
@@ -18756,6 +18761,7 @@ addition to android.<wbr/>permission.<wbr/>CAMERA in order to connect to this ca
                   <li>
                     <span class="entry_type_enum_name">OFFLINE_PROCESSING (v3.5)</span>
                     <span class="entry_type_enum_optional">[optional]</span>
+                    <span class="entry_type_enum_hidden">[java_public]</span>
                     <span class="entry_type_enum_notes"><p>The camera device supports the OFFLINE_<wbr/>PROCESSING use case.<wbr/></p>
 <p>With OFFLINE_<wbr/>PROCESSING capability,<wbr/> the application can switch an ongoing
 capture session to offline mode by calling the
@@ -18814,6 +18820,7 @@ The stream configurations supported in 'max resolution' mode are described by
                   <li>
                     <span class="entry_type_enum_name">REMOSAIC_REPROCESSING (v3.6)</span>
                     <span class="entry_type_enum_optional">[optional]</span>
+                    <span class="entry_type_enum_hidden">[java_public]</span>
                     <span class="entry_type_enum_notes"><p>The device supports reprocessing from the <code>RAW_<wbr/>SENSOR</code> format with a bayer pattern
 given by <a href="#static_android.sensor.info.binningFactor">android.<wbr/>sensor.<wbr/>info.<wbr/>binning<wbr/>Factor</a> (m x n group of pixels with the same
 color filter) to a remosaiced regular bayer pattern.<wbr/></p>
@@ -23856,10 +23863,10 @@ device returns captures from the image sensor.<wbr/></p>
 respective color channel provided in
 <a href="#controls_android.sensor.testPatternData">android.<wbr/>sensor.<wbr/>test<wbr/>Pattern<wbr/>Data</a>.<wbr/></p>
 <p>For example:</p>
-<pre><code>android.<wbr/>control.<wbr/>test<wbr/>Pattern<wbr/>Data = [0,<wbr/> 0xFFFFFFFF,<wbr/> 0xFFFFFFFF,<wbr/> 0]
+<pre><code><a href="#controls_android.sensor.testPatternData">android.<wbr/>sensor.<wbr/>test<wbr/>Pattern<wbr/>Data</a> = [0,<wbr/> 0xFFFFFFFF,<wbr/> 0xFFFFFFFF,<wbr/> 0]
 </code></pre>
 <p>All green pixels are 100% green.<wbr/> All red/<wbr/>blue pixels are black.<wbr/></p>
-<pre><code>android.<wbr/>control.<wbr/>test<wbr/>Pattern<wbr/>Data = [0xFFFFFFFF,<wbr/> 0,<wbr/> 0xFFFFFFFF,<wbr/> 0]
+<pre><code><a href="#controls_android.sensor.testPatternData">android.<wbr/>sensor.<wbr/>test<wbr/>Pattern<wbr/>Data</a> = [0xFFFFFFFF,<wbr/> 0,<wbr/> 0xFFFFFFFF,<wbr/> 0]
 </code></pre>
 <p>All red pixels are 100% red.<wbr/> Only the odd green pixels
 are 100% green.<wbr/> All blue pixels are 100% black.<wbr/></p></span>
@@ -23923,6 +23930,15 @@ in hardware with a linear feedback shift register).<wbr/></p>
 <p>The generator should be reset at the beginning of each frame,<wbr/>
 and thus each subsequent raw frame with this test pattern should
 be exactly the same as the last.<wbr/></p></span>
+                  </li>
+                  <li>
+                    <span class="entry_type_enum_name">BLACK (v3.6)</span>
+                    <span class="entry_type_enum_hidden">[test]</span>
+                    <span class="entry_type_enum_notes"><p>All pixel data is replaced by 0% intensity (black) values.<wbr/></p>
+<p>This test pattern is identical to SOLID_<wbr/>COLOR with a value of <code>[0,<wbr/> 0,<wbr/> 0,<wbr/> 0]</code> for
+<a href="#controls_android.sensor.testPatternData">android.<wbr/>sensor.<wbr/>test<wbr/>Pattern<wbr/>Data</a>.<wbr/>  It is recommended that devices implement full
+SOLID_<wbr/>COLOR support instead,<wbr/> but BLACK can be used to provide minimal support for a
+test pattern suitable for privacy use cases.<wbr/></p></span>
                   </li>
                   <li>
                     <span class="entry_type_enum_name">CUSTOM1 (v3.2)</span>
@@ -27446,10 +27462,10 @@ device returns captures from the image sensor.<wbr/></p>
 respective color channel provided in
 <a href="#controls_android.sensor.testPatternData">android.<wbr/>sensor.<wbr/>test<wbr/>Pattern<wbr/>Data</a>.<wbr/></p>
 <p>For example:</p>
-<pre><code>android.<wbr/>control.<wbr/>test<wbr/>Pattern<wbr/>Data = [0,<wbr/> 0xFFFFFFFF,<wbr/> 0xFFFFFFFF,<wbr/> 0]
+<pre><code><a href="#controls_android.sensor.testPatternData">android.<wbr/>sensor.<wbr/>test<wbr/>Pattern<wbr/>Data</a> = [0,<wbr/> 0xFFFFFFFF,<wbr/> 0xFFFFFFFF,<wbr/> 0]
 </code></pre>
 <p>All green pixels are 100% green.<wbr/> All red/<wbr/>blue pixels are black.<wbr/></p>
-<pre><code>android.<wbr/>control.<wbr/>test<wbr/>Pattern<wbr/>Data = [0xFFFFFFFF,<wbr/> 0,<wbr/> 0xFFFFFFFF,<wbr/> 0]
+<pre><code><a href="#controls_android.sensor.testPatternData">android.<wbr/>sensor.<wbr/>test<wbr/>Pattern<wbr/>Data</a> = [0xFFFFFFFF,<wbr/> 0,<wbr/> 0xFFFFFFFF,<wbr/> 0]
 </code></pre>
 <p>All red pixels are 100% red.<wbr/> Only the odd green pixels
 are 100% green.<wbr/> All blue pixels are 100% black.<wbr/></p></span>
@@ -27513,6 +27529,15 @@ in hardware with a linear feedback shift register).<wbr/></p>
 <p>The generator should be reset at the beginning of each frame,<wbr/>
 and thus each subsequent raw frame with this test pattern should
 be exactly the same as the last.<wbr/></p></span>
+                  </li>
+                  <li>
+                    <span class="entry_type_enum_name">BLACK (v3.6)</span>
+                    <span class="entry_type_enum_hidden">[test]</span>
+                    <span class="entry_type_enum_notes"><p>All pixel data is replaced by 0% intensity (black) values.<wbr/></p>
+<p>This test pattern is identical to SOLID_<wbr/>COLOR with a value of <code>[0,<wbr/> 0,<wbr/> 0,<wbr/> 0]</code> for
+<a href="#controls_android.sensor.testPatternData">android.<wbr/>sensor.<wbr/>test<wbr/>Pattern<wbr/>Data</a>.<wbr/>  It is recommended that devices implement full
+SOLID_<wbr/>COLOR support instead,<wbr/> but BLACK can be used to provide minimal support for a
+test pattern suitable for privacy use cases.<wbr/></p></span>
                   </li>
                   <li>
                     <span class="entry_type_enum_name">CUSTOM1 (v3.2)</span>

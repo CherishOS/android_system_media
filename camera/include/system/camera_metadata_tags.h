@@ -992,6 +992,7 @@ typedef enum camera_metadata_enum_android_sensor_test_pattern_mode {
     ANDROID_SENSOR_TEST_PATTERN_MODE_COLOR_BARS                     , // HIDL v3.2
     ANDROID_SENSOR_TEST_PATTERN_MODE_COLOR_BARS_FADE_TO_GRAY        , // HIDL v3.2
     ANDROID_SENSOR_TEST_PATTERN_MODE_PN9                            , // HIDL v3.2
+    ANDROID_SENSOR_TEST_PATTERN_MODE_BLACK                          , // HIDL v3.6
     ANDROID_SENSOR_TEST_PATTERN_MODE_CUSTOM1                         = 256, // HIDL v3.2
 } camera_metadata_enum_android_sensor_test_pattern_mode_t;
 
