@@ -21182,9 +21182,9 @@ check if it limits the maximum size for image data.<wbr/></p>
 <p>Not all output formats may be supported in a configuration with
 an input stream of a particular format.<wbr/> For more details,<wbr/> see
 <a href="#static_android.scaler.availableInputOutputFormatsMap">android.<wbr/>scaler.<wbr/>available<wbr/>Input<wbr/>Output<wbr/>Formats<wbr/>Map</a>.<wbr/></p>
-<p>The following table describes the minimum required output stream
-configurations based on the hardware level
-(<a href="#static_android.info.supportedHardwareLevel">android.<wbr/>info.<wbr/>supported<wbr/>Hardware<wbr/>Level</a>),<wbr/> prior to Android 12:</p>
+<p>For applications targeting SDK version older than 31,<wbr/> the following table
+describes the minimum required output stream configurations based on the hardware level
+(<a href="#static_android.info.supportedHardwareLevel">android.<wbr/>info.<wbr/>supported<wbr/>Hardware<wbr/>Level</a>):</p>
 <table>
 <thead>
 <tr>
@@ -21245,10 +21245,13 @@ configurations based on the hardware level
 </tr>
 </tbody>
 </table>
-<p>Starting from Android 12,<wbr/> the camera device may not support JPEG sizes smaller than the
-minimum of 1080p and the camera sensor active array size.<wbr/> The requirements for
-IMPLEMENTATION_<wbr/>DEFINED and YUV_<wbr/>420_<wbr/>888 stay the same.<wbr/> This new minimum required output
-stream configurations are illustrated by the table below:</p>
+<p>For applications targeting SDK version 31 or newer,<wbr/> if the mobile device declares to be
+<a href="https://developer.android.com/reference/android/os/Build/VERSION_CDOES/MEDIA_PERFORMANCE_CLASS.html">media performance class</a> S,<wbr/>
+the primary camera devices (first rear/<wbr/>front camera in the camera ID list) will not
+support JPEG sizes smaller than 1080p.<wbr/> If the application configures a JPEG stream
+smaller than 1080p,<wbr/> the camera device will round up the JPEG image size to at least
+1080p.<wbr/> The requirements for IMPLEMENTATION_<wbr/>DEFINED and YUV_<wbr/>420_<wbr/>888 stay the same.<wbr/>
+This new minimum required output stream configurations are illustrated by the table below:</p>
 <table>
 <thead>
 <tr>
@@ -21315,6 +21318,10 @@ stream configurations are illustrated by the table below:</p>
 </tr>
 </tbody>
 </table>
+<p>For applications targeting SDK version 31 or newer,<wbr/> if the mobile device doesn't declare
+to be media performance class S,<wbr/> or if the camera device isn't a primary rear/<wbr/>front
+camera,<wbr/> the minimum required output stream configurations are the same as for applications
+targeting SDK version older than 31.<wbr/></p>
 <p>Refer to <a href="#static_android.request.availableCapabilities">android.<wbr/>request.<wbr/>available<wbr/>Capabilities</a> for additional
 mandatory stream configurations on a per-capability basis.<wbr/></p>
 <p>Exception on 176x144 (QCIF) resolution: camera devices usually have a fixed capability for
@@ -21355,7 +21362,7 @@ ratio 4:3,<wbr/> the JPEG encoder alignment requirement is 16,<wbr/> the maximum
 the HAL must include all YUV_<wbr/>420_<wbr/>888 sizes that have JPEG sizes listed
 here as output streams.<wbr/></p>
 <p>It must also include each below resolution if it is smaller than or
-equal to the sensor maximum resolution (for both YUV_<wbr/>420_<wbr/>888 and IMPLEMENTATION_<wbr/>DEFINED
+equal to the sensor maximum resolution (for both YUV_<wbr/>420_<wbr/>888 and JPEG
 formats),<wbr/> as output streams:</p>
 <ul>
 <li>240p (320 x 240)</li>
@@ -21363,6 +21370,10 @@ formats),<wbr/> as output streams:</p>
 <li>720p (1280 x 720)</li>
 <li>1080p (1920 x 1080)</li>
 </ul>
+<p>Note that for Performance Class 12 primary cameras (first rear/<wbr/>front facing camera in the
+camera ID list),<wbr/> camera framework filters out JPEG sizes smaller than 1080p depending on
+applications' targetSdkLevel.<wbr/> The camera HAL must still support the smaller JPEG sizes
+to maintain backward comopatibility.<wbr/></p>
 <p>For LIMITED capability devices
 (<code><a href="#static_android.info.supportedHardwareLevel">android.<wbr/>info.<wbr/>supported<wbr/>Hardware<wbr/>Level</a> == LIMITED</code>),<wbr/>
 the HAL only has to list up to the maximum video size

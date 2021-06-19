@@ -7030,9 +7030,9 @@ xsi:schemaLocation="http://schemas.android.com/service/camera/metadata/ metadata
           an input stream of a particular format. For more details, see
           android.scaler.availableInputOutputFormatsMap.
 
-          The following table describes the minimum required output stream
-          configurations based on the hardware level
-          (android.info.supportedHardwareLevel), prior to Android 12:
+          For applications targeting SDK version older than 31, the following table
+          describes the minimum required output stream configurations based on the hardware level
+          (android.info.supportedHardwareLevel):
 
           Format         | Size                                         | Hardware Level | Notes
           :-------------:|:--------------------------------------------:|:--------------:|:--------------:
@@ -7045,10 +7045,13 @@ xsi:schemaLocation="http://schemas.android.com/service/camera/metadata/ metadata
           YUV_420_888    | all output sizes available for JPEG, up to the maximum video size | LIMITED        |
           IMPLEMENTATION_DEFINED | same as YUV_420_888                  | Any            |
 
-          Starting from Android 12, the camera device may not support JPEG sizes smaller than the
-          minimum of 1080p and the camera sensor active array size. The requirements for
-          IMPLEMENTATION_DEFINED and YUV_420_888 stay the same. This new minimum required output
-          stream configurations are illustrated by the table below:
+          For applications targeting SDK version 31 or newer, if the mobile device declares to be
+          {@link android.os.Build.VERSION_CDOES.MEDIA_PERFORMANCE_CLASS media performance class} S,
+          the primary camera devices (first rear/front camera in the camera ID list) will not
+          support JPEG sizes smaller than 1080p. If the application configures a JPEG stream
+          smaller than 1080p, the camera device will round up the JPEG image size to at least
+          1080p. The requirements for IMPLEMENTATION_DEFINED and YUV_420_888 stay the same.
+          This new minimum required output stream configurations are illustrated by the table below:
 
           Format         | Size                                         | Hardware Level | Notes
           :-------------:|:--------------------------------------------:|:--------------:|:--------------:
@@ -7061,6 +7064,11 @@ xsi:schemaLocation="http://schemas.android.com/service/camera/metadata/ metadata
           YUV_420_888    | 320x240 (240p)                               | FULL           | if 240p &lt;= activeArraySize
           YUV_420_888    | all output sizes available for FULL hardware level, up to the maximum video size | LIMITED        |
           IMPLEMENTATION_DEFINED | same as YUV_420_888                  | Any            |
+
+          For applications targeting SDK version 31 or newer, if the mobile device doesn't declare
+          to be media performance class S, or if the camera device isn't a primary rear/front
+          camera, the minimum required output stream configurations are the same as for applications
+          targeting SDK version older than 31.
 
           Refer to android.request.availableCapabilities for additional
           mandatory stream configurations on a per-capability basis.
@@ -7102,13 +7110,18 @@ xsi:schemaLocation="http://schemas.android.com/service/camera/metadata/ metadata
           here as output streams.
 
           It must also include each below resolution if it is smaller than or
-          equal to the sensor maximum resolution (for both YUV_420_888 and IMPLEMENTATION_DEFINED
+          equal to the sensor maximum resolution (for both YUV_420_888 and JPEG
           formats), as output streams:
 
           * 240p (320 x 240)
           * 480p (640 x 480)
           * 720p (1280 x 720)
           * 1080p (1920 x 1080)
+
+          Note that for Performance Class 12 primary cameras (first rear/front facing camera in the
+          camera ID list), camera framework filters out JPEG sizes smaller than 1080p depending on
+          applications' targetSdkLevel. The camera HAL must still support the smaller JPEG sizes
+          to maintain backward comopatibility.
 
           For LIMITED capability devices
           (`android.info.supportedHardwareLevel == LIMITED`),
