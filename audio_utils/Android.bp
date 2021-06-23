@@ -26,7 +26,9 @@ cc_library_headers {
     vendor_available: true,
     product_available: true,
     export_include_dirs: ["include"],
-    sdk_version: "current",
+    // referenced from CTS/MTS test suite which must run on sdk 29, make sure it's compatible
+    // (revisit if/when we add features to this library that require newer sdk.
+    sdk_version: "29",
 }
 
 cc_library {
