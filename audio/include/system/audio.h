@@ -222,7 +222,7 @@ enum {
     //
     // This can be adjusted onto a value such as FCC_12 or FCC_24
     // if the device HAL can support it.  Do not reduce below FCC_8.
-    FCC_LIMIT = FCC_8,
+    FCC_LIMIT = FCC_12,
 };
 
 /* A channel mask per se only defines the presence or absence of a channel, not the order.
