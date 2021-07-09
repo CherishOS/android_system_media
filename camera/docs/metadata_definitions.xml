@@ -3350,6 +3350,18 @@ xsi:schemaLocation="http://schemas.android.com/service/camera/metadata/ metadata
             android.control.zoomRatio is not 1.0, and android.scaler.cropRegion is set to be
             windowboxing, the camera framework will override the android.scaler.cropRegion to be
             the active array.
+
+            In the capture request, if the application sets android.control.zoomRatio to a
+            value != 1.0, the android.control.zoomRatio tag in the capture result reflects the
+            effective zoom ratio achieved by the camera device, and the android.scaler.cropRegion
+            adjusts for additional crops that are not zoom related. Otherwise, if the application
+            sets android.control.zoomRatio to 1.0, or does not set it at all, the
+            android.control.zoomRatio tag in the result metadata will also be 1.0.
+
+            When the application requests a physical stream for a logical multi-camera, the
+            android.control.zoomRatio in the physical camera result metadata will be 1.0, and
+            the android.scaler.cropRegion tag reflects the amount of zoom and crop done by the
+            physical camera device.
           </details>
           <hal_details>
             For all capture request templates, this field must be set to 1.0 in order to have
@@ -6563,40 +6575,6 @@ xsi:schemaLocation="http://schemas.android.com/service/camera/metadata/ metadata
             for raw output, where only a few fixed scales may be
             possible.
 
-            For a set of output streams configured, if the sensor output is cropped to a smaller
-            size than pre-correction active array size, the HAL need follow below cropping rules:
-
-            * The HAL need to handle the cropRegion as if the sensor crop size is the effective
-            pre-correction active array size. More specifically, the HAL must transform the request
-            cropRegion from android.sensor.info.preCorrectionActiveArraySize to the sensor cropped
-            pixel area size in this way:
-                1. If android.control.zoomRatio is set to value x, scale the requested cropRegion
-                with 1.0/x in relation to its center as the origin. For example, say the requested
-                cropRegion is (crX, crY, crWidth, crHeight), override it with
-                    `crX' = crX + crWidth * (1.0 - 1.0 / x) / 2`,
-                    `crY' = crY + crHeight * (1.0 - 1.0 / x) / 2`,
-                    `crWidth' = crWidth / x`, and
-                    `crHeight' = crHeight / x`.
-                2. Translate the requested cropRegion w.r.t., the left top corner of the sensor
-                cropped pixel area by (tx, ty),
-                where `ty = sensorCrop.top * (sensorCrop.height / preCorrectionActiveArraySize.height)`
-                and `tx = sensorCrop.left * (sensorCrop.width / preCorrectionActiveArraySize.width)`.
-                The (sensorCrop.top, sensorCrop.left) is the coordinate based off the
-                android.sensor.info.activeArraySize.
-                3. Scale the width and height of requested cropRegion with scaling factor of
-                sensorCrop.width/preCorrectionActiveArraySize.width and sensorCrop.height/preCorrectionActiveArraySize.height
-                respectively.
-            Once this new cropRegion is calculated, the HAL must use this region to crop the image
-            with regard to the sensor crop size (effective pre-correction active array size). The
-            HAL still need follow the general cropping rule for this new cropRegion and effective
-            pre-correction active array size.
-
-            * The HAL must report the cropRegion with regard to android.sensor.info.preCorrectionActiveArraySize.
-            The HAL need convert the new cropRegion generated above w.r.t., full pre-correction
-            active array size. The reported cropRegion may be slightly different with the requested
-            cropRegion since the HAL may adjust the crop region to account for rounding, conversion
-            error, or other hardware limitations.
-
             If android.control.zoomRatio is supported by the HAL, the HAL must report the zoom
             ratio via android.control.zoomRatio, and change the coordinate system such that
             android.sensor.info.preCorrectionActiveArraySize or android.sensor.info.activeArraySize
@@ -6799,8 +6777,8 @@ xsi:schemaLocation="http://schemas.android.com/service/camera/metadata/ metadata
           maximum zoom ratio.
           </details>
           <hal_details>
-          If the HAL supports android.control.zoomRatio, this value must be equal to the maximum
-          supported zoomRatio specified in android.control.zoomRatioRange.
+          If the HAL supports android.control.zoomRatio, this value must be equal to or less than
+          the maximum supported zoomRatio specified in android.control.zoomRatioRange.
           </hal_details>
           <tag id="BC" />
         </entry>
