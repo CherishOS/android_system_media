@@ -3941,7 +3941,7 @@ xsi:schemaLocation="http://schemas.android.com/service/camera/metadata/ metadata
         </entry>
         <entry name="maxSize" type="int32" visibility="system">
           <description>Maximum size in bytes for the compressed
-          JPEG buffer</description>
+          JPEG buffer, in default sensor pixel mode (see android.sensor.pixelMode)</description>
           <range>Must be large enough to fit any JPEG produced by
           the camera</range>
           <details>This is used for sizing the gralloc buffers for
