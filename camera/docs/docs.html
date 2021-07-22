@@ -18736,13 +18736,27 @@ wide-ultrawide lens configuration where the wide lens is the default,<wbr/> when
 camera's crop region is set to maximum size,<wbr/> the FOV of the physical streams for the
 ultrawide lens will be the same as the logical stream,<wbr/> by making the crop region
 smaller than its active array size to compensate for the smaller focal length.<wbr/></p>
-<p>Even if the underlying physical cameras have different RAW characteristics (such as
-size or CFA pattern),<wbr/> a logical camera can still advertise RAW capability.<wbr/> In this
-case,<wbr/> when the application configures a RAW stream,<wbr/> the camera device will make sure
-the active physical camera will remain active to ensure consistent RAW output
-behavior,<wbr/> and not switch to other physical cameras.<wbr/></p>
+<p>There are two ways for the application to capture RAW images from a logical camera
+with RAW capability:</p>
+<ul>
+<li>Because the underlying physical cameras may have different RAW capabilities (such
+as resolution or CFA pattern),<wbr/> to maintain backward compatibility,<wbr/> when a RAW stream
+is configured,<wbr/> the camera device makes sure the default active physical camera remains
+active and does not switch to other physical cameras.<wbr/> (One exception is that,<wbr/> if the
+logical camera consists of identical image sensors and advertises multiple focalLength
+due to different lenses,<wbr/> the camera device may generate RAW images from different
+physical cameras based on the focalLength being set by the application.<wbr/>) This
+backward-compatible approach usually results in loss of optical zoom,<wbr/> to telephoto
+lens or to ultrawide lens.<wbr/></li>
+<li>Alternatively,<wbr/> to take advantage of the full zoomRatio range of the logical camera,<wbr/>
+the application should use <a href="https://developer.android.com/reference/android/hardware/camera2/MultiResolutionImageReader.html">MultiResolutionImageReader</a>
+to capture RAW images from the currently active physical camera.<wbr/> Because different
+physical camera may have different RAW characteristics,<wbr/> the application needs to use
+the characteristics and result metadata of the active physical camera for the
+relevant RAW metadata.<wbr/></li>
+</ul>
 <p>The capture request and result metadata tags required for backward compatible camera
-functionalities will be solely based on the logical camera capabiltity.<wbr/> On the other
+functionalities will be solely based on the logical camera capability.<wbr/> On the other
 hand,<wbr/> the use of manual capture controls (sensor or post-processing) with a
 logical camera may result in unexpected behavior when the HAL decides to switch
 between physical cameras with different characteristics under the hood.<wbr/> For example,<wbr/>
