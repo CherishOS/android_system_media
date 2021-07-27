@@ -445,6 +445,16 @@ static const audio_config_base_t AUDIO_CONFIG_BASE_INITIALIZER = {
     /* .format = */ AUDIO_FORMAT_DEFAULT
 };
 
+
+static inline audio_config_t audio_config_initializer(const  audio_config_base_t *base)
+{
+    audio_config_t config = AUDIO_CONFIG_INITIALIZER;
+    config.sample_rate = base->sample_rate;
+    config.channel_mask = base->channel_mask;
+    config.format = base->format;
+    return config;
+}
+
 /* audio hw module handle functions or structures referencing a module */
 typedef int audio_module_handle_t;
 
