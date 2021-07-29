@@ -3402,6 +3402,77 @@ xsi:schemaLocation="http://schemas.android.com/service/camera/metadata/ metadata
         <tag id="V1" />
       </entry>
     </static>
+    <controls>
+        <entry name="afRegionsSet" type="byte" visibility="fwk_only"
+               enum="true" typedef="boolean">
+          <enum>
+            <value>TRUE
+            <notes>AF regions (android.control.afRegions) have been set by the camera client.
+            </notes>
+            </value>
+            <value>FALSE
+            <notes>
+              AF regions (android.control.afRegions) have not been set by the camera client.
+            </notes>
+            </value>
+          </enum>
+          <description>
+            Framework-only private key which informs camera fwk that the AF regions has been set
+            by the client and those regions need not be corrected when android.sensor.pixelMode is
+            set to MAXIMUM_RESOLUTION.
+          </description>
+          <details>
+            This must be set to TRUE by the camera2 java fwk when the camera client sets
+            android.control.afRegions.
+          </details>
+        </entry>
+        <entry name="aeRegionsSet" type="byte" visibility="fwk_only"
+          enum="true" typedef="boolean">
+          <enum>
+            <value>TRUE
+            <notes> AE regions (android.control.aeRegions) have been set by the camera client.
+            </notes>
+            </value>
+            <value>FALSE
+            <notes>
+              AE regions (android.control.aeRegions) have not been set by the camera client.
+            </notes>
+            </value>
+          </enum>
+          <description>
+            Framework-only private key which informs camera fwk that the AE regions has been set
+            by the client and those regions need not be corrected when android.sensor.pixelMode is
+            set to MAXIMUM_RESOLUTION.
+          </description>
+          <details>
+            This must be set to TRUE by the camera2 java fwk when the camera client sets
+            android.control.aeRegions.
+          </details>
+        </entry>
+        <entry name="awbRegionsSet" type="byte" visibility="fwk_only"
+          enum="true" typedef="boolean">
+          <enum>
+            <value>TRUE
+            <notes> AWB regions (android.control.awbRegions) have been set by the camera client.
+            </notes>
+            </value>
+            <value>FALSE
+            <notes>
+              AWB regions (android.control.awbRegions) have not been set by the camera client.
+            </notes>
+            </value>
+          </enum>
+          <description>
+            Framework-only private key which informs camera fwk that the AF regions has been set
+            by the client and those regions need not be corrected when android.sensor.pixelMode is
+            set to MAXIMUM_RESOLUTION.
+          </description>
+          <details>
+            This must be set to TRUE by the camera2 java fwk when the camera client sets
+            android.control.awbRegions.
+          </details>
+        </entry>
+    </controls>
     </section>
     <section name="demosaic">
       <controls>
@@ -8086,6 +8157,33 @@ xsi:schemaLocation="http://schemas.android.com/service/camera/metadata/ metadata
           </hal_details>
         </entry>
       </static>
+      <controls>
+        <entry name="cropRegionSet" type="byte" visibility="fwk_only"
+               enum="true" typedef="boolean">
+          <enum>
+            <value>TRUE
+            <notes>Crop region (android.scaler.cropRegion) has been set by the
+              camera client.
+            </notes>
+            </value>
+            <value>FALSE
+            <notes>
+              Scaler crop regions (android.scaler.cropRegion) has not been set by the camera
+              client.
+            </notes>
+            </value>
+          </enum>
+          <description>
+            Framework-only private key which informs camera fwk that the scaler crop region
+            (android.scaler.cropRegion) has been set by the client and it need
+            not be corrected when android.sensor.pixelMode is set to MAXIMUM_RESOLUTION.
+          </description>
+          <details>
+            This must be set to TRUE by the camera2 java fwk when the camera client sets
+            android.scaler.cropRegion.
+          </details>
+        </entry>
+      </controls>
     </section>
     <section name="sensor">
       <controls>

@@ -183,6 +183,9 @@ typedef enum camera_metadata_tag {
     ANDROID_CONTROL_ZOOM_RATIO,                       // float        | public       | HIDL v3.5
     ANDROID_CONTROL_AVAILABLE_HIGH_SPEED_VIDEO_CONFIGURATIONS_MAXIMUM_RESOLUTION,
                                                       // int32[]      | hidden       | HIDL v3.6
+    ANDROID_CONTROL_AF_REGIONS_SET,                   // enum         | fwk_only
+    ANDROID_CONTROL_AE_REGIONS_SET,                   // enum         | fwk_only
+    ANDROID_CONTROL_AWB_REGIONS_SET,                  // enum         | fwk_only
     ANDROID_CONTROL_END,
 
     ANDROID_DEMOSAIC_MODE =                           // enum         | system       | HIDL v3.2
@@ -330,6 +333,7 @@ typedef enum camera_metadata_tag {
     ANDROID_SCALER_AVAILABLE_INPUT_OUTPUT_FORMATS_MAP_MAXIMUM_RESOLUTION,
                                                       // int32        | hidden       | HIDL v3.6
     ANDROID_SCALER_MULTI_RESOLUTION_STREAM_SUPPORTED, // enum         | ndk_public   | HIDL v3.6
+    ANDROID_SCALER_CROP_REGION_SET,                   // enum         | fwk_only
     ANDROID_SCALER_END,
 
     ANDROID_SENSOR_EXPOSURE_TIME =                    // int64        | public       | HIDL v3.2
@@ -745,6 +749,24 @@ typedef enum camera_metadata_enum_android_control_extended_scene_mode {
     ANDROID_CONTROL_EXTENDED_SCENE_MODE_VENDOR_START                 = 0x40, // HIDL v3.5
 } camera_metadata_enum_android_control_extended_scene_mode_t;
 
+// ANDROID_CONTROL_AF_REGIONS_SET
+typedef enum camera_metadata_enum_android_control_af_regions_set {
+    ANDROID_CONTROL_AF_REGIONS_SET_TRUE                             ,
+    ANDROID_CONTROL_AF_REGIONS_SET_FALSE                            ,
+} camera_metadata_enum_android_control_af_regions_set_t;
+
+// ANDROID_CONTROL_AE_REGIONS_SET
+typedef enum camera_metadata_enum_android_control_ae_regions_set {
+    ANDROID_CONTROL_AE_REGIONS_SET_TRUE                             ,
+    ANDROID_CONTROL_AE_REGIONS_SET_FALSE                            ,
+} camera_metadata_enum_android_control_ae_regions_set_t;
+
+// ANDROID_CONTROL_AWB_REGIONS_SET
+typedef enum camera_metadata_enum_android_control_awb_regions_set {
+    ANDROID_CONTROL_AWB_REGIONS_SET_TRUE                            ,
+    ANDROID_CONTROL_AWB_REGIONS_SET_FALSE                           ,
+} camera_metadata_enum_android_control_awb_regions_set_t;
+
 
 // ANDROID_DEMOSAIC_MODE
 typedef enum camera_metadata_enum_android_demosaic_mode {
@@ -960,6 +982,12 @@ typedef enum camera_metadata_enum_android_scaler_multi_resolution_stream_support
     ANDROID_SCALER_MULTI_RESOLUTION_STREAM_SUPPORTED_FALSE          , // HIDL v3.6
     ANDROID_SCALER_MULTI_RESOLUTION_STREAM_SUPPORTED_TRUE           , // HIDL v3.6
 } camera_metadata_enum_android_scaler_multi_resolution_stream_supported_t;
+
+// ANDROID_SCALER_CROP_REGION_SET
+typedef enum camera_metadata_enum_android_scaler_crop_region_set {
+    ANDROID_SCALER_CROP_REGION_SET_TRUE                             ,
+    ANDROID_SCALER_CROP_REGION_SET_FALSE                            ,
+} camera_metadata_enum_android_scaler_crop_region_set_t;
 
 
 // ANDROID_SENSOR_REFERENCE_ILLUMINANT1

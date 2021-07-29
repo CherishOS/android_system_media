@@ -197,6 +197,12 @@
             ><a href="#controls_android.control.extendedSceneMode">android.control.extendedSceneMode</a></li>
             <li
             ><a href="#controls_android.control.zoomRatio">android.control.zoomRatio</a></li>
+            <li
+            ><a href="#controls_android.control.afRegionsSet">android.control.afRegionsSet</a></li>
+            <li
+            ><a href="#controls_android.control.aeRegionsSet">android.control.aeRegionsSet</a></li>
+            <li
+            ><a href="#controls_android.control.awbRegionsSet">android.control.awbRegionsSet</a></li>
           </ul>
         </li>
         <li>
@@ -726,6 +732,8 @@
             ><a href="#controls_android.scaler.cropRegion">android.scaler.cropRegion</a></li>
             <li
             ><a href="#controls_android.scaler.rotateAndCrop">android.scaler.rotateAndCrop</a></li>
+            <li
+            ><a href="#controls_android.scaler.cropRegionSet">android.scaler.cropRegionSet</a></li>
           </ul>
         </li>
         <li>
@@ -5023,6 +5031,192 @@ physical camera device.<wbr/></p>
 consistent field of views between different modes.<wbr/></p>
             </td>
           </tr>
+
+          <tr class="entry_spacer"><td class="entry_spacer" colspan="7"></td></tr>
+           <!-- end of entry -->
+        
+                
+          <tr class="entry" id="controls_android.control.afRegionsSet">
+            <td class="entry_name
+             " rowspan="3">
+              android.<wbr/>control.<wbr/>af<wbr/>Regions<wbr/>Set
+            </td>
+            <td class="entry_type">
+                <span class="entry_type_name entry_type_name_enum">byte</span>
+
+              <span class="entry_type_visibility"> [fwk_only as boolean]</span>
+
+
+
+
+
+                <ul class="entry_type_enum">
+                  <li>
+                    <span class="entry_type_enum_name">TRUE (v3.2)</span>
+                    <span class="entry_type_enum_notes"><p>AF regions (<a href="#controls_android.control.afRegions">android.<wbr/>control.<wbr/>af<wbr/>Regions</a>) have been set by the camera client.<wbr/></p></span>
+                  </li>
+                  <li>
+                    <span class="entry_type_enum_name">FALSE (v3.2)</span>
+                    <span class="entry_type_enum_notes"><p>AF regions (<a href="#controls_android.control.afRegions">android.<wbr/>control.<wbr/>af<wbr/>Regions</a>) have not been set by the camera client.<wbr/></p></span>
+                  </li>
+                </ul>
+
+            </td> <!-- entry_type -->
+
+            <td class="entry_description">
+              <p>Framework-only private key which informs camera fwk that the AF regions has been set
+by the client and those regions need not be corrected when <a href="#controls_android.sensor.pixelMode">android.<wbr/>sensor.<wbr/>pixel<wbr/>Mode</a> is
+set to MAXIMUM_<wbr/>RESOLUTION.<wbr/></p>
+            </td>
+
+            <td class="entry_units">
+            </td>
+
+            <td class="entry_range">
+            </td>
+
+            <td class="entry_hal_version">
+              <p>3.<wbr/>2</p>
+            </td>
+
+            <td class="entry_tags">
+            </td>
+
+          </tr>
+          <tr class="entries_header">
+            <th class="th_details" colspan="6">Details</th>
+          </tr>
+          <tr class="entry_cont">
+            <td class="entry_details" colspan="6">
+              <p>This must be set to TRUE by the camera2 java fwk when the camera client sets
+<a href="#controls_android.control.afRegions">android.<wbr/>control.<wbr/>af<wbr/>Regions</a>.<wbr/></p>
+            </td>
+          </tr>
+
+
+          <tr class="entry_spacer"><td class="entry_spacer" colspan="7"></td></tr>
+           <!-- end of entry -->
+        
+                
+          <tr class="entry" id="controls_android.control.aeRegionsSet">
+            <td class="entry_name
+             " rowspan="3">
+              android.<wbr/>control.<wbr/>ae<wbr/>Regions<wbr/>Set
+            </td>
+            <td class="entry_type">
+                <span class="entry_type_name entry_type_name_enum">byte</span>
+
+              <span class="entry_type_visibility"> [fwk_only as boolean]</span>
+
+
+
+
+
+                <ul class="entry_type_enum">
+                  <li>
+                    <span class="entry_type_enum_name">TRUE (v3.2)</span>
+                    <span class="entry_type_enum_notes"><p>AE regions (<a href="#controls_android.control.aeRegions">android.<wbr/>control.<wbr/>ae<wbr/>Regions</a>) have been set by the camera client.<wbr/></p></span>
+                  </li>
+                  <li>
+                    <span class="entry_type_enum_name">FALSE (v3.2)</span>
+                    <span class="entry_type_enum_notes"><p>AE regions (<a href="#controls_android.control.aeRegions">android.<wbr/>control.<wbr/>ae<wbr/>Regions</a>) have not been set by the camera client.<wbr/></p></span>
+                  </li>
+                </ul>
+
+            </td> <!-- entry_type -->
+
+            <td class="entry_description">
+              <p>Framework-only private key which informs camera fwk that the AE regions has been set
+by the client and those regions need not be corrected when <a href="#controls_android.sensor.pixelMode">android.<wbr/>sensor.<wbr/>pixel<wbr/>Mode</a> is
+set to MAXIMUM_<wbr/>RESOLUTION.<wbr/></p>
+            </td>
+
+            <td class="entry_units">
+            </td>
+
+            <td class="entry_range">
+            </td>
+
+            <td class="entry_hal_version">
+              <p>3.<wbr/>2</p>
+            </td>
+
+            <td class="entry_tags">
+            </td>
+
+          </tr>
+          <tr class="entries_header">
+            <th class="th_details" colspan="6">Details</th>
+          </tr>
+          <tr class="entry_cont">
+            <td class="entry_details" colspan="6">
+              <p>This must be set to TRUE by the camera2 java fwk when the camera client sets
+<a href="#controls_android.control.aeRegions">android.<wbr/>control.<wbr/>ae<wbr/>Regions</a>.<wbr/></p>
+            </td>
+          </tr>
+
+
+          <tr class="entry_spacer"><td class="entry_spacer" colspan="7"></td></tr>
+           <!-- end of entry -->
+        
+                
+          <tr class="entry" id="controls_android.control.awbRegionsSet">
+            <td class="entry_name
+             " rowspan="3">
+              android.<wbr/>control.<wbr/>awb<wbr/>Regions<wbr/>Set
+            </td>
+            <td class="entry_type">
+                <span class="entry_type_name entry_type_name_enum">byte</span>
+
+              <span class="entry_type_visibility"> [fwk_only as boolean]</span>
+
+
+
+
+
+                <ul class="entry_type_enum">
+                  <li>
+                    <span class="entry_type_enum_name">TRUE (v3.2)</span>
+                    <span class="entry_type_enum_notes"><p>AWB regions (<a href="#controls_android.control.awbRegions">android.<wbr/>control.<wbr/>awb<wbr/>Regions</a>) have been set by the camera client.<wbr/></p></span>
+                  </li>
+                  <li>
+                    <span class="entry_type_enum_name">FALSE (v3.2)</span>
+                    <span class="entry_type_enum_notes"><p>AWB regions (<a href="#controls_android.control.awbRegions">android.<wbr/>control.<wbr/>awb<wbr/>Regions</a>) have not been set by the camera client.<wbr/></p></span>
+                  </li>
+                </ul>
+
+            </td> <!-- entry_type -->
+
+            <td class="entry_description">
+              <p>Framework-only private key which informs camera fwk that the AF regions has been set
+by the client and those regions need not be corrected when <a href="#controls_android.sensor.pixelMode">android.<wbr/>sensor.<wbr/>pixel<wbr/>Mode</a> is
+set to MAXIMUM_<wbr/>RESOLUTION.<wbr/></p>
+            </td>
+
+            <td class="entry_units">
+            </td>
+
+            <td class="entry_range">
+            </td>
+
+            <td class="entry_hal_version">
+              <p>3.<wbr/>2</p>
+            </td>
+
+            <td class="entry_tags">
+            </td>
+
+          </tr>
+          <tr class="entries_header">
+            <th class="th_details" colspan="6">Details</th>
+          </tr>
+          <tr class="entry_cont">
+            <td class="entry_details" colspan="6">
+              <p>This must be set to TRUE by the camera2 java fwk when the camera client sets
+<a href="#controls_android.control.awbRegions">android.<wbr/>control.<wbr/>awb<wbr/>Regions</a>.<wbr/></p>
+            </td>
+          </tr>
+
 
           <tr class="entry_spacer"><td class="entry_spacer" colspan="7"></td></tr>
            <!-- end of entry -->
@@ -20245,6 +20439,70 @@ Any translation required to implement ROTATE_<wbr/>AND_<wbr/>CROP_<wbr/>AUTO wil
 service.<wbr/></p>
             </td>
           </tr>
+
+          <tr class="entry_spacer"><td class="entry_spacer" colspan="7"></td></tr>
+           <!-- end of entry -->
+        
+                
+          <tr class="entry" id="controls_android.scaler.cropRegionSet">
+            <td class="entry_name
+             " rowspan="3">
+              android.<wbr/>scaler.<wbr/>crop<wbr/>Region<wbr/>Set
+            </td>
+            <td class="entry_type">
+                <span class="entry_type_name entry_type_name_enum">byte</span>
+
+              <span class="entry_type_visibility"> [fwk_only as boolean]</span>
+
+
+
+
+
+                <ul class="entry_type_enum">
+                  <li>
+                    <span class="entry_type_enum_name">TRUE (v3.2)</span>
+                    <span class="entry_type_enum_notes"><p>Crop region (<a href="#controls_android.scaler.cropRegion">android.<wbr/>scaler.<wbr/>crop<wbr/>Region</a>) has been set by the
+camera client.<wbr/></p></span>
+                  </li>
+                  <li>
+                    <span class="entry_type_enum_name">FALSE (v3.2)</span>
+                    <span class="entry_type_enum_notes"><p>Scaler crop regions (<a href="#controls_android.scaler.cropRegion">android.<wbr/>scaler.<wbr/>crop<wbr/>Region</a>) has not been set by the camera
+client.<wbr/></p></span>
+                  </li>
+                </ul>
+
+            </td> <!-- entry_type -->
+
+            <td class="entry_description">
+              <p>Framework-only private key which informs camera fwk that the scaler crop region
+(<a href="#controls_android.scaler.cropRegion">android.<wbr/>scaler.<wbr/>crop<wbr/>Region</a>) has been set by the client and it need
+not be corrected when <a href="#controls_android.sensor.pixelMode">android.<wbr/>sensor.<wbr/>pixel<wbr/>Mode</a> is set to MAXIMUM_<wbr/>RESOLUTION.<wbr/></p>
+            </td>
+
+            <td class="entry_units">
+            </td>
+
+            <td class="entry_range">
+            </td>
+
+            <td class="entry_hal_version">
+              <p>3.<wbr/>2</p>
+            </td>
+
+            <td class="entry_tags">
+            </td>
+
+          </tr>
+          <tr class="entries_header">
+            <th class="th_details" colspan="6">Details</th>
+          </tr>
+          <tr class="entry_cont">
+            <td class="entry_details" colspan="6">
+              <p>This must be set to TRUE by the camera2 java fwk when the camera client sets
+<a href="#controls_android.scaler.cropRegion">android.<wbr/>scaler.<wbr/>crop<wbr/>Region</a>.<wbr/></p>
+            </td>
+          </tr>
+
 
           <tr class="entry_spacer"><td class="entry_spacer" colspan="7"></td></tr>
            <!-- end of entry -->

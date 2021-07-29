@@ -1028,6 +1028,15 @@ class EnumValue(Node):
     return self._visibility or 'public'
 
   @property
+  def hidl_comment_string(self):
+    parent_enum = None
+    if (self.parent is not None and self.parent.parent is not None):
+      parent_enum = self.parent.parent
+    if parent_enum is not None and parent_enum.visibility == 'fwk_only' or self._visibility == 'fwk_only':
+      return ','
+    return ', // HIDL v' + str(self._hal_major_version) + '.' + str(self.hal_minor_version)
+
+  @property
   def hidden(self):
     return self.visibility in {'hidden', 'ndk_public', 'test'}
 
@@ -1237,6 +1246,13 @@ class Entry(Node):
   @property
   def applied_visibility(self):
     return self._visibility or 'system'
+
+  @property
+  def hidl_comment_string(self):
+    if self._visibility == 'fwk_only':
+      return 'fwk_only'
+    visibility_lj = str(self.applied_visibility).ljust(12)
+    return visibility_lj + ' | HIDL v' + str(self._hal_major_version) + '.' + str(self._hal_minor_version)
 
   @property
   def applied_ndk_visible(self):

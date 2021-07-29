@@ -249,6 +249,12 @@ static tag_info_t android_control[ANDROID_CONTROL_END -
     [ ANDROID_CONTROL_AVAILABLE_HIGH_SPEED_VIDEO_CONFIGURATIONS_MAXIMUM_RESOLUTION - ANDROID_CONTROL_START ] =
     { "availableHighSpeedVideoConfigurationsMaximumResolution",
                                         TYPE_INT32  },
+    [ ANDROID_CONTROL_AF_REGIONS_SET - ANDROID_CONTROL_START ] =
+    { "afRegionsSet",                  TYPE_BYTE   },
+    [ ANDROID_CONTROL_AE_REGIONS_SET - ANDROID_CONTROL_START ] =
+    { "aeRegionsSet",                  TYPE_BYTE   },
+    [ ANDROID_CONTROL_AWB_REGIONS_SET - ANDROID_CONTROL_START ] =
+    { "awbRegionsSet",                 TYPE_BYTE   },
 };
 
 static tag_info_t android_demosaic[ANDROID_DEMOSAIC_END -
@@ -510,6 +516,8 @@ static tag_info_t android_scaler[ANDROID_SCALER_END -
     [ ANDROID_SCALER_MULTI_RESOLUTION_STREAM_SUPPORTED - ANDROID_SCALER_START ] =
     { "multiResolutionStreamSupported",
                                         TYPE_BYTE   },
+    [ ANDROID_SCALER_CROP_REGION_SET - ANDROID_SCALER_START ] =
+    { "cropRegionSet",                 TYPE_BYTE   },
 };
 
 static tag_info_t android_sensor[ANDROID_SENSOR_END -
@@ -1645,6 +1653,51 @@ int camera_metadata_enum_snprint(uint32_t tag,
         case ANDROID_CONTROL_AVAILABLE_HIGH_SPEED_VIDEO_CONFIGURATIONS_MAXIMUM_RESOLUTION: {
             break;
         }
+        case ANDROID_CONTROL_AF_REGIONS_SET: {
+            switch (value) {
+                case ANDROID_CONTROL_AF_REGIONS_SET_TRUE:
+                    msg = "TRUE";
+                    ret = 0;
+                    break;
+                case ANDROID_CONTROL_AF_REGIONS_SET_FALSE:
+                    msg = "FALSE";
+                    ret = 0;
+                    break;
+                default:
+                    msg = "error: enum value out of range";
+            }
+            break;
+        }
+        case ANDROID_CONTROL_AE_REGIONS_SET: {
+            switch (value) {
+                case ANDROID_CONTROL_AE_REGIONS_SET_TRUE:
+                    msg = "TRUE";
+                    ret = 0;
+                    break;
+                case ANDROID_CONTROL_AE_REGIONS_SET_FALSE:
+                    msg = "FALSE";
+                    ret = 0;
+                    break;
+                default:
+                    msg = "error: enum value out of range";
+            }
+            break;
+        }
+        case ANDROID_CONTROL_AWB_REGIONS_SET: {
+            switch (value) {
+                case ANDROID_CONTROL_AWB_REGIONS_SET_TRUE:
+                    msg = "TRUE";
+                    ret = 0;
+                    break;
+                case ANDROID_CONTROL_AWB_REGIONS_SET_FALSE:
+                    msg = "FALSE";
+                    ret = 0;
+                    break;
+                default:
+                    msg = "error: enum value out of range";
+            }
+            break;
+        }
 
         case ANDROID_DEMOSAIC_MODE: {
             switch (value) {
@@ -2426,6 +2479,21 @@ int camera_metadata_enum_snprint(uint32_t tag,
                     break;
                 case ANDROID_SCALER_MULTI_RESOLUTION_STREAM_SUPPORTED_TRUE:
                     msg = "TRUE";
+                    ret = 0;
+                    break;
+                default:
+                    msg = "error: enum value out of range";
+            }
+            break;
+        }
+        case ANDROID_SCALER_CROP_REGION_SET: {
+            switch (value) {
+                case ANDROID_SCALER_CROP_REGION_SET_TRUE:
+                    msg = "TRUE";
+                    ret = 0;
+                    break;
+                case ANDROID_SCALER_CROP_REGION_SET_FALSE:
+                    msg = "FALSE";
                     ret = 0;
                     break;
                 default:
@@ -4261,6 +4329,51 @@ int camera_metadata_enum_value(uint32_t tag,
         case ANDROID_CONTROL_AVAILABLE_HIGH_SPEED_VIDEO_CONFIGURATIONS_MAXIMUM_RESOLUTION: {
             break;
         }
+        case ANDROID_CONTROL_AF_REGIONS_SET: {
+                enumName = "TRUE";
+                if (strncmp(name, enumName, size) == 0) {
+                    *value = ANDROID_CONTROL_AF_REGIONS_SET_TRUE;
+                    ret = 0;
+                    break;
+                }
+                enumName = "FALSE";
+                if (strncmp(name, enumName, size) == 0) {
+                    *value = ANDROID_CONTROL_AF_REGIONS_SET_FALSE;
+                    ret = 0;
+                    break;
+                }
+            break;
+        }
+        case ANDROID_CONTROL_AE_REGIONS_SET: {
+                enumName = "TRUE";
+                if (strncmp(name, enumName, size) == 0) {
+                    *value = ANDROID_CONTROL_AE_REGIONS_SET_TRUE;
+                    ret = 0;
+                    break;
+                }
+                enumName = "FALSE";
+                if (strncmp(name, enumName, size) == 0) {
+                    *value = ANDROID_CONTROL_AE_REGIONS_SET_FALSE;
+                    ret = 0;
+                    break;
+                }
+            break;
+        }
+        case ANDROID_CONTROL_AWB_REGIONS_SET: {
+                enumName = "TRUE";
+                if (strncmp(name, enumName, size) == 0) {
+                    *value = ANDROID_CONTROL_AWB_REGIONS_SET_TRUE;
+                    ret = 0;
+                    break;
+                }
+                enumName = "FALSE";
+                if (strncmp(name, enumName, size) == 0) {
+                    *value = ANDROID_CONTROL_AWB_REGIONS_SET_FALSE;
+                    ret = 0;
+                    break;
+                }
+            break;
+        }
 
         case ANDROID_DEMOSAIC_MODE: {
                 enumName = "FAST";
@@ -5138,6 +5251,21 @@ int camera_metadata_enum_value(uint32_t tag,
                 enumName = "TRUE";
                 if (strncmp(name, enumName, size) == 0) {
                     *value = ANDROID_SCALER_MULTI_RESOLUTION_STREAM_SUPPORTED_TRUE;
+                    ret = 0;
+                    break;
+                }
+            break;
+        }
+        case ANDROID_SCALER_CROP_REGION_SET: {
+                enumName = "TRUE";
+                if (strncmp(name, enumName, size) == 0) {
+                    *value = ANDROID_SCALER_CROP_REGION_SET_TRUE;
+                    ret = 0;
+                    break;
+                }
+                enumName = "FALSE";
+                if (strncmp(name, enumName, size) == 0) {
+                    *value = ANDROID_SCALER_CROP_REGION_SET_FALSE;
                     ret = 0;
                     break;
                 }
