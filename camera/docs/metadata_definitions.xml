@@ -6118,6 +6118,9 @@ xsi:schemaLocation="http://schemas.android.com/service/camera/metadata/ metadata
                 mode.
                 The stream configurations supported in 'max resolution' mode are described by
                 `android.scaler.streamConfigurationMapMaximumResolution`.
+                The maximum resolution mode pixel array size of a camera device
+                (`android.sensor.info.pixelArraySize`) with this capability,
+                will be at least 24 megapixels.
               </notes>
             </value>
             <value optional="true" visibility="java_public" hal_version="3.6">REMOSAIC_REPROCESSING
