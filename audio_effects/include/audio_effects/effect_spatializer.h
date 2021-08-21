@@ -24,10 +24,10 @@
  * can import hardware/audio_effect.h.
  */
 
-#ifndef ANDROID_EFFECT_VIRTUALIZER_STAGE_H_
-#define ANDROID_EFFECT_VIRTUALIZER_STAGE_H_
+#ifndef ANDROID_EFFECT_SPATIALIZER_H_
+#define ANDROID_EFFECT_SPATIALIZER_H_
 
 #include <hardware/audio_effect.h>
-#include <system/audio_effects/effect_virtualizer_stage.h>
+#include <system/audio_effects/effect_spatializer.h>
 
-#endif /*ANDROID_EFFECT_VIRTUALIZER_STAGE_H_*/
+#endif /*ANDROID_EFFECT_SPATIALIZER_H_*/
