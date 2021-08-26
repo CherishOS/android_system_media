@@ -102,6 +102,8 @@ typedef enum {
     AUDIO_FLAG_MUTE_HAPTIC                = 0x800,
     AUDIO_FLAG_NO_SYSTEM_CAPTURE          = 0X1000,
     AUDIO_FLAG_CAPTURE_PRIVATE            = 0X2000,
+    AUDIO_FLAG_CONTENT_SPATIALIZED        = 0X4000,
+    AUDIO_FLAG_NEVER_SPATIALIZE           = 0X8000,
 } audio_flags_mask_t;
 
 /* Audio attributes */
