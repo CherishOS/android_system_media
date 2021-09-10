@@ -61,32 +61,60 @@ public:
             // Compute at what index each channel is: samples will be in the following order:
             //   FL  FR  FC    LFE   BL  BR  BC    SL  SR
             //
+            // Prior to API 32, use of downmix resulted in channels being scaled in half amplitude.
+            // We now use a compliant downmix matrix for 5.1 with the following standards:
+            // ITU-R 775-2, ATSC A/52, ETSI TS 101 154, IEC 14496-3, which is unity gain for the
+            // front left and front right channel contribution.
+            //
+            // For 7.1 to 5.1 we set equal contributions for the side and back channels
+            // which follow Dolby downmix recommendations.
+            //
+            // We add contributions from the LFE into the L and R channels
+            // at a weight of 0.5 (rather than the energy preserving 0.707)
+            // which is to ensure that headphones can still experience LFE
+            // with lesser risk of speaker overload.
+            //
+            // Note: geometrically left and right channels contribute only to the corresponding
+            // left and right outputs respectively.  Geometrically center channels contribute
+            // to both left and right outputs, so they are scaled by 0.707 to preserve power.
+            //
             //  (transfer matrix)
-            //   FL  FR  FC    LFE   BL  BR  BC    SL  SR
-            //   0.5     0.353 0.353 0.5     0.353 0.5
-            //       0.5 0.353 0.353     0.5 0.353     0.5
+            //   FL  FR  FC    LFE  BL  BR     BC  SL    SR
+            //   1.0     0.707 0.5  0.707      0.5 0.707
+            //       1.0 0.707 0.5       0.707 0.5       0.707
             int index = 0;
             for (unsigned tmp = inputChannelMask; tmp != 0; ++index) {
                 const unsigned lowestBit = tmp & -(signed)tmp;
                 switch (lowestBit) {
                     case AUDIO_CHANNEL_OUT_FRONT_LEFT:
+                        mMatrix[index][0] = 1.f;
+                        mMatrix[index][1] = 0.f;
+                        mLastValidChannelIndexPlusOne = index + 1;
+                        break;
                     case AUDIO_CHANNEL_OUT_SIDE_LEFT:
                     case AUDIO_CHANNEL_OUT_BACK_LEFT:
-                        mMatrix[index][0] = 0.5f;
+                        mMatrix[index][0] = MINUS_3_DB_IN_FLOAT;
                         mMatrix[index][1] = 0.f;
                         mLastValidChannelIndexPlusOne = index + 1;
                         break;
                     case AUDIO_CHANNEL_OUT_FRONT_RIGHT:
+                        mMatrix[index][0] = 0.f;
+                        mMatrix[index][1] = 1.f;
+                        mLastValidChannelIndexPlusOne = index + 1;
+                        break;
                     case AUDIO_CHANNEL_OUT_SIDE_RIGHT:
                     case AUDIO_CHANNEL_OUT_BACK_RIGHT:
                         mMatrix[index][0] = 0.f;
-                        mMatrix[index][1] = 0.5f;
+                        mMatrix[index][1] = MINUS_3_DB_IN_FLOAT;
                         mLastValidChannelIndexPlusOne = index + 1;
                         break;
                     case AUDIO_CHANNEL_OUT_FRONT_CENTER:
+                        mMatrix[index][0] = mMatrix[index][1] = MINUS_3_DB_IN_FLOAT;
+                        mLastValidChannelIndexPlusOne = index + 1;
+                        break;
                     case AUDIO_CHANNEL_OUT_LOW_FREQUENCY:
                     case AUDIO_CHANNEL_OUT_BACK_CENTER:
-                        mMatrix[index][0] = mMatrix[index][1] = 0.5f * MINUS_3_DB_IN_FLOAT;
+                        mMatrix[index][0] = mMatrix[index][1] = 0.5f;
                         mLastValidChannelIndexPlusOne = index + 1;
                         break;
                     default:
@@ -152,7 +180,7 @@ private:
     // Static/const parameters.
     static inline constexpr size_t mOutputChannelCount = FCC_2;    // stereo out only
     static inline constexpr float MINUS_3_DB_IN_FLOAT = M_SQRT1_2; // -3dB = 0.70710678
-    static inline constexpr float LIMIT_AMPLITUDE = 1.f;           // 0dB.
+    static inline constexpr float LIMIT_AMPLITUDE = M_SQRT2;       // 3dB = 1.41421356
     static inline float clamp(float value) {
         return fmin(fmax(value, -LIMIT_AMPLITUDE), LIMIT_AMPLITUDE);
     }
@@ -246,9 +274,9 @@ private:
                 // sample at index 2 is RL (or SL)
                 // sample at index 3 is RR (or SR)
                 // FL + RL
-                ch[0] = src[0] + src[2];
+                ch[0] = src[0] + src[2] * MINUS_3_DB_IN_FLOAT;
                 // FR + RR
-                ch[1] = src[1] + src[3];
+                ch[1] = src[1] + src[3] * MINUS_3_DB_IN_FLOAT;
             } else if constexpr (CHANNEL_COUNT == 6) { // 5.1
                 // sample at index 0 is FL
                 // sample at index 1 is FR
@@ -256,11 +284,11 @@ private:
                 // sample at index 3 is LFE
                 // sample at index 4 is RL (or SL)
                 // sample at index 5 is RR (or SR)
-                const float centerPlusLfeContrib = src[2] + src[3];
+                const float centerPlusLfeContrib = src[2] + src[3] * MINUS_3_DB_IN_FLOAT;
                 // FL + RL + centerPlusLfeContrib
-                ch[0] = src[0] + src[4] + centerPlusLfeContrib * MINUS_3_DB_IN_FLOAT;
+                ch[0] = src[0] + (src[4] + centerPlusLfeContrib) * MINUS_3_DB_IN_FLOAT;
                 // FR + RR + centerPlusLfeContrib
-                ch[1] = src[1] + src[5] + centerPlusLfeContrib * MINUS_3_DB_IN_FLOAT;
+                ch[1] = src[1] + (src[5] + centerPlusLfeContrib) * MINUS_3_DB_IN_FLOAT;
             } else if constexpr (CHANNEL_COUNT == 8) { // 7.1
                 // sample at index 0 is FL
                 // sample at index 1 is FR
@@ -270,16 +298,14 @@ private:
                 // sample at index 5 is RR
                 // sample at index 6 is SL
                 // sample at index 7 is SR
-                const float centerPlusLfeContrib = src[2] + src[3];
+                const float centerPlusLfeContrib = src[2] + src[3] * MINUS_3_DB_IN_FLOAT;
                 // FL + RL + SL + centerPlusLfeContrib
-                ch[0] = src[0] + src[4] + src[6] + centerPlusLfeContrib * MINUS_3_DB_IN_FLOAT;
+                ch[0] = src[0] + (src[4] + src[6] + centerPlusLfeContrib) * MINUS_3_DB_IN_FLOAT;
                 // FR + RR + SR + centerPlusLfeContrib
-                ch[1] = src[1] + src[5] + src[7] + centerPlusLfeContrib * MINUS_3_DB_IN_FLOAT;
+                ch[1] = src[1] + (src[5] + src[7] + centerPlusLfeContrib) * MINUS_3_DB_IN_FLOAT;
             } else {
                 return false;
             }
-            ch[0] *= 0.5;
-            ch[1] *= 0.5;
             if constexpr (ACCUMULATE) {
                 dst[0] = clamp(dst[0] + ch[0]);
                 dst[1] = clamp(dst[1] + ch[1]);
