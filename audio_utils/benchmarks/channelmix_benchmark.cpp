@@ -54,28 +54,28 @@ Pixel 4XL Coral arm64 benchmark
 -----------------------------------------------------------
 Benchmark                 Time             CPU   Iterations
 -----------------------------------------------------------
-BM_ChannelMix/0        2179 ns         2175 ns       321880 AUDIO_CHANNEL_OUT_MONO
-BM_ChannelMix/1        2179 ns         2175 ns       321861
-BM_ChannelMix/2        3263 ns         3256 ns       214975 AUDIO_CHANNEL_OUT_STEREO
-BM_ChannelMix/3        3987 ns         3979 ns       175939 AUDIO_CHANNEL_OUT_2POINT1
-BM_ChannelMix/4        3263 ns         3256 ns       214985 AUDIO_CHANNEL_OUT_2POINT0POINT2
-BM_ChannelMix/5        1050 ns         1047 ns       668388 AUDIO_CHANNEL_OUT_QUAD
-BM_ChannelMix/6        1052 ns         1049 ns       667208 AUDIO_CHANNEL_OUT_QUAD_SIDE
-BM_ChannelMix/7        4710 ns         4700 ns       148933 AUDIO_CHANNEL_OUT_SURROUND
-BM_ChannelMix/8        3987 ns         3978 ns       175943 AUDIO_CHANNEL_OUT_2POINT1POINT2
-BM_ChannelMix/9        3988 ns         3979 ns       175940 AUDIO_CHANNEL_OUT_3POINT0POINT2
-BM_ChannelMix/10       5434 ns         5422 ns       129092 AUDIO_CHANNEL_OUT_PENTA
-BM_ChannelMix/11       4710 ns         4700 ns       148932 AUDIO_CHANNEL_OUT_3POINT1POINT2
-BM_ChannelMix/12       2510 ns         2504 ns       279497 AUDIO_CHANNEL_OUT_5POINT1
-BM_ChannelMix/13       2510 ns         2504 ns       279522 AUDIO_CHANNEL_OUT_5POINT1_SIDE
-BM_ChannelMix/14       6880 ns         6864 ns       101968 AUDIO_CHANNEL_OUT_6POINT1
-BM_ChannelMix/15       6156 ns         6143 ns       113943 AUDIO_CHANNEL_OUT_5POINT1POINT2
-BM_ChannelMix/16       2809 ns         2802 ns       249812 AUDIO_CHANNEL_OUT_7POINT1
-BM_ChannelMix/17       6156 ns         6143 ns       113960 AUDIO_CHANNEL_OUT_5POINT1POINT4
-BM_ChannelMix/18       7603 ns         7587 ns        92245 AUDIO_CHANNEL_OUT_7POINT1POINT2
-BM_ChannelMix/19       7604 ns         7588 ns        92250 AUDIO_CHANNEL_OUT_7POINT1POINT4
-BM_ChannelMix/20       5435 ns         5424 ns       129062 AUDIO_CHANNEL_OUT_13POINT_360RA
-BM_ChannelMix/21       9859 ns         9836 ns        71178 AUDIO_CHANNEL_OUT_22POINT2
+BM_ChannelMix/0        2180 ns         2175 ns       321797 AUDIO_CHANNEL_OUT_MONO
+BM_ChannelMix/1        2180 ns         2175 ns       321901
+BM_ChannelMix/2        3265 ns         3256 ns       214957 AUDIO_CHANNEL_OUT_STEREO
+BM_ChannelMix/3        3987 ns         3978 ns       175964 AUDIO_CHANNEL_OUT_2POINT1
+BM_ChannelMix/4        4713 ns         4700 ns       148922 AUDIO_CHANNEL_OUT_2POINT0POINT2
+BM_ChannelMix/5        1050 ns         1047 ns       668462 AUDIO_CHANNEL_OUT_QUAD
+BM_ChannelMix/6        1052 ns         1049 ns       667155 AUDIO_CHANNEL_OUT_QUAD_SIDE
+BM_ChannelMix/7        4714 ns         4701 ns       148926 AUDIO_CHANNEL_OUT_SURROUND
+BM_ChannelMix/8        5437 ns         5422 ns       129099 AUDIO_CHANNEL_OUT_2POINT1POINT2
+BM_ChannelMix/9        5437 ns         5422 ns       129108 AUDIO_CHANNEL_OUT_3POINT0POINT2
+BM_ChannelMix/10       5435 ns         5422 ns       129083 AUDIO_CHANNEL_OUT_PENTA
+BM_ChannelMix/11       6161 ns         6143 ns       113945 AUDIO_CHANNEL_OUT_3POINT1POINT2
+BM_ChannelMix/12       2511 ns         2504 ns       279645 AUDIO_CHANNEL_OUT_5POINT1
+BM_ChannelMix/13       2511 ns         2503 ns       279621 AUDIO_CHANNEL_OUT_5POINT1_SIDE
+BM_ChannelMix/14       6882 ns         6865 ns       101946 AUDIO_CHANNEL_OUT_6POINT1
+BM_ChannelMix/15       7607 ns         7586 ns        92271 AUDIO_CHANNEL_OUT_5POINT1POINT2
+BM_ChannelMix/16       2812 ns         2804 ns       249729 AUDIO_CHANNEL_OUT_7POINT1
+BM_ChannelMix/17       9055 ns         9032 ns        77517 AUDIO_CHANNEL_OUT_5POINT1POINT4
+BM_ChannelMix/18       9055 ns         9031 ns        77477 AUDIO_CHANNEL_OUT_7POINT1POINT2
+BM_ChannelMix/19      10510 ns        10479 ns        66762 AUDIO_CHANNEL_OUT_7POINT1POINT4
+BM_ChannelMix/20      11293 ns        11262 ns        62135 AUDIO_CHANNEL_OUT_13POINT_360RA
+BM_ChannelMix/21      19886 ns        19829 ns        35265 AUDIO_CHANNEL_OUT_22POINT2
 */
 
 static void BM_ChannelMix(benchmark::State& state) {

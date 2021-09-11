@@ -26,7 +26,7 @@ namespace android::audio_utils::channels {
  * Converts audio streams with different positional channel configurations.
  * Currently only downmix to stereo is supported, so there is no outputChannelMask argument.
  *
- * TODO: Consider conversion to 7.1 and 5.1.
+ * TODO: In the future, consider downmix to 7.1 and 5.1 targets instead of just stereo.
  */
 class ChannelMix {
 public:
@@ -70,7 +70,7 @@ public:
             // which follow Dolby downmix recommendations.
             //
             // We add contributions from the LFE into the L and R channels
-            // at a weight of 0.5 (rather than the energy preserving 0.707)
+            // at a weight of 0.5 (rather than the power preserving 0.707)
             // which is to ensure that headphones can still experience LFE
             // with lesser risk of speaker overload.
             //
@@ -83,48 +83,85 @@ public:
             //   1.0     0.707 0.5  0.707      0.5 0.707
             //       1.0 0.707 0.5       0.707 0.5       0.707
             int index = 0;
+            constexpr float COEF_25 = 0.2508909536f;
+            constexpr float COEF_35 = 0.3543928915f;
+            constexpr float COEF_36 = 0.3552343859f;
+            constexpr float COEF_61 = 0.6057043428f;
             for (unsigned tmp = inputChannelMask; tmp != 0; ++index) {
                 const unsigned lowestBit = tmp & -(signed)tmp;
                 switch (lowestBit) {
                     case AUDIO_CHANNEL_OUT_FRONT_LEFT:
+                    case AUDIO_CHANNEL_OUT_TOP_FRONT_LEFT:
+                    case AUDIO_CHANNEL_OUT_BOTTOM_FRONT_LEFT:
                         mMatrix[index][0] = 1.f;
                         mMatrix[index][1] = 0.f;
-                        mLastValidChannelIndexPlusOne = index + 1;
                         break;
                     case AUDIO_CHANNEL_OUT_SIDE_LEFT:
                     case AUDIO_CHANNEL_OUT_BACK_LEFT:
+                    case AUDIO_CHANNEL_OUT_TOP_BACK_LEFT:
                         mMatrix[index][0] = MINUS_3_DB_IN_FLOAT;
                         mMatrix[index][1] = 0.f;
-                        mLastValidChannelIndexPlusOne = index + 1;
                         break;
                     case AUDIO_CHANNEL_OUT_FRONT_RIGHT:
+                    case AUDIO_CHANNEL_OUT_TOP_FRONT_RIGHT:
+                    case AUDIO_CHANNEL_OUT_BOTTOM_FRONT_RIGHT:
                         mMatrix[index][0] = 0.f;
                         mMatrix[index][1] = 1.f;
-                        mLastValidChannelIndexPlusOne = index + 1;
                         break;
                     case AUDIO_CHANNEL_OUT_SIDE_RIGHT:
                     case AUDIO_CHANNEL_OUT_BACK_RIGHT:
+                    case AUDIO_CHANNEL_OUT_TOP_BACK_RIGHT:
                         mMatrix[index][0] = 0.f;
                         mMatrix[index][1] = MINUS_3_DB_IN_FLOAT;
-                        mLastValidChannelIndexPlusOne = index + 1;
                         break;
                     case AUDIO_CHANNEL_OUT_FRONT_CENTER:
+                    case AUDIO_CHANNEL_OUT_TOP_FRONT_CENTER:
+                    case AUDIO_CHANNEL_OUT_BOTTOM_FRONT_CENTER:
                         mMatrix[index][0] = mMatrix[index][1] = MINUS_3_DB_IN_FLOAT;
-                        mLastValidChannelIndexPlusOne = index + 1;
+                        break;
+                    case AUDIO_CHANNEL_OUT_TOP_SIDE_LEFT:
+                        mMatrix[index][0] = COEF_61;
+                        mMatrix[index][1] = 0.f;
+                        break;
+                    case AUDIO_CHANNEL_OUT_TOP_SIDE_RIGHT:
+                        mMatrix[index][0] = 0.f;
+                        mMatrix[index][1] = COEF_61;
+                        break;
+                    case AUDIO_CHANNEL_OUT_FRONT_LEFT_OF_CENTER:
+                        mMatrix[index][0] = COEF_61;
+                        mMatrix[index][1] = COEF_25;
+                        break;
+                    case AUDIO_CHANNEL_OUT_FRONT_RIGHT_OF_CENTER:
+                        mMatrix[index][0] = COEF_25;
+                        mMatrix[index][1] = COEF_61;
+                        break;
+                    case AUDIO_CHANNEL_OUT_TOP_CENTER:
+                        mMatrix[index][0] = mMatrix[index][1] = COEF_36;
+                        break;
+                    case AUDIO_CHANNEL_OUT_TOP_BACK_CENTER:
+                        mMatrix[index][0] = mMatrix[index][1] = COEF_35;
+                        break;
+                    case AUDIO_CHANNEL_OUT_LOW_FREQUENCY_2:
+                        mMatrix[index][0] = 0.f;
+                        mMatrix[index][1] = MINUS_3_DB_IN_FLOAT;
                         break;
                     case AUDIO_CHANNEL_OUT_LOW_FREQUENCY:
+                        if (inputChannelMask & AUDIO_CHANNEL_OUT_LOW_FREQUENCY_2) {
+                            mMatrix[index][0] = MINUS_3_DB_IN_FLOAT;
+                            mMatrix[index][1] = 0.f;
+                            break;
+                        }
+                        FALLTHROUGH_INTENDED;
                     case AUDIO_CHANNEL_OUT_BACK_CENTER:
                         mMatrix[index][0] = mMatrix[index][1] = 0.5f;
-                        mLastValidChannelIndexPlusOne = index + 1;
-                        break;
-                    default:
-                        mMatrix[index][0] = mMatrix[index][1] = 0.f;
                         break;
                 }
                 tmp ^= lowestBit;
             }
             mInputChannelMask = inputChannelMask;
-            mInputChannelCount = index;
+            // Note: mLastValidChannelIndexPlusOne is the same as mInputChannelCount for
+            // this particular matrix, as it has a nonzero column for every channel position.
+            mInputChannelCount = mLastValidChannelIndexPlusOne = index;
         }
         return true;
     }
