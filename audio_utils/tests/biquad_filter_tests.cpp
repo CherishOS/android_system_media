@@ -29,12 +29,13 @@ using namespace android::audio_utils;
 
 /************************************************************************************
  * Reference data, must not change.
- * The reference output data is from running in matlab y = filter(b, a, x), where
- *     b = [2.0f, 3.0f]
- *     a = [1.0f, 0.2f]
- *     x = [-0.1f, -0.2f, -0.3f, -0.4f, -0.5f, 0.1f, 0.2f, 0.3f, 0.4f, 0.5f]
- * The output y = [-0.2f, -0.66f, -1.068f, -1.4864f, -1.9027f,
- *                 -0.9195f, 0.8839f, 1.0232f, 1.4954f, 1.9009f].
+ * The reference output data is from running in matlab or octave y = filter(b, a, x), where
+ *     b = [2.0 3.0 4.0]
+ *     a = [1.0 0.2 0.3]
+ *     x = [-0.1 -0.2 -0.3 -0.4 -0.5 0.1 0.2 0.3 0.4 0.5]
+ *     filter(b, a, x)
+ *
+ * The output y = [-0.2 -0.66 -1.4080 -2.0204 -2.5735 -1.7792 -0.1721 2.1682 2.1180 2.3259].
  * The reference data construct the input and output as 2D array so that it can be
  * use to practice calling BiquadFilter::process multiple times.
  ************************************************************************************/
@@ -43,11 +44,12 @@ constexpr size_t PERIOD = 2;
 constexpr float INPUT[PERIOD][FRAME_COUNT] = {
         {-0.1f, -0.2f, -0.3f, -0.4f, -0.5f},
         {0.1f, 0.2f, 0.3f, 0.4f, 0.5f}};
+// COEFS in order of [ b0 b1 b2 a1 a2 ], normalized form where a0 = 1.
 constexpr std::array<float, kBiquadNumCoefs> COEFS = {
-        2.0f, 3.0f, 0.0f, 0.2f, 0.0f };
+        2.0f, 3.0f, 4.0f, 0.2f, 0.3f };
 constexpr float OUTPUT[PERIOD][FRAME_COUNT] = {
-        {-0.2f, -0.66f, -1.068f, -1.4864f, -1.9027f},
-        {-0.9195f, 0.8839f, 1.0232f, 1.4954f, 1.9009f}};
+        {-0.2f, -0.66f, -1.4080f, -2.0204f, -2.5735f},
+        {-1.7792f, -0.1721f, 2.1682f, 2.1180f, 2.3259f}};
 constexpr float EPS = 1e-4f;
 
 template <typename S, typename D>
