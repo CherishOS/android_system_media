@@ -219,10 +219,11 @@ enum {
     FCC_8 = 8,
     FCC_12 = 12,
     FCC_24 = 24,
+    FCC_26 = 26,
     // FCC_LIMIT is the maximum PCM channel count supported through
     // the mixing pipeline to the audio HAL.
     //
-    // This can be adjusted onto a value such as FCC_12 or FCC_24
+    // This can be adjusted onto a value such as FCC_12 or FCC_26
     // if the device HAL can support it.  Do not reduce below FCC_8.
     FCC_LIMIT = FCC_12,
 };

@@ -45,7 +45,10 @@ typedef enum
     // Vector of 6 floats representing the head to stage pose:
     // first three are a translation vector and the last three are a rotation vector.
     SPATIALIZER_PARAM_HEAD_TO_STAGE,
+    // foldable device hinge angle as a float value in rad
     SPATIALIZER_PARAM_HINGE_ANGLE,
+    // Display orientation as a float value in rad
+    SPATIALIZER_PARAM_DISPLAY_ORIENTATION,
 } t_virtualizer_stage_params;
 
 // See SpatializationLevel.aidl
