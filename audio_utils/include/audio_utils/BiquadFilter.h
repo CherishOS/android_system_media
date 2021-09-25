@@ -173,6 +173,192 @@ struct BiquadDirect2Transpose {
     }
 };
 
+/**
+ * A state space formulation of filtering converts a n-th order difference equation update
+ * to a first order vector difference equation. For the Biquad filter, the state space form
+ * has improved numerical precision properties with poles near the unit circle as well as
+ * increased speed due to better parallelization of the state update [1][2].
+ *
+ * [1] Raph Levien: (observerable canonical form)
+ * https://github.com/google/music-synthesizer-for-android/blob/master/lab/biquad%20in%20two.ipynb
+ *
+ * [2] Julius O Smith III: (controllable canonical form)
+ * https://ccrma.stanford.edu/~jos/filters/State_Space_Filters.html
+ *
+ * The signal flow is as follows, where for scalar x and y, the matrix D is a scalar d.
+ *
+ *
+ *        +------[ d ]--------------------------+
+ *        |                         S           |
+ *  x ----+--[ B ]--(+)--[ z^-1 ]---+---[ C ]--(+)--- y
+ *                   |              |
+ *                   +----[ A ]-----+
+ *
+ * The 2nd order Biquad IIR coefficients are as follows in observerable canonical form:
+ *
+ * y = [C_1 C_2] | S_1 | + d x
+ *               | S_2 |
+ *
+ *
+ * | S_1 | = | A_11 A_12 | | S_1 | + | B_1 | x
+ * | S_2 |   | A_21 A_22 | | S_2 |   | B_2 |
+ *
+ *
+ * A_11 = -a1
+ * A_12 = 1
+ * A_21 = -a2
+ * A_22 = 0
+ *
+ * B_1 = b1 - b0 * a1
+ * B_2 = b2 - b0 * a2
+ *
+ * C_1 = 1
+ * C_2 = 0
+ *
+ * d = b0
+ *
+ * Implementation details: The state space filter is typically expressed in either observable or
+ * controllable canonical form [3].  We follow the observable form here.
+ * Raph [4] discovered that the single channel Biquad implementation can be further optimized
+ * by doing 2 filter updates at once (improving speed on NEON by about 20%).
+ * Doing 2 updates at once costs 8 multiplies / sample instead of 5 multiples / sample,
+ * but uses a 4 x 4 matrix multiply, exploiting single cycle multiply-add SIMD throughput.
+ * TODO: consider this optimization.
+ *
+ * [3] Mathworks
+ * https://www.mathworks.com/help/control/ug/canonical-state-space-realizations.html
+ * [4] Raph Levien
+ * https://github.com/kysko/music-synthesizer-for-android/blob/master/lab/biquad%20in%20two.ipynb
+ *
+ * The template variables
+ * T is the data type (scalar or vector).
+ * F is the filter coefficient type.  It is either a scalar or vector (matching T).
+ */
+template <typename T, typename F>
+struct BiquadStateSpace {
+    F coef_[5]; // these are stored as state-space converted.
+    T s1_; // delay state 1
+    T s2_; // delay state 2
+
+    // These are the coefficient occupancies we optimize for (from b0, b1, b2, a1, a2)
+    // as expressed by a bitmask.  This must include 31.
+    static inline constexpr size_t required_occupancies_[] = {
+        1,  // constant scale
+        3,  // single zero
+        7,  // double zero
+        9,  // single pole
+        11, // first order IIR
+        27, // double pole + single zero
+        31, // second order IIR (full Biquad)
+    };
+
+    // Take care the order of arguments - starts with b's then goes to a's.
+    // The a's are "positive" reference, some filters take negative.
+    BiquadStateSpace(const F& b0, const F& b1, const F& b2, const F& a1, const F& a2,
+            const T& s1 = {}, const T& s2 = {})
+        // : coef_{b0, b1 - b0 * a1, b2 - b0 * a2, -a1, -a2}
+        : coef_{ b0,
+            intrinsics::vsub(b1, intrinsics::vmul(b0, a1)),
+            intrinsics::vsub(b2, intrinsics::vmul(b0, a2)),
+            intrinsics::vneg(a1),
+            intrinsics::vneg(a2) }
+        , s1_{s1}
+        , s2_{s2} {
+    }
+
+    // D is the data type.  It must be the same element type of T or F.
+    // Take care the order of input and output.
+    template<typename D, size_t OCCUPANCY = 0x1f>
+    void process(D* output, const D* input, size_t frames, size_t stride) {
+        using namespace intrinsics;
+        const F b0 = coef_[0];         // b0
+        const F b1ss = coef_[1];       // b1 - b0 * a1,
+        const F b2ss = coef_[2];       // b2 - b0 * a2,
+        const F negativeA1 = coef_[3]; // -a1
+        const F negativeA2 = coef_[4]; // -a2
+        T s1 = s1_;
+        T s2 = s2_;
+        T x, new_s1; // OK to declare temps here rather than at the point of initialization.
+#ifdef USE_DITHER
+        constexpr D DITHER_VALUE = std::numeric_limits<float>::min() * (1 << 24); // use FLOAT
+        T dither = vdupn<T>(DITHER_VALUE); // NEON does not have vector + scalar acceleration.
+#endif
+        constexpr bool b0_present = (OCCUPANCY & 0x1) != 0;
+        constexpr bool a1_present = (OCCUPANCY & 0x8) != 0;
+        constexpr bool a2_present = (OCCUPANCY & 0x10) != 0;
+        constexpr bool b1ss_present = (OCCUPANCY & 0x2) != 0 ||
+                (b0_present && a1_present);
+        constexpr bool b2ss_present = (OCCUPANCY & 0x4) != 0 ||
+                (b0_present && a2_present);
+
+
+        // Unroll control.  Make sure the constexpr remains constexpr :-).
+        constexpr size_t CHANNELS = sizeof(T) / sizeof(D);
+        constexpr size_t UNROLL_CHANNEL_LOWER_LIMIT = 1;   // below this won't be unrolled.
+        constexpr size_t UNROLL_CHANNEL_UPPER_LIMIT = 16;  // above this won't be unrolled.
+        constexpr size_t UNROLL_LOOPS = (CHANNELS >= UNROLL_CHANNEL_LOWER_LIMIT &&
+                CHANNELS <= UNROLL_CHANNEL_UPPER_LIMIT) ? 2 : 1;
+        size_t remainder = 0;
+        if constexpr (UNROLL_LOOPS > 1) {
+            remainder = frames % UNROLL_LOOPS;
+            frames /= UNROLL_LOOPS;
+        }
+
+        // For this lambda, attribute always_inline must be used to inline past CHANNELS > 4.
+        // The other alternative is to use a MACRO, but that doesn't read as well.
+        const auto KERNEL = [&]() __attribute__((always_inline)) {
+            x = vld1<T>(input);
+            input += stride;
+#ifdef USE_DITHER
+            x = vadd(x, dither);
+            dither = vneg(dither);
+#endif
+            // vst1(output, vadd(s1, vmul(b0, x)));
+            // output += stride;
+            // new_s1 = vadd(vadd(vmul(b1ss, x), vmul(negativeA1, s1)), s2);
+            // s2 = vadd(vmul(b2ss, x), vmul(negativeA2, s1));
+
+            if constexpr (b0_present) {
+                vst1(output, vadd(s1, vmul(b0, x)));
+            } else /* constexpr */ {
+                vst1(output, s1);
+            }
+            output += stride;
+            new_s1 = s2;
+            if constexpr (b1ss_present) {
+                new_s1 = vadd(new_s1, vmul(b1ss, x));
+            }
+            if constexpr (a1_present) {
+                new_s1 = vadd(new_s1, vmul(negativeA1, s1));
+            }
+            if constexpr (b2ss_present) {
+                s2 = vmul(b2ss, x);
+                if constexpr (a2_present) {
+                    s2 = vadd(s2, vmul(negativeA2, s1));
+                }
+            } else if constexpr (a2_present) {
+                s2 = vmul(negativeA2, s1);
+            }
+            s1 = new_s1;
+        };
+
+        while (frames > 0) {
+            #pragma unroll
+            for (size_t i = 0; i < UNROLL_LOOPS; ++i) {
+                KERNEL();
+            }
+            frames--;
+        }
+        if constexpr (UNROLL_LOOPS > 1) {
+            for (size_t i = 0; i < remainder; ++i) {
+                KERNEL();
+            }
+        }
+        s1_ = s1;
+        s2_ = s2;
+    }
+};
+
 namespace details {
 
 // Helper methods for constructing a constexpr array of function pointers.
@@ -296,7 +482,7 @@ enum FILTER_OPTION {
 
 // Default biquad type.
 template <typename T, typename F>
-using BiquadFilterType = BiquadDirect2Transpose<T, F>;
+using BiquadFilterType = BiquadStateSpace<T, F>;
 
 #define BIQUAD_FILTER_CASE(N, FilterType, ... /* type */) \
             case N: { \
