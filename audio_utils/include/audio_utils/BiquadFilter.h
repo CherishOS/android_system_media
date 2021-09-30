@@ -61,8 +61,7 @@ static constexpr size_t kBiquadNumDelays = 2;
 template <typename T, typename F>
 struct BiquadDirect2Transpose {
     F coef_[5]; // these are stored with the denominator a's negated.
-    T s1_; // delay state 1
-    T s2_; // delay state 2
+    T s_[2]; // delay states
 
     // These are the coefficient occupancies we optimize for (from b0, b1, b2, a1, a2)
     // as expressed by a bitmask.
@@ -79,15 +78,14 @@ struct BiquadDirect2Transpose {
     // Take care the order of arguments - starts with b's then goes to a's.
     // The a's are "positive" reference, some filters take negative.
     BiquadDirect2Transpose(const F& b0, const F& b1, const F& b2, const F& a1, const F& a2,
-            const T& s1 = {}, const T& s2 = {})
+            const T& s0 = {}, const T& s1 = {})
         // : coef_{b0, b1, b2, -a1, -a2}
         : coef_{ b0,
             b1,
             b2,
             intrinsics::vneg(a1),
             intrinsics::vneg(a2) }
-        , s1_{s1}
-        , s2_{s2} {
+        , s_{ s0, s1 } {
     }
 
     // D is the data type.  It must be the same element type of T or F.
@@ -102,8 +100,7 @@ struct BiquadDirect2Transpose {
         const F b2 = coef_[2];         // b2
         const F negativeA1 = coef_[3]; // -a1
         const F negativeA2 = coef_[4]; // -a2
-        T s1 = s1_;
-        T s2 = s2_;
+        T s[2] = { s_[0], s_[1] };
         T xn, yn; // OK to declare temps outside loop rather than at the point of initialization.
 #ifdef USE_DITHER
         constexpr D DITHER_VALUE = std::numeric_limits<float>::min() * (1 << 24); // use FLOAT
@@ -132,27 +129,27 @@ struct BiquadDirect2Transpose {
             dither = vneg(dither);
 #endif
 
-            yn = s1;
+            yn = s[0];
             if constexpr (OCCUPANCY >> 0 & 1) {
                 yn = vmla(yn, b0, xn);
             }
             vst1(output, yn);
             output += stride;
 
-            s1 = s2;
+            s[0] = s[1];
             if constexpr (OCCUPANCY >> 3 & 1) {
-                s1 = vmla(s1, negativeA1, yn);
+                s[0] = vmla(s[0], negativeA1, yn);
             }
             if constexpr (OCCUPANCY >> 1 & 1) {
-                s1 = vmla(s1, b1, xn);
+                s[0] = vmla(s[0], b1, xn);
             }
             if constexpr (OCCUPANCY >> 2 & 1) {
-                s2 = vmul(b2, xn);
+                s[1] = vmul(b2, xn);
             } else {
-                s2 = vdupn<T>(0.f);
+                s[1] = vdupn<T>(0.f);
             }
             if constexpr (OCCUPANCY >> 4 & 1) {
-                s2 = vmla(s2, negativeA2, yn);
+                s[1] = vmla(s[1], negativeA2, yn);
             }
         };
 
@@ -168,8 +165,8 @@ struct BiquadDirect2Transpose {
                 KERNEL();
             }
         }
-        s1_ = s1;
-        s2_ = s2;
+        s_[0] = s[0];
+        s_[1] = s[1];
     }
 };
 
@@ -237,8 +234,7 @@ struct BiquadDirect2Transpose {
 template <typename T, typename F>
 struct BiquadStateSpace {
     F coef_[5]; // these are stored as state-space converted.
-    T s1_; // delay state 1
-    T s2_; // delay state 2
+    T s_[2]; // delay states
 
     // These are the coefficient occupancies we optimize for (from b0, b1, b2, a1, a2)
     // as expressed by a bitmask.  This must include 31.
@@ -255,15 +251,14 @@ struct BiquadStateSpace {
     // Take care the order of arguments - starts with b's then goes to a's.
     // The a's are "positive" reference, some filters take negative.
     BiquadStateSpace(const F& b0, const F& b1, const F& b2, const F& a1, const F& a2,
-            const T& s1 = {}, const T& s2 = {})
+            const T& s0 = {}, const T& s1 = {})
         // : coef_{b0, b1 - b0 * a1, b2 - b0 * a2, -a1, -a2}
         : coef_{ b0,
             intrinsics::vsub(b1, intrinsics::vmul(b0, a1)),
             intrinsics::vsub(b2, intrinsics::vmul(b0, a2)),
             intrinsics::vneg(a1),
             intrinsics::vneg(a2) }
-        , s1_{s1}
-        , s2_{s2} {
+        , s_{s0, s1} {
     }
 
     // D is the data type.  It must be the same element type of T or F.
@@ -276,9 +271,8 @@ struct BiquadStateSpace {
         const F b2ss = coef_[2];       // b2 - b0 * a2,
         const F negativeA1 = coef_[3]; // -a1
         const F negativeA2 = coef_[4]; // -a2
-        T s1 = s1_;
-        T s2 = s2_;
-        T x, new_s1; // OK to declare temps here rather than at the point of initialization.
+        T s[2] = { s_[0], s_[1] };
+        T x, new_s0; // OK to declare temps here rather than at the point of initialization.
 #ifdef USE_DITHER
         constexpr D DITHER_VALUE = std::numeric_limits<float>::min() * (1 << 24); // use FLOAT
         T dither = vdupn<T>(DITHER_VALUE); // NEON does not have vector + scalar acceleration.
@@ -290,7 +284,6 @@ struct BiquadStateSpace {
                 (b0_present && a1_present);
         constexpr bool b2ss_present = (OCCUPANCY & 0x4) != 0 ||
                 (b0_present && a2_present);
-
 
         // Unroll control.  Make sure the constexpr remains constexpr :-).
         constexpr size_t CHANNELS = sizeof(T) / sizeof(D);
@@ -313,33 +306,33 @@ struct BiquadStateSpace {
             x = vadd(x, dither);
             dither = vneg(dither);
 #endif
-            // vst1(output, vadd(s1, vmul(b0, x)));
+            // vst1(output, vadd(s[0], vmul(b0, x)));
             // output += stride;
-            // new_s1 = vadd(vadd(vmul(b1ss, x), vmul(negativeA1, s1)), s2);
-            // s2 = vadd(vmul(b2ss, x), vmul(negativeA2, s1));
+            // new_s0 = vadd(vadd(vmul(b1ss, x), vmul(negativeA1, s[0])), s[1]);
+            // s[1] = vadd(vmul(b2ss, x), vmul(negativeA2, s[0]));
 
             if constexpr (b0_present) {
-                vst1(output, vadd(s1, vmul(b0, x)));
+                vst1(output, vadd(s[0], vmul(b0, x)));
             } else /* constexpr */ {
-                vst1(output, s1);
+                vst1(output, s[0]);
             }
             output += stride;
-            new_s1 = s2;
+            new_s0 = s[1];
             if constexpr (b1ss_present) {
-                new_s1 = vadd(new_s1, vmul(b1ss, x));
+                new_s0 = vadd(new_s0, vmul(b1ss, x));
             }
             if constexpr (a1_present) {
-                new_s1 = vadd(new_s1, vmul(negativeA1, s1));
+                new_s0 = vadd(new_s0, vmul(negativeA1, s[0]));
             }
             if constexpr (b2ss_present) {
-                s2 = vmul(b2ss, x);
+                s[1] = vmul(b2ss, x);
                 if constexpr (a2_present) {
-                    s2 = vadd(s2, vmul(negativeA2, s1));
+                    s[1] = vadd(s[1], vmul(negativeA2, s[0]));
                 }
             } else if constexpr (a2_present) {
-                s2 = vmul(negativeA2, s1);
+                s[1] = vmul(negativeA2, s[0]);
             }
-            s1 = new_s1;
+            s[0] = new_s0;
         };
 
         while (frames > 0) {
@@ -354,8 +347,8 @@ struct BiquadStateSpace {
                 KERNEL();
             }
         }
-        s1_ = s1;
-        s2_ = s2;
+        s_[0] = s[0];
+        s_[1] = s[1];
     }
 };
 
@@ -459,8 +452,8 @@ void biquad_filter_func_impl(F *out, const F *in, size_t frames, size_t stride,
                 s1, s2);
         if constexpr (!SAME_COEF_PER_CHANNEL) coefs += elements;
         kernel.template process<F, OCCUPANCY>(&out[i], &in[i], frames, stride);
-        vst1(&delays[0], kernel.s1_);
-        vst1(&delays[localStride], kernel.s2_);
+        vst1(&delays[0], kernel.s_[0]);
+        vst1(&delays[localStride], kernel.s_[1]);
         delays += elements;
     }
 }
