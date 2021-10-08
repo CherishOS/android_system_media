@@ -54,7 +54,7 @@ public:
      */
     bool setInputChannelMask(audio_channel_mask_t inputChannelMask) {
         if (mInputChannelMask != inputChannelMask) {
-            if (inputChannelMask & ~((1 << FCC_24) - 1)) {
+            if (inputChannelMask & ~((1 << MAX_INPUT_CHANNELS_SUPPORTED) - 1)) {
                 return false;  // not channel position mask, or has unknown channels.
             }
 
@@ -99,6 +99,7 @@ public:
                     case AUDIO_CHANNEL_OUT_SIDE_LEFT:
                     case AUDIO_CHANNEL_OUT_BACK_LEFT:
                     case AUDIO_CHANNEL_OUT_TOP_BACK_LEFT:
+                    case AUDIO_CHANNEL_OUT_FRONT_WIDE_LEFT: // FRONT_WIDE closer to SIDE.
                         mMatrix[index][0] = MINUS_3_DB_IN_FLOAT;
                         mMatrix[index][1] = 0.f;
                         break;
@@ -111,6 +112,7 @@ public:
                     case AUDIO_CHANNEL_OUT_SIDE_RIGHT:
                     case AUDIO_CHANNEL_OUT_BACK_RIGHT:
                     case AUDIO_CHANNEL_OUT_TOP_BACK_RIGHT:
+                    case AUDIO_CHANNEL_OUT_FRONT_WIDE_RIGHT: // FRONT_WIDE closer to SIDE.
                         mMatrix[index][0] = 0.f;
                         mMatrix[index][1] = MINUS_3_DB_IN_FLOAT;
                         break;
@@ -206,10 +208,14 @@ public:
         return setInputChannelMask(inputChannelMask) && process(src, dst, frameCount, accumulate);
     }
 
+    // The maximum channels supported (bits in the channel mask).
+    static constexpr size_t MAX_INPUT_CHANNELS_SUPPORTED = FCC_26;
+
 private:
     // These values are modified only when the input channel mask changes.
     // Keep alignment for matrix for more stable benchmarking.
-    alignas(128) float mMatrix[FCC_24][FCC_2];  // currently only stereo output supported
+    // Currently only stereo output supported.
+    alignas(128) float mMatrix[MAX_INPUT_CHANNELS_SUPPORTED][FCC_2];
     audio_channel_mask_t mInputChannelMask = AUDIO_CHANNEL_NONE;
     size_t mLastValidChannelIndexPlusOne = 0;
     size_t mInputChannelCount = 0;

@@ -44,6 +44,8 @@ static constexpr audio_channel_mask_t kChannelPositionMasks[] = {
     AUDIO_CHANNEL_OUT_7POINT1POINT4,
     AUDIO_CHANNEL_OUT_13POINT_360RA,
     AUDIO_CHANNEL_OUT_22POINT2,
+    audio_channel_mask_t(AUDIO_CHANNEL_OUT_22POINT2
+            | AUDIO_CHANNEL_OUT_FRONT_WIDE_LEFT | AUDIO_CHANNEL_OUT_FRONT_WIDE_RIGHT),
 };
 
 constexpr float COEF_25 = 0.2508909536f;
@@ -74,8 +76,10 @@ constexpr inline float kScaleFromChannelIdxLeft[] = {
     0.f,       // AUDIO_CHANNEL_OUT_TOP_SIDE_RIGHT        = 0x80000u,
     1.f,       // AUDIO_CHANNEL_OUT_BOTTOM_FRONT_LEFT     = 0x100000u,
     M_SQRT1_2, // AUDIO_CHANNEL_OUT_BOTTOM_FRONT_CENTER   = 0x200000u,
-    0.f, // AUDIO_CHANNEL_OUT_BOTTOM_FRONT_RIGHT    = 0x400000u,
-    0.f, // AUDIO_CHANNEL_OUT_LOW_FREQUENCY_2       = 0x800000u,
+    0.f,       // AUDIO_CHANNEL_OUT_BOTTOM_FRONT_RIGHT    = 0x400000u,
+    0.f,       // AUDIO_CHANNEL_OUT_LOW_FREQUENCY_2       = 0x800000u,
+    M_SQRT1_2, // AUDIO_CHANNEL_OUT_FRONT_WIDE_LEFT       = 0x1000000u,
+    0.f,       // AUDIO_CHANNEL_OUT_FRONT_WIDE_RIGHT      = 0x2000000u,
 };
 
 constexpr inline float kScaleFromChannelIdxRight[] = {
@@ -103,6 +107,8 @@ constexpr inline float kScaleFromChannelIdxRight[] = {
     M_SQRT1_2, // AUDIO_CHANNEL_OUT_BOTTOM_FRONT_CENTER   = 0x200000u,
     1.f,       // AUDIO_CHANNEL_OUT_BOTTOM_FRONT_RIGHT    = 0x400000u,
     M_SQRT1_2, // AUDIO_CHANNEL_OUT_LOW_FREQUENCY_2       = 0x800000u,
+    0.f,       // AUDIO_CHANNEL_OUT_FRONT_WIDE_LEFT       = 0x1000000u,
+    M_SQRT1_2, // AUDIO_CHANNEL_OUT_FRONT_WIDE_RIGHT      = 0x2000000u,
 };
 
 // Our near expectation is 16x the bit that doesn't fit the mantissa.
@@ -142,7 +148,7 @@ public:
         double savedPower[32][FCC_2]{};
         for (unsigned i = 0, channel = channelMask; channel != 0; ++i) {
             const int index = __builtin_ctz(channel);
-            ASSERT_LT(index, FCC_24);
+            ASSERT_LT((size_t)index, ChannelMix::MAX_INPUT_CHANNELS_SUPPORTED);
             const int pairIndex = pairIdxFromChannelIdx(index);
             const AUDIO_GEOMETRY_SIDE side = sideFromChannelIdx(index);
             const int channelBit = 1 << index;
