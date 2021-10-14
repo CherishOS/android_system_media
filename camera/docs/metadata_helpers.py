@@ -182,7 +182,7 @@ def protobuf_type(entry):
     "string"                 : "string",
     "capability"             : "Capability",
     "multiResolutionStreamConfigurationMap" : "MultiResolutionStreamConfigurations",
-    "deviceStateOrientationMap"  : "DeviceStateOrientationMap",
+    "deviceStateSensorOrientationMap"  : "DeviceStateSensorOrientationMap",
   }
 
   if typeName not in typename_to_protobuftype:

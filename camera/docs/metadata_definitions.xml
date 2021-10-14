@@ -146,8 +146,8 @@ xsi:schemaLocation="http://schemas.android.com/service/camera/metadata/ metadata
     <typedef name="multiResolutionStreamConfigurationMap">
       <language name="java">android.hardware.camera2.params.MultiResolutionStreamConfigurationMap</language>
     </typedef>
-    <typedef name="deviceStateOrientationMap">
-      <language name="java">android.hardware.camera2.params.DeviceStateOrientationMap</language>
+    <typedef name="deviceStateSensorOrientationMap">
+      <language name="java">android.hardware.camera2.params.DeviceStateSensorOrientationMap</language>
     </typedef>
   </types>
 
@@ -9201,7 +9201,7 @@ xsi:schemaLocation="http://schemas.android.com/service/camera/metadata/ metadata
           Clients are advised to not cache or store the orientation value of such logical sensors.
           In case repeated queries to CameraCharacteristics are not preferred, then clients can
           also access the entire mapping from device state to sensor orientation in
-          {@link android.hardware.camera2.params.DeviceStateOrientationMap}.
+          {@link android.hardware.camera2.params.DeviceStateSensorOrientationMap}.
           Do note that a dynamically changing sensor orientation value in camera characteristics
           will not be the best way to establish the orientation per frame. Clients that want to
           know the sensor orientation of a particular captured frame should query the
@@ -11497,8 +11497,9 @@ xsi:schemaLocation="http://schemas.android.com/service/camera/metadata/ metadata
               HAL using such version of buffer management API.
           </details>
         </entry>
-        <entry name="deviceStateOrientationMap" type="int64" visibility="java_public"
-          synthetic="true" optional="true" typedef="deviceStateOrientationMap" hwlevel="limited">
+        <entry name="deviceStateSensorOrientationMap" type="int64" visibility="java_public"
+          synthetic="true" optional="true" typedef="deviceStateSensorOrientationMap"
+          hwlevel="limited">
           <description>This lists the mapping between a device folding state and
           specific camera sensor orientation for logical cameras on a foldable device.
           </description>
@@ -11507,7 +11508,7 @@ xsi:schemaLocation="http://schemas.android.com/service/camera/metadata/ metadata
           values. The orientation value may need to change depending on the specific folding
           state. Information about the mapping between the device folding state and the
           sensor orientation can be obtained in
-          {@link android.hardware.camera2.params.DeviceStateOrientationMap}.
+          {@link android.hardware.camera2.params.DeviceStateSensorOrientationMap}.
           Device state orientation maps are optional and maybe present on devices that support
           android.scaler.rotateAndCrop.
           </details>
