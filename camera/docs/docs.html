@@ -387,6 +387,10 @@
             ><a href="#static_android.flash.info.available">android.flash.info.available</a></li>
             <li
             ><a href="#static_android.flash.info.chargeDuration">android.flash.info.chargeDuration</a></li>
+            <li
+            ><a href="#static_android.flash.info.strengthMaximumLevel">android.flash.info.strengthMaximumLevel</a></li>
+            <li
+            ><a href="#static_android.flash.info.strengthDefaultLevel">android.flash.info.strengthDefaultLevel</a></li>
 
             <li
             ><a href="#static_android.flash.colorTemperature">android.flash.colorTemperature</a></li>
@@ -11876,6 +11880,117 @@ again</p>
             <td class="entry_details" colspan="6">
               <p>1 second too long/<wbr/>too short for recharge? Should
 this be power-dependent?</p>
+            </td>
+          </tr>
+
+
+          <tr class="entry_spacer"><td class="entry_spacer" colspan="7"></td></tr>
+           <!-- end of entry -->
+        
+                
+          <tr class="entry" id="static_android.flash.info.strengthMaximumLevel">
+            <td class="entry_name
+             " rowspan="3">
+              android.<wbr/>flash.<wbr/>info.<wbr/>strength<wbr/>Maximum<wbr/>Level
+            </td>
+            <td class="entry_type">
+                <span class="entry_type_name">int32</span>
+
+              <span class="entry_type_visibility"> [public]</span>
+
+
+
+
+
+
+            </td> <!-- entry_type -->
+
+            <td class="entry_description">
+              <p>Maximum flashlight brightness level.<wbr/></p>
+            </td>
+
+            <td class="entry_units">
+            </td>
+
+            <td class="entry_range">
+            </td>
+
+            <td class="entry_hal_version">
+              <p>3.<wbr/>8</p>
+            </td>
+
+            <td class="entry_tags">
+            </td>
+
+          </tr>
+          <tr class="entries_header">
+            <th class="th_details" colspan="6">Details</th>
+          </tr>
+          <tr class="entry_cont">
+            <td class="entry_details" colspan="6">
+              <p>If this value is greater than 1,<wbr/> then the device supports controlling the
+flashlight brightness level via
+{android.<wbr/>hardware.<wbr/>camera2.<wbr/>Camera<wbr/>Manager#set<wbr/>Torch<wbr/>Strength<wbr/>Level}.<wbr/>
+If this value is equal to 1,<wbr/> flashlight brightness control is not supported.<wbr/>
+This value will be -1 if the flash unit is not available.<wbr/></p>
+            </td>
+          </tr>
+
+
+          <tr class="entry_spacer"><td class="entry_spacer" colspan="7"></td></tr>
+           <!-- end of entry -->
+        
+                
+          <tr class="entry" id="static_android.flash.info.strengthDefaultLevel">
+            <td class="entry_name
+             " rowspan="3">
+              android.<wbr/>flash.<wbr/>info.<wbr/>strength<wbr/>Default<wbr/>Level
+            </td>
+            <td class="entry_type">
+                <span class="entry_type_name">int32</span>
+
+              <span class="entry_type_visibility"> [public]</span>
+
+
+
+
+
+
+            </td> <!-- entry_type -->
+
+            <td class="entry_description">
+              <p>Default flashlight brightness level to be set via
+{android.<wbr/>hardware.<wbr/>camera2.<wbr/>Camera<wbr/>Manager#set<wbr/>Torch<wbr/>Strength<wbr/>Level}.<wbr/></p>
+            </td>
+
+            <td class="entry_units">
+            </td>
+
+            <td class="entry_range">
+            </td>
+
+            <td class="entry_hal_version">
+              <p>3.<wbr/>8</p>
+            </td>
+
+            <td class="entry_tags">
+            </td>
+
+          </tr>
+          <tr class="entries_header">
+            <th class="th_details" colspan="6">Details</th>
+          </tr>
+          <tr class="entry_cont">
+            <td class="entry_details" colspan="6">
+              <p>If flash unit is available this will be greater than or equal to 1 and less
+or equal to <code><a href="#static_android.flash.info.strengthMaximumLevel">android.<wbr/>flash.<wbr/>info.<wbr/>strength<wbr/>Maximum<wbr/>Level</a></code>.<wbr/>
+If flash unit is not available this will be set to -1.<wbr/></p>
+<p>Setting flashlight brightness above the default level
+(i.<wbr/>e.<wbr/><code><a href="#static_android.flash.info.strengthDefaultLevel">android.<wbr/>flash.<wbr/>info.<wbr/>strength<wbr/>Default<wbr/>Level</a></code>) may make the device more
+likely to reach thermal throttling conditions and slow down,<wbr/> or drain the
+battery quicker than normal.<wbr/> To minimize such issues,<wbr/> it is recommended to
+start the flashlight at this default brightness until a user explicitly requests
+a brighter level.<wbr/></p>
             </td>
           </tr>
 

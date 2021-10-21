@@ -113,6 +113,8 @@ message CameraDeviceInfo {
     optional RangeFloat android_control_zoomRatioRange = 131090;
     repeated int32 android_edge_availableEdgeModes = 262144;
     optional bool android_flash_info_available = 393216;
+    optional int32 android_flash_info_strengthMaximumLevel = 393217;
+    optional int32 android_flash_info_strengthDefaultLevel = 393218;
     repeated int32 android_hotPixel_availableHotPixelModes = 458752;
     repeated Size android_jpeg_availableThumbnailSizes = 524288;
     optional int32 android_lens_facing = 589824;

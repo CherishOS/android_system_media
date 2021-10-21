@@ -210,6 +210,8 @@ typedef enum camera_metadata_tag {
     ANDROID_FLASH_INFO_AVAILABLE =                    // enum         | public       | HIDL v3.2
             ANDROID_FLASH_INFO_START,
     ANDROID_FLASH_INFO_CHARGE_DURATION,               // int64        | system       | HIDL v3.2
+    ANDROID_FLASH_INFO_STRENGTH_MAXIMUM_LEVEL,        // int32        | public       | HIDL v3.8
+    ANDROID_FLASH_INFO_STRENGTH_DEFAULT_LEVEL,        // int32        | public       | HIDL v3.8
     ANDROID_FLASH_INFO_END,
 
     ANDROID_HOT_PIXEL_MODE =                          // enum         | public       | HIDL v3.2

@@ -295,6 +295,10 @@ static tag_info_t android_flash_info[ANDROID_FLASH_INFO_END -
     { "available",                     TYPE_BYTE   },
     [ ANDROID_FLASH_INFO_CHARGE_DURATION - ANDROID_FLASH_INFO_START ] =
     { "chargeDuration",                TYPE_INT64  },
+    [ ANDROID_FLASH_INFO_STRENGTH_MAXIMUM_LEVEL - ANDROID_FLASH_INFO_START ] =
+    { "strengthMaximumLevel",          TYPE_INT32  },
+    [ ANDROID_FLASH_INFO_STRENGTH_DEFAULT_LEVEL - ANDROID_FLASH_INFO_START ] =
+    { "strengthDefaultLevel",          TYPE_INT32  },
 };
 
 static tag_info_t android_hot_pixel[ANDROID_HOT_PIXEL_END -
@@ -1822,6 +1826,12 @@ int camera_metadata_enum_snprint(uint32_t tag,
             break;
         }
         case ANDROID_FLASH_INFO_CHARGE_DURATION: {
+            break;
+        }
+        case ANDROID_FLASH_INFO_STRENGTH_MAXIMUM_LEVEL: {
+            break;
+        }
+        case ANDROID_FLASH_INFO_STRENGTH_DEFAULT_LEVEL: {
             break;
         }
 
@@ -4513,6 +4523,12 @@ int camera_metadata_enum_value(uint32_t tag,
             break;
         }
         case ANDROID_FLASH_INFO_CHARGE_DURATION: {
+            break;
+        }
+        case ANDROID_FLASH_INFO_STRENGTH_MAXIMUM_LEVEL: {
+            break;
+        }
+        case ANDROID_FLASH_INFO_STRENGTH_DEFAULT_LEVEL: {
             break;
         }
 
