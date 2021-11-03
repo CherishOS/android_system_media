@@ -11932,7 +11932,7 @@ this be power-dependent?</p>
 flashlight brightness level via
 {android.<wbr/>hardware.<wbr/>camera2.<wbr/>Camera<wbr/>Manager#set<wbr/>Torch<wbr/>Strength<wbr/>Level}.<wbr/>
 If this value is equal to 1,<wbr/> flashlight brightness control is not supported.<wbr/>
-This value will be -1 if the flash unit is not available.<wbr/></p>
+The value for this key will be null for devices with no flash unit.<wbr/></p>
             </td>
           </tr>
 
@@ -11983,14 +11983,15 @@ This value will be -1 if the flash unit is not available.<wbr/></p>
           <tr class="entry_cont">
             <td class="entry_details" colspan="6">
               <p>If flash unit is available this will be greater than or equal to 1 and less
-or equal to <code><a href="#static_android.flash.info.strengthMaximumLevel">android.<wbr/>flash.<wbr/>info.<wbr/>strength<wbr/>Maximum<wbr/>Level</a></code>.<wbr/>
-If flash unit is not available this will be set to -1.<wbr/></p>
+or equal to <code><a href="#static_android.flash.info.strengthMaximumLevel">android.<wbr/>flash.<wbr/>info.<wbr/>strength<wbr/>Maximum<wbr/>Level</a></code>.<wbr/></p>
 <p>Setting flashlight brightness above the default level
 (i.<wbr/>e.<wbr/><code><a href="#static_android.flash.info.strengthDefaultLevel">android.<wbr/>flash.<wbr/>info.<wbr/>strength<wbr/>Default<wbr/>Level</a></code>) may make the device more
 likely to reach thermal throttling conditions and slow down,<wbr/> or drain the
 battery quicker than normal.<wbr/> To minimize such issues,<wbr/> it is recommended to
 start the flashlight at this default brightness until a user explicitly requests
-a brighter level.<wbr/></p>
+a brighter level.<wbr/>
+Note that the value for this key will be null for devices with no flash unit.<wbr/>
+The default level should always be &gt; 0.<wbr/></p>
             </td>
           </tr>
 
