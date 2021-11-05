@@ -9671,6 +9671,15 @@ xsi:schemaLocation="http://schemas.android.com/service/camera/metadata/ metadata
           with test patterns from on-device memory. In that case, it should be
           indistinguishable to the ISP whether the data came from the
           sensor interconnect bus (such as CSI2) or memory.
+
+          For privacy use cases, if the camera device:
+
+          * supports SOLID_COLOR or BLACK test patterns,
+          * is a logical multi-camera, and
+          * lists testPatternMode as a physical request key,
+
+          Each physical camera must support the same SOLID_COLOR and/or BLACK test patterns
+          as the logical camera.
           </hal_details>
         </entry>
       </controls>
