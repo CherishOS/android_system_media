@@ -105,7 +105,7 @@ static std::array<D, 5> randomUnstableFilter() {
 // The BiquadFilterTest is parameterized on channel count.
 class BiquadFilterTest : public ::testing::TestWithParam<size_t> {
 protected:
-    template <typename T>
+    template <typename ConstOptions, typename T>
     static void testProcess(size_t zeroChannels = 0) {
         const size_t channelCount = static_cast<size_t>(GetParam());
         const size_t stride = channelCount + zeroChannels;
@@ -118,7 +118,8 @@ protected:
             populateBuffer(
                     OUTPUT[i], FRAME_COUNT, channelCount, zeroChannels, expectedOutputBuffer[i]);
         }
-        BiquadFilter<T> filter(channelCount, COEFS);
+        BiquadFilter<T, true /* SAME_COEF_PER_CHANNEL */, ConstOptions>
+            filter(channelCount, COEFS);
 
         for (size_t i = 0; i < PERIOD; ++i) {
             filter.process(outputBuffer, inputBuffer[i], FRAME_COUNT, stride);
@@ -136,20 +137,51 @@ protected:
     }
 };
 
-TEST_P(BiquadFilterTest, ConstructAndProcessFilterFloat) {
-    testProcess<float>();
+struct StateSpaceOptions {
+    template <typename T, typename F>
+    using FilterType = BiquadStateSpace<T, F>;
+};
+
+struct StateSpaceChannelOptimizedOptions {
+    template <typename T, typename F>
+    using FilterType = BiquadStateSpace<T, F, true /* SEPARATE_CHANNEL_OPTIMIZATION */>;
+};
+
+struct Direct2TransposeOptions {
+    template <typename T, typename F>
+    using FilterType = BiquadDirect2Transpose<T, F>;
+};
+
+TEST_P(BiquadFilterTest, ConstructAndProcessSSFilterFloat) {
+    testProcess<StateSpaceOptions, float>();
 }
 
-TEST_P(BiquadFilterTest, ConstructAndProcessFilterDouble) {
-    testProcess<double>();
+TEST_P(BiquadFilterTest, ConstructAndProcessSSFilterDouble) {
+    testProcess<StateSpaceOptions, double>();
 }
 
-TEST_P(BiquadFilterTest, ConstructAndProcessFilterFloatZero3) {
-    testProcess<float>(3 /* zeroChannels */);
+TEST_P(BiquadFilterTest, ConstructAndProcessSSFilterFloatZero3) {
+    testProcess<StateSpaceOptions, float>(3 /* zeroChannels */);
 }
 
-TEST_P(BiquadFilterTest, ConstructAndProcessFilterDoubleZero5) {
-    testProcess<double>(5 /* zeroChannels */);
+TEST_P(BiquadFilterTest, ConstructAndProcessSSFilterDoubleZero5) {
+    testProcess<StateSpaceOptions, double>(5 /* zeroChannels */);
+}
+
+TEST_P(BiquadFilterTest, ConstructAndProcessSSChanelOptimizedFilterFloat) {
+    testProcess<StateSpaceChannelOptimizedOptions, float>();
+}
+
+TEST_P(BiquadFilterTest, ConstructAndProcessSSChannelOptimizedFilterDouble) {
+    testProcess<StateSpaceChannelOptimizedOptions, double>();
+}
+
+TEST_P(BiquadFilterTest, ConstructAndProcessDT2FilterFloat) {
+    testProcess<Direct2TransposeOptions, float>();
+}
+
+TEST_P(BiquadFilterTest, ConstructAndProcessDT2FilterDouble) {
+    testProcess<Direct2TransposeOptions, double>();
 }
 
 INSTANTIATE_TEST_CASE_P(

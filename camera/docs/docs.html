@@ -4562,7 +4562,7 @@ capbility defined in <a href="#static_android.request.availableCapabilities">and
                 
           <tr class="entry" id="controls_android.control.videoStabilizationMode">
             <td class="entry_name
-             " rowspan="3">
+             " rowspan="5">
               android.<wbr/>control.<wbr/>video<wbr/>Stabilization<wbr/>Mode
             </td>
             <td class="entry_type">
@@ -4583,6 +4583,17 @@ capbility defined in <a href="#static_android.request.availableCapabilities">and
                   <li>
                     <span class="entry_type_enum_name">ON (v3.2)</span>
                     <span class="entry_type_enum_notes"><p>Video stabilization is enabled.<wbr/></p></span>
+                  </li>
+                  <li>
+                    <span class="entry_type_enum_name">PREVIEW_STABILIZATION (v3.8)</span>
+                    <span class="entry_type_enum_optional">[optional]</span>
+                    <span class="entry_type_enum_notes"><p>Preview stabilization,<wbr/> where the preview in addition to all other non-RAW streams are
+stabilized with the same quality of stabilization,<wbr/> is enabled.<wbr/> This mode aims to give
+clients a 'what you see is what you get' effect.<wbr/> In this mode,<wbr/> the FoV reduction will
+be a maximum of 20 % both horizontally and vertically
+(10% from left,<wbr/> right,<wbr/> top,<wbr/> bottom) for the given zoom ratio /<wbr/> crop region.<wbr/>
+The resultant FoV will also be the same across all processed streams
+(that have the same aspect ratio).<wbr/></p></span>
                   </li>
                 </ul>
 
@@ -4638,9 +4649,31 @@ Surface types that can be stabilized.<wbr/></p>
 (<a href="#controls_android.lens.opticalStabilizationMode">android.<wbr/>lens.<wbr/>optical<wbr/>Stabilization<wbr/>Mode</a>),<wbr/> turning both modes on may
 produce undesirable interaction,<wbr/> so it is recommended not to enable
 both at the same time.<wbr/></p>
+<p>If video stabilization is set to "PREVIEW_<wbr/>STABILIZATION",<wbr/>
+<a href="#controls_android.lens.opticalStabilizationMode">android.<wbr/>lens.<wbr/>optical<wbr/>Stabilization<wbr/>Mode</a> is overridden.<wbr/> The camera sub-system may choose
+to turn on hardware based image stabilization in addition to software based stabilization
+if it deems that appropriate.<wbr/>
+This key may be a part of the available session keys,<wbr/> which camera clients may
+query via
+<a href="https://developer.android.com/reference/android/hardware/camera2/CameraCharacteristics.html#getAvailableSessionKeys">CameraCharacteristics#getAvailableSessionKeys</a>.<wbr/>
+If this is the case,<wbr/> changing this key over the life-time of a capture session may
+cause delays /<wbr/> glitches.<wbr/></p>
             </td>
           </tr>
 
+          <tr class="entries_header">
+            <th class="th_details" colspan="6">HAL Implementation Details</th>
+          </tr>
+          <tr class="entry_cont">
+            <td class="entry_details" colspan="6">
+              <p>When this key is set to "PREVIEW_<wbr/>STABILIZATION",<wbr/>
+for non-stalling buffers returned without errors,<wbr/> the time interval between notify shutter
+timestamp and when buffers are returned to the camera framework,<wbr/> must be no more than 1
+extra frame interval,<wbr/> relative to the case where this key is set to "OFF".<wbr/></p>
+<p>This is in order for look-ahead time period to be short enough
+for preview to match video recording for real-time usage.<wbr/></p>
+            </td>
+          </tr>
 
           <tr class="entry_spacer"><td class="entry_spacer" colspan="7"></td></tr>
            <!-- end of entry -->
@@ -10421,7 +10454,7 @@ capbility defined in <a href="#static_android.request.availableCapabilities">and
                 
           <tr class="entry" id="dynamic_android.control.videoStabilizationMode">
             <td class="entry_name
-             " rowspan="3">
+             " rowspan="5">
               android.<wbr/>control.<wbr/>video<wbr/>Stabilization<wbr/>Mode
             </td>
             <td class="entry_type">
@@ -10442,6 +10475,17 @@ capbility defined in <a href="#static_android.request.availableCapabilities">and
                   <li>
                     <span class="entry_type_enum_name">ON (v3.2)</span>
                     <span class="entry_type_enum_notes"><p>Video stabilization is enabled.<wbr/></p></span>
+                  </li>
+                  <li>
+                    <span class="entry_type_enum_name">PREVIEW_STABILIZATION (v3.8)</span>
+                    <span class="entry_type_enum_optional">[optional]</span>
+                    <span class="entry_type_enum_notes"><p>Preview stabilization,<wbr/> where the preview in addition to all other non-RAW streams are
+stabilized with the same quality of stabilization,<wbr/> is enabled.<wbr/> This mode aims to give
+clients a 'what you see is what you get' effect.<wbr/> In this mode,<wbr/> the FoV reduction will
+be a maximum of 20 % both horizontally and vertically
+(10% from left,<wbr/> right,<wbr/> top,<wbr/> bottom) for the given zoom ratio /<wbr/> crop region.<wbr/>
+The resultant FoV will also be the same across all processed streams
+(that have the same aspect ratio).<wbr/></p></span>
                   </li>
                 </ul>
 
@@ -10497,9 +10541,31 @@ Surface types that can be stabilized.<wbr/></p>
 (<a href="#controls_android.lens.opticalStabilizationMode">android.<wbr/>lens.<wbr/>optical<wbr/>Stabilization<wbr/>Mode</a>),<wbr/> turning both modes on may
 produce undesirable interaction,<wbr/> so it is recommended not to enable
 both at the same time.<wbr/></p>
+<p>If video stabilization is set to "PREVIEW_<wbr/>STABILIZATION",<wbr/>
+<a href="#controls_android.lens.opticalStabilizationMode">android.<wbr/>lens.<wbr/>optical<wbr/>Stabilization<wbr/>Mode</a> is overridden.<wbr/> The camera sub-system may choose
+to turn on hardware based image stabilization in addition to software based stabilization
+if it deems that appropriate.<wbr/>
+This key may be a part of the available session keys,<wbr/> which camera clients may
+query via
+<a href="https://developer.android.com/reference/android/hardware/camera2/CameraCharacteristics.html#getAvailableSessionKeys">CameraCharacteristics#getAvailableSessionKeys</a>.<wbr/>
+If this is the case,<wbr/> changing this key over the life-time of a capture session may
+cause delays /<wbr/> glitches.<wbr/></p>
             </td>
           </tr>
 
+          <tr class="entries_header">
+            <th class="th_details" colspan="6">HAL Implementation Details</th>
+          </tr>
+          <tr class="entry_cont">
+            <td class="entry_details" colspan="6">
+              <p>When this key is set to "PREVIEW_<wbr/>STABILIZATION",<wbr/>
+for non-stalling buffers returned without errors,<wbr/> the time interval between notify shutter
+timestamp and when buffers are returned to the camera framework,<wbr/> must be no more than 1
+extra frame interval,<wbr/> relative to the case where this key is set to "OFF".<wbr/></p>
+<p>This is in order for look-ahead time period to be short enough
+for preview to match video recording for real-time usage.<wbr/></p>
+            </td>
+          </tr>
 
           <tr class="entry_spacer"><td class="entry_spacer" colspan="7"></td></tr>
            <!-- end of entry -->
@@ -14418,6 +14484,11 @@ be "OFF",<wbr/> and it will become "ON" when the initialization is done.<wbr/></
 <p>If a camera device supports both OIS and digital image stabilization
 (<a href="#controls_android.control.videoStabilizationMode">android.<wbr/>control.<wbr/>video<wbr/>Stabilization<wbr/>Mode</a>),<wbr/> turning both modes on may produce undesirable
 interaction,<wbr/> so it is recommended not to enable both at the same time.<wbr/></p>
+<p>If <a href="#controls_android.control.videoStabilizationMode">android.<wbr/>control.<wbr/>video<wbr/>Stabilization<wbr/>Mode</a> is set to "PREVIEW_<wbr/>STABILIZATION",<wbr/>
+<a href="#controls_android.lens.opticalStabilizationMode">android.<wbr/>lens.<wbr/>optical<wbr/>Stabilization<wbr/>Mode</a> is overridden.<wbr/> The camera sub-system may choose
+to turn on hardware based image stabilization in addition to software based stabilization
+if it deems that appropriate.<wbr/> This key's value in the capture result will reflect which
+OIS mode was chosen.<wbr/></p>
 <p>Not all devices will support OIS; see
 <a href="#static_android.lens.info.availableOpticalStabilization">android.<wbr/>lens.<wbr/>info.<wbr/>available<wbr/>Optical<wbr/>Stabilization</a> for
 available controls.<wbr/></p>
@@ -16157,6 +16228,11 @@ be "OFF",<wbr/> and it will become "ON" when the initialization is done.<wbr/></
 <p>If a camera device supports both OIS and digital image stabilization
 (<a href="#controls_android.control.videoStabilizationMode">android.<wbr/>control.<wbr/>video<wbr/>Stabilization<wbr/>Mode</a>),<wbr/> turning both modes on may produce undesirable
 interaction,<wbr/> so it is recommended not to enable both at the same time.<wbr/></p>
+<p>If <a href="#controls_android.control.videoStabilizationMode">android.<wbr/>control.<wbr/>video<wbr/>Stabilization<wbr/>Mode</a> is set to "PREVIEW_<wbr/>STABILIZATION",<wbr/>
+<a href="#controls_android.lens.opticalStabilizationMode">android.<wbr/>lens.<wbr/>optical<wbr/>Stabilization<wbr/>Mode</a> is overridden.<wbr/> The camera sub-system may choose
+to turn on hardware based image stabilization in addition to software based stabilization
+if it deems that appropriate.<wbr/> This key's value in the capture result will reflect which
+OIS mode was chosen.<wbr/></p>
 <p>Not all devices will support OIS; see
 <a href="#static_android.lens.info.availableOpticalStabilization">android.<wbr/>lens.<wbr/>info.<wbr/>available<wbr/>Optical<wbr/>Stabilization</a> for
 available controls.<wbr/></p>

@@ -2017,6 +2017,16 @@ xsi:schemaLocation="http://schemas.android.com/service/camera/metadata/ metadata
             <notes>
               Video stabilization is enabled.
             </notes></value>
+            <value optional="true" hal_version="3.8">PREVIEW_STABILIZATION
+            <notes>
+              Preview stabilization, where the preview in addition to all other non-RAW streams are
+              stabilized with the same quality of stabilization, is enabled. This mode aims to give
+              clients a 'what you see is what you get' effect. In this mode, the FoV reduction will
+              be a maximum of 20 % both horizontally and vertically
+              (10% from left, right, top, bottom) for the given zoom ratio / crop region.
+              The resultant FoV will also be the same across all processed streams
+              (that have the same aspect ratio).
+            </notes></value>
           </enum>
           <description>Whether video stabilization is
           active.</description>
@@ -2048,7 +2058,27 @@ xsi:schemaLocation="http://schemas.android.com/service/camera/metadata/ metadata
           (android.lens.opticalStabilizationMode), turning both modes on may
           produce undesirable interaction, so it is recommended not to enable
           both at the same time.
+
+          If video stabilization is set to "PREVIEW_STABILIZATION",
+          android.lens.opticalStabilizationMode is overridden. The camera sub-system may choose
+          to turn on hardware based image stabilization in addition to software based stabilization
+          if it deems that appropriate.
+          This key may be a part of the available session keys, which camera clients may
+          query via
+          {@link android.hardware.camera2.CameraCharacteristics#getAvailableSessionKeys|ACameraManager_getCameraCharacteristics}.
+          If this is the case, changing this key over the life-time of a capture session may
+          cause delays / glitches.
+
           </details>
+          <hal_details>
+          When this key is set to "PREVIEW_STABILIZATION",
+          for non-stalling buffers returned without errors, the time interval between notify shutter
+          timestamp and when buffers are returned to the camera framework, must be no more than 1
+          extra frame interval, relative to the case where this key is set to "OFF".
+
+          This is in order for look-ahead time period to be short enough
+          for preview to match video recording for real-time usage.
+          </hal_details>
           <tag id="BC" />
         </entry>
       </controls>
@@ -4225,6 +4255,12 @@ xsi:schemaLocation="http://schemas.android.com/service/camera/metadata/ metadata
           If a camera device supports both OIS and digital image stabilization
           (android.control.videoStabilizationMode), turning both modes on may produce undesirable
           interaction, so it is recommended not to enable both at the same time.
+
+          If android.control.videoStabilizationMode is set to "PREVIEW_STABILIZATION",
+          android.lens.opticalStabilizationMode is overridden. The camera sub-system may choose
+          to turn on hardware based image stabilization in addition to software based stabilization
+          if it deems that appropriate. This key's value in the capture result will reflect which
+          OIS mode was chosen.
 
           Not all devices will support OIS; see
           android.lens.info.availableOpticalStabilization for

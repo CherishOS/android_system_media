@@ -220,7 +220,6 @@ struct BiquadDirect2Transpose {
  * by doing 2 filter updates at once (improving speed on NEON by about 20%).
  * Doing 2 updates at once costs 8 multiplies / sample instead of 5 multiples / sample,
  * but uses a 4 x 4 matrix multiply, exploiting single cycle multiply-add SIMD throughput.
- * TODO: consider this optimization.
  *
  * [3] Mathworks
  * https://www.mathworks.com/help/control/ug/canonical-state-space-realizations.html
@@ -231,7 +230,7 @@ struct BiquadDirect2Transpose {
  * T is the data type (scalar or vector).
  * F is the filter coefficient type.  It is either a scalar or vector (matching T).
  */
-template <typename T, typename F>
+template <typename T, typename F, bool SEPARATE_CHANNEL_OPTIMIZATION = false>
 struct BiquadStateSpace {
     F coef_[5]; // these are stored as state-space converted.
     T s_[2]; // delay states
@@ -291,6 +290,53 @@ struct BiquadStateSpace {
         constexpr size_t UNROLL_CHANNEL_UPPER_LIMIT = 16;  // above this won't be unrolled.
         constexpr size_t UNROLL_LOOPS = (CHANNELS >= UNROLL_CHANNEL_LOWER_LIMIT &&
                 CHANNELS <= UNROLL_CHANNEL_UPPER_LIMIT) ? 2 : 1;
+
+        if constexpr (SEPARATE_CHANNEL_OPTIMIZATION && CHANNELS == 1 && OCCUPANCY >= 11) {
+            // Special acceleration which computes 2 samples at a time.
+            // see reference [4] for computation of this matrix.
+            intrinsics::internal_array_t<T, 4> A[4] = {
+                {b0, b1ss, negativeA1 * b1ss + b2ss, negativeA2 * b1ss},
+                {0, b0, b1ss, b2ss},
+                {1, negativeA1, negativeA2 + negativeA1 * negativeA1, negativeA1 * negativeA2},
+                {0, 1, negativeA1, negativeA2},
+                };
+            intrinsics::internal_array_t<T, 4> y;
+            while (frames > 1) {
+                x = vld1<T>(input);
+                input += stride;
+#ifdef USE_DITHER
+                x = vadd(x, dither);
+                dither = vneg(dither);
+#endif
+                y = vmul(A[0], x);
+
+                x = vld1<T>(input);
+                input += stride;
+#ifdef USE_DITHER
+                x = vadd(x, dither);
+                dither = vneg(dither);
+#endif
+                y = vmla(y, A[1], x);
+                y = vmla(y, A[2], s[0]);
+                y = vmla(y, A[3], s[1]);
+
+                vst1(output, y.v[0]);
+                output += stride;
+
+                vst1(output, y.v[1]);
+                output += stride;
+
+                s[0] = y.v[2];
+                s[1] = y.v[3];
+                frames -= 2;
+            }
+            if (frames == 0) {
+                s_[0] = s[0];
+                s_[1] = s[1];
+                return;
+            }
+        }
+
         size_t remainder = 0;
         if constexpr (UNROLL_LOOPS > 1) {
             remainder = frames % UNROLL_LOOPS;
@@ -431,7 +477,7 @@ void zeroChannels(D *out, size_t frames, size_t stride, size_t channelCount) {
     }
 }
 
-template <template <typename, typename> typename FilterType,
+template <typename ConstOptions,
         size_t OCCUPANCY, bool SAME_COEF_PER_CHANNEL, typename T, typename F>
 void biquad_filter_func_impl(F *out, const F *in, size_t frames, size_t stride,
         size_t channelCount, F *delays, const F *coefs, size_t localStride) {
@@ -440,12 +486,13 @@ void biquad_filter_func_impl(F *out, const F *in, size_t frames, size_t stride,
     constexpr size_t elements = sizeof(T) / sizeof(F); // how many float elements in T.
     const size_t coefStride = SAME_COEF_PER_CHANNEL ? 1 : localStride;
     using CoefType = std::conditional_t<SAME_COEF_PER_CHANNEL, F, T>;
+    using KernelType = typename ConstOptions::template FilterType<T, CoefType>;
 
     for (size_t i = 0; i < channelCount; i += elements) {
         T s1 = vld1<T>(&delays[0]);
         T s2 = vld1<T>(&delays[localStride]);
 
-        FilterType<T, CoefType> kernel(
+        KernelType kernel(
                 vld1<CoefType>(coefs), vld1<CoefType>(coefs + coefStride),
                 vld1<CoefType>(coefs + coefStride * 2), vld1<CoefType>(coefs + coefStride * 3),
                 vld1<CoefType>(coefs + coefStride * 4),
@@ -473,24 +520,37 @@ enum FILTER_OPTION {
     FILTER_OPTION_SCALAR_ONLY = (1 << 0),
 };
 
-// Default biquad type.
-template <typename T, typename F>
-using BiquadFilterType = BiquadStateSpace<T, F>;
 
-#define BIQUAD_FILTER_CASE(N, FilterType, ... /* type */) \
+/**
+ * DefaultBiquadConstOptions holds the default set of options for customizing
+ * the Biquad filter at compile time.
+ *
+ * Consider inheriting from this structure and overriding the options
+ * desired; this is backward compatible to new options added in the future.
+ */
+struct DefaultBiquadConstOptions {
+
+    // Sets the Biquad filter type.
+    // Can be one of the already defined BiquadDirect2Transpose or BiquadStateSpace
+    // filter kernels; also can be a user defined filter kernel as well.
+    template <typename T, typename F>
+    using FilterType = BiquadStateSpace<T, F, false /* SEPARATE_CHANNEL_OPTIMIZATION */>;
+};
+
+#define BIQUAD_FILTER_CASE(N, ... /* type */) \
             case N: { \
                 using VectorType = __VA_ARGS__; \
-                biquad_filter_func_impl< \
-                        FilterType, \
+                biquad_filter_func_impl<ConstOptions, \
                         nearestOccupancy(OCCUPANCY, \
-                                FilterType<VectorType, D>::required_occupancies_), \
+                                ConstOptions::template FilterType<VectorType, D> \
+                                            ::required_occupancies_), \
                         SAME_COEF_PER_CHANNEL, VectorType>( \
                         out + offset, in + offset, frames, stride, remaining, \
                         delays + offset, c, localStride); \
                 goto exit; \
             }
 
-template <size_t OCCUPANCY, bool SAME_COEF_PER_CHANNEL, typename D>
+template <typename ConstOptions, size_t OCCUPANCY, bool SAME_COEF_PER_CHANNEL, typename D>
 void biquad_filter_func(D *out, const D *in, size_t frames, size_t stride,
         size_t channelCount, D *delays, const D *coefs, size_t localStride,
         FILTER_OPTION filterOptions) {
@@ -525,10 +585,10 @@ void biquad_filter_func(D *out, const D *in, size_t frames, size_t stride,
             default:
                 if (remaining >= 16) {
                     remaining &= ~15;
-                    biquad_filter_func_impl<
-                            BiquadFilterType,
+                    biquad_filter_func_impl<ConstOptions,
                             nearestOccupancy(OCCUPANCY,
-                                    BiquadFilterType<D, D>::required_occupancies_),
+                                    ConstOptions::template FilterType<D, D>
+                                                ::required_occupancies_),
                             SAME_COEF_PER_CHANNEL, alt_16_t>(
                             out + offset, in + offset, frames, stride, remaining,
                             delays + offset, c, localStride);
@@ -536,20 +596,20 @@ void biquad_filter_func(D *out, const D *in, size_t frames, size_t stride,
                     continue;
                 }
                 break;  // case 1 handled at bottom.
-            BIQUAD_FILTER_CASE(15, BiquadFilterType, intrinsics::internal_array_t<float, 15>)
-            BIQUAD_FILTER_CASE(14, BiquadFilterType, intrinsics::internal_array_t<float, 14>)
-            BIQUAD_FILTER_CASE(13, BiquadFilterType, intrinsics::internal_array_t<float, 13>)
-            BIQUAD_FILTER_CASE(12, BiquadFilterType, intrinsics::internal_array_t<float, 12>)
-            BIQUAD_FILTER_CASE(11, BiquadFilterType, intrinsics::internal_array_t<float, 11>)
-            BIQUAD_FILTER_CASE(10, BiquadFilterType, intrinsics::internal_array_t<float, 10>)
-            BIQUAD_FILTER_CASE(9, BiquadFilterType, intrinsics::internal_array_t<float, 9>)
-            BIQUAD_FILTER_CASE(8, BiquadFilterType, alt_8_t)
-            BIQUAD_FILTER_CASE(7, BiquadFilterType, intrinsics::internal_array_t<float, 7>)
-            BIQUAD_FILTER_CASE(6, BiquadFilterType, intrinsics::internal_array_t<float, 6>)
-            BIQUAD_FILTER_CASE(5, BiquadFilterType, intrinsics::internal_array_t<float, 5>)
-            BIQUAD_FILTER_CASE(4, BiquadFilterType, alt_4_t)
-            BIQUAD_FILTER_CASE(3, BiquadFilterType, intrinsics::internal_array_t<float, 3>)
-            BIQUAD_FILTER_CASE(2, BiquadFilterType, intrinsics::internal_array_t<float, 2>)
+            BIQUAD_FILTER_CASE(15, intrinsics::internal_array_t<float, 15>)
+            BIQUAD_FILTER_CASE(14, intrinsics::internal_array_t<float, 14>)
+            BIQUAD_FILTER_CASE(13, intrinsics::internal_array_t<float, 13>)
+            BIQUAD_FILTER_CASE(12, intrinsics::internal_array_t<float, 12>)
+            BIQUAD_FILTER_CASE(11, intrinsics::internal_array_t<float, 11>)
+            BIQUAD_FILTER_CASE(10, intrinsics::internal_array_t<float, 10>)
+            BIQUAD_FILTER_CASE(9, intrinsics::internal_array_t<float, 9>)
+            BIQUAD_FILTER_CASE(8, alt_8_t)
+            BIQUAD_FILTER_CASE(7, intrinsics::internal_array_t<float, 7>)
+            BIQUAD_FILTER_CASE(6, intrinsics::internal_array_t<float, 6>)
+            BIQUAD_FILTER_CASE(5, intrinsics::internal_array_t<float, 5>)
+            BIQUAD_FILTER_CASE(4, alt_4_t)
+            BIQUAD_FILTER_CASE(3, intrinsics::internal_array_t<float, 3>)
+            BIQUAD_FILTER_CASE(2, intrinsics::internal_array_t<float, 2>)
             // BIQUAD_FILTER_CASE(1, BiquadFilterType, intrinsics::internal_array_t<float, 1>)
             }
         } else if constexpr (std::is_same_v<D, double>) {
@@ -558,9 +618,10 @@ void biquad_filter_func(D *out, const D *in, size_t frames, size_t stride,
             default:
                 if (remaining >= 8) {
                     remaining &= ~7;
-                    biquad_filter_func_impl<BiquadFilterType,
+                    biquad_filter_func_impl<ConstOptions,
                             nearestOccupancy(OCCUPANCY,
-                                    BiquadFilterType<D, D>::required_occupancies_),
+                                     ConstOptions::template FilterType<D, D>
+                                                 ::required_occupancies_),
                             SAME_COEF_PER_CHANNEL,
                             intrinsics::internal_array_t<double, 8>>(
                             out + offset, in + offset, frames, stride, remaining,
@@ -569,12 +630,12 @@ void biquad_filter_func(D *out, const D *in, size_t frames, size_t stride,
                     continue;
                 }
                 break; // case 1 handled at bottom.
-            BIQUAD_FILTER_CASE(7, BiquadFilterType, intrinsics::internal_array_t<double, 7>)
-            BIQUAD_FILTER_CASE(6, BiquadFilterType, intrinsics::internal_array_t<double, 6>)
-            BIQUAD_FILTER_CASE(5, BiquadFilterType, intrinsics::internal_array_t<double, 5>)
-            BIQUAD_FILTER_CASE(4, BiquadFilterType, intrinsics::internal_array_t<double, 4>)
-            BIQUAD_FILTER_CASE(3, BiquadFilterType, intrinsics::internal_array_t<double, 3>)
-            BIQUAD_FILTER_CASE(2, BiquadFilterType, intrinsics::internal_array_t<double, 2>)
+            BIQUAD_FILTER_CASE(7, intrinsics::internal_array_t<double, 7>)
+            BIQUAD_FILTER_CASE(6, intrinsics::internal_array_t<double, 6>)
+            BIQUAD_FILTER_CASE(5, intrinsics::internal_array_t<double, 5>)
+            BIQUAD_FILTER_CASE(4, intrinsics::internal_array_t<double, 4>)
+            BIQUAD_FILTER_CASE(3, intrinsics::internal_array_t<double, 3>)
+            BIQUAD_FILTER_CASE(2, intrinsics::internal_array_t<double, 2>)
             };
 #endif
         }
@@ -582,9 +643,9 @@ void biquad_filter_func(D *out, const D *in, size_t frames, size_t stride,
         // Essentially the code below is scalar, the same as
         // biquad_filter_1fast<OCCUPANCY, SAME_COEF_PER_CHANNEL>,
         // but formulated with NEON intrinsic-like call pattern.
-        biquad_filter_func_impl<BiquadFilterType,
+        biquad_filter_func_impl<ConstOptions,
                 nearestOccupancy(OCCUPANCY,
-                        BiquadFilterType<D, D>::required_occupancies_),
+                        ConstOptions::template FilterType<D, D>::required_occupancies_),
                  SAME_COEF_PER_CHANNEL, D>(
                 out + offset, in + offset, frames, stride, remaining,
                 delays + offset, c, localStride);
@@ -651,7 +712,10 @@ void biquad_filter_func(D *out, const D *in, size_t frames, size_t stride,
  *         are shared between channels, or false if the Biquad coefficients
  *         may differ between channels. The default is true.
  */
-template <typename D = float, bool SAME_COEF_PER_CHANNEL = true>
+
+template <typename D = float,
+        bool SAME_COEF_PER_CHANNEL = true,
+        typename ConstOptions = details::DefaultBiquadConstOptions>
 class BiquadFilter {
 public:
     template <typename T = std::array<D, kBiquadNumCoefs>>
@@ -1020,8 +1084,9 @@ private:
                 details::FILTER_OPTION filterOptions) {
             constexpr size_t NEAREST_OCCUPANCY =
                 details::nearestOccupancy(
-                        OCCUPANCY, details::BiquadFilterType<D, D>::required_occupancies_);
-            details::biquad_filter_func<NEAREST_OCCUPANCY, SC>(
+                        OCCUPANCY, ConstOptions::template FilterType<D, D>
+                                               ::required_occupancies_);
+            details::biquad_filter_func<ConstOptions, NEAREST_OCCUPANCY, SC>(
                     out, in, frames, stride, channelCount, delays, coef, localStride,
                     filterOptions);
         }

@@ -1413,6 +1413,10 @@ int camera_metadata_enum_snprint(uint32_t tag,
                     msg = "ON";
                     ret = 0;
                     break;
+                case ANDROID_CONTROL_VIDEO_STABILIZATION_MODE_PREVIEW_STABILIZATION:
+                    msg = "PREVIEW_STABILIZATION";
+                    ret = 0;
+                    break;
                 default:
                     msg = "error: enum value out of range";
             }
@@ -4072,6 +4076,12 @@ int camera_metadata_enum_value(uint32_t tag,
                 enumName = "ON";
                 if (strncmp(name, enumName, size) == 0) {
                     *value = ANDROID_CONTROL_VIDEO_STABILIZATION_MODE_ON;
+                    ret = 0;
+                    break;
+                }
+                enumName = "PREVIEW_STABILIZATION";
+                if (strncmp(name, enumName, size) == 0) {
+                    *value = ANDROID_CONTROL_VIDEO_STABILIZATION_MODE_PREVIEW_STABILIZATION;
                     ret = 0;
                     break;
                 }

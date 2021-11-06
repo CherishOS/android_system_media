@@ -689,6 +689,7 @@ typedef enum camera_metadata_enum_android_control_scene_mode {
 typedef enum camera_metadata_enum_android_control_video_stabilization_mode {
     ANDROID_CONTROL_VIDEO_STABILIZATION_MODE_OFF                    , // HIDL v3.2
     ANDROID_CONTROL_VIDEO_STABILIZATION_MODE_ON                     , // HIDL v3.2
+    ANDROID_CONTROL_VIDEO_STABILIZATION_MODE_PREVIEW_STABILIZATION  , // HIDL v3.8
 } camera_metadata_enum_android_control_video_stabilization_mode_t;
 
 // ANDROID_CONTROL_AE_STATE
