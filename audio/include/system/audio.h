@@ -601,9 +601,7 @@ struct audio_port_config {
     audio_channel_mask_t     channel_mask; /* channel mask if applicable */
     audio_format_t           format;       /* format if applicable */
     struct audio_gain_config gain;         /* gain to apply if applicable */
-#ifndef AUDIO_NO_SYSTEM_DECLARATIONS
-    union audio_io_flags     flags;        /* framework only: HW_AV_SYNC, DIRECT, ... */
-#endif
+    union audio_io_flags     flags;        /* HW_AV_SYNC, DIRECT, ... */
     union {
         struct audio_port_config_device_ext  device;  /* device specific info */
         struct audio_port_config_mix_ext     mix;     /* mix specific info */
