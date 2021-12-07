@@ -578,13 +578,12 @@ enum {
     AUDIO_PORT_CONFIG_CHANNEL_MASK = 0x2u,
     AUDIO_PORT_CONFIG_FORMAT       = 0x4u,
     AUDIO_PORT_CONFIG_GAIN         = 0x8u,
-#ifndef AUDIO_NO_SYSTEM_DECLARATIONS
     AUDIO_PORT_CONFIG_FLAGS        = 0x10u,
-#endif
     AUDIO_PORT_CONFIG_ALL          = AUDIO_PORT_CONFIG_SAMPLE_RATE |
                                      AUDIO_PORT_CONFIG_CHANNEL_MASK |
                                      AUDIO_PORT_CONFIG_FORMAT |
-                                     AUDIO_PORT_CONFIG_GAIN,
+                                     AUDIO_PORT_CONFIG_GAIN |
+                                     AUDIO_PORT_CONFIG_FLAGS
 };
 
 typedef enum {
@@ -884,12 +883,10 @@ static inline bool audio_port_configs_are_equal(
     }
     return
             lhs->config_mask == rhs->config_mask &&
-#ifndef AUDIO_NO_SYSTEM_DECLARATIONS
             ((lhs->config_mask & AUDIO_PORT_CONFIG_FLAGS) == 0 ||
                     (audio_port_config_has_input_direction(lhs) ?
                             lhs->flags.input == rhs->flags.input :
                             lhs->flags.output == rhs->flags.output)) &&
-#endif
             ((lhs->config_mask & AUDIO_PORT_CONFIG_SAMPLE_RATE) == 0 ||
                     lhs->sample_rate == rhs->sample_rate) &&
             ((lhs->config_mask & AUDIO_PORT_CONFIG_CHANNEL_MASK) == 0 ||
