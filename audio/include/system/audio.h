@@ -106,6 +106,7 @@ typedef enum {
     AUDIO_FLAG_CAPTURE_PRIVATE            = 0X2000,
     AUDIO_FLAG_CONTENT_SPATIALIZED        = 0X4000,
     AUDIO_FLAG_NEVER_SPATIALIZE           = 0X8000,
+    AUDIO_FLAG_CALL_REDIRECTION           = 0X10000,
 } audio_flags_mask_t;
 
 /* Audio attributes */
