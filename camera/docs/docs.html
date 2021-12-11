@@ -21698,7 +21698,8 @@ describes the minimum required output stream configurations based on the hardwar
 </tbody>
 </table>
 <p>For applications targeting SDK version 31 or newer,<wbr/> if the mobile device declares to be
-<a href="https://developer.android.com/reference/android/os/Build/VERSION_CDOES/MEDIA_PERFORMANCE_CLASS.html">media performance class</a> S,<wbr/>
+media performance class 12 or higher by setting
+<a href="https://developer.android.com/reference/android/os/Build/VERSION_CDOES/MEDIA_PERFORMANCE_CLASS.html">MEDIA_<wbr/>PERFORMANCE_<wbr/>CLASS</a> to be 31 or larger,<wbr/>
 the primary camera devices (first rear/<wbr/>front camera in the camera ID list) will not
 support JPEG sizes smaller than 1080p.<wbr/> If the application configures a JPEG stream
 smaller than 1080p,<wbr/> the camera device will round up the JPEG image size to at least
@@ -21771,9 +21772,11 @@ This new minimum required output stream configurations are illustrated by the ta
 </tbody>
 </table>
 <p>For applications targeting SDK version 31 or newer,<wbr/> if the mobile device doesn't declare
-to be media performance class S,<wbr/> or if the camera device isn't a primary rear/<wbr/>front
-camera,<wbr/> the minimum required output stream configurations are the same as for applications
-targeting SDK version older than 31.<wbr/></p>
+to be media performance class 12 or better by setting
+<a href="https://developer.android.com/reference/android/os/Build/VERSION_CDOES/MEDIA_PERFORMANCE_CLASS.html">MEDIA_<wbr/>PERFORMANCE_<wbr/>CLASS</a> to be 31 or larger,<wbr/>
+or if the camera device isn't a primary rear/<wbr/>front camera,<wbr/> the minimum required output
+stream configurations are the same as for applications targeting SDK version older than
+31.<wbr/></p>
 <p>Refer to <a href="#static_android.request.availableCapabilities">android.<wbr/>request.<wbr/>available<wbr/>Capabilities</a> for additional
 mandatory stream configurations on a per-capability basis.<wbr/></p>
 <p>Exception on 176x144 (QCIF) resolution: camera devices usually have a fixed capability for
@@ -21822,10 +21825,11 @@ formats),<wbr/> as output streams:</p>
 <li>720p (1280 x 720)</li>
 <li>1080p (1920 x 1080)</li>
 </ul>
-<p>Note that for Performance Class 12 primary cameras (first rear/<wbr/>front facing camera in the
-camera ID list),<wbr/> camera framework filters out JPEG sizes smaller than 1080p depending on
+<p>Note that for primary cameras (first rear/<wbr/>front facing camera in the camera ID list)
+on a device with <a href="https://developer.android.com/reference/android/os/Build/VERSION_CDOES/MEDIA_PERFORMANCE_CLASS.html">MEDIA_<wbr/>PERFORMANCE_<wbr/>CLASS</a> set to
+31 or larger,<wbr/> camera framework filters out JPEG sizes smaller than 1080p depending on
 applications' targetSdkLevel.<wbr/> The camera HAL must still support the smaller JPEG sizes
-to maintain backward comopatibility.<wbr/></p>
+to maintain backward compatibility.<wbr/></p>
 <p>For LIMITED capability devices
 (<code><a href="#static_android.info.supportedHardwareLevel">android.<wbr/>info.<wbr/>supported<wbr/>Hardware<wbr/>Level</a> == LIMITED</code>),<wbr/>
 the HAL only has to list up to the maximum video size
