@@ -2072,7 +2072,7 @@ xsi:schemaLocation="http://schemas.android.com/service/camera/metadata/ metadata
           </details>
           <hal_details>
           When this key is set to "PREVIEW_STABILIZATION",
-          for non-stalling buffers returned without errors, the time interval between notify shutter
+          for non-stalling buffers returned without errors, the time interval between notify readout
           timestamp and when buffers are returned to the camera framework, must be no more than 1
           extra frame interval, relative to the case where this key is set to "OFF".
 
