@@ -300,6 +300,10 @@ typedef enum camera_metadata_tag {
                                                       // int32[]      | ndk_public   | HIDL v3.3
     ANDROID_REQUEST_CHARACTERISTIC_KEYS_NEEDING_PERMISSION,
                                                       // int32[]      | hidden       | HIDL v3.4
+    ANDROID_REQUEST_AVAILABLE_DYNAMIC_RANGE_PROFILES_MAP,
+                                                      // enum[]       | ndk_public   | HIDL v3.8
+    ANDROID_REQUEST_RECOMMENDED_TEN_BIT_DYNAMIC_RANGE_PROFILE,
+                                                      // int32        | java_public  | HIDL v3.8
     ANDROID_REQUEST_END,
 
     ANDROID_SCALER_CROP_REGION =                      // int32[]      | public       | HIDL v3.2
@@ -907,7 +911,33 @@ typedef enum camera_metadata_enum_android_request_available_capabilities {
     ANDROID_REQUEST_AVAILABLE_CAPABILITIES_ULTRA_HIGH_RESOLUTION_SENSOR
                                                                      , // HIDL v3.6
     ANDROID_REQUEST_AVAILABLE_CAPABILITIES_REMOSAIC_REPROCESSING    , // HIDL v3.6
+    ANDROID_REQUEST_AVAILABLE_CAPABILITIES_DYNAMIC_RANGE_TEN_BIT    , // HIDL v3.8
 } camera_metadata_enum_android_request_available_capabilities_t;
+
+// ANDROID_REQUEST_AVAILABLE_DYNAMIC_RANGE_PROFILES_MAP
+typedef enum camera_metadata_enum_android_request_available_dynamic_range_profiles_map {
+    ANDROID_REQUEST_AVAILABLE_DYNAMIC_RANGE_PROFILES_MAP_STANDARD    = 0x1, // HIDL v3.8
+    ANDROID_REQUEST_AVAILABLE_DYNAMIC_RANGE_PROFILES_MAP_HLG10       = 0x2, // HIDL v3.8
+    ANDROID_REQUEST_AVAILABLE_DYNAMIC_RANGE_PROFILES_MAP_HDR10       = 0x4, // HIDL v3.8
+    ANDROID_REQUEST_AVAILABLE_DYNAMIC_RANGE_PROFILES_MAP_HDR10_PLUS  = 0x8, // HIDL v3.8
+    ANDROID_REQUEST_AVAILABLE_DYNAMIC_RANGE_PROFILES_MAP_DOLBY_VISION_10B_HDR_REF
+                                                                      = 0x10, // HIDL v3.8
+    ANDROID_REQUEST_AVAILABLE_DYNAMIC_RANGE_PROFILES_MAP_DOLBY_VISION_10B_HDR_REF_PO
+                                                                      = 0x20, // HIDL v3.8
+    ANDROID_REQUEST_AVAILABLE_DYNAMIC_RANGE_PROFILES_MAP_DOLBY_VISION_10B_HDR_OEM
+                                                                      = 0x40, // HIDL v3.8
+    ANDROID_REQUEST_AVAILABLE_DYNAMIC_RANGE_PROFILES_MAP_DOLBY_VISION_10B_HDR_OEM_PO
+                                                                      = 0x80, // HIDL v3.8
+    ANDROID_REQUEST_AVAILABLE_DYNAMIC_RANGE_PROFILES_MAP_DOLBY_VISION_8B_HDR_REF
+                                                                      = 0x100, // HIDL v3.8
+    ANDROID_REQUEST_AVAILABLE_DYNAMIC_RANGE_PROFILES_MAP_DOLBY_VISION_8B_HDR_REF_PO
+                                                                      = 0x200, // HIDL v3.8
+    ANDROID_REQUEST_AVAILABLE_DYNAMIC_RANGE_PROFILES_MAP_DOLBY_VISION_8B_HDR_OEM
+                                                                      = 0x400, // HIDL v3.8
+    ANDROID_REQUEST_AVAILABLE_DYNAMIC_RANGE_PROFILES_MAP_DOLBY_VISION_8B_HDR_OEM_PO
+                                                                      = 0x800, // HIDL v3.8
+    ANDROID_REQUEST_AVAILABLE_DYNAMIC_RANGE_PROFILES_MAP_MAX         = 0x1000, // HIDL v3.8
+} camera_metadata_enum_android_request_available_dynamic_range_profiles_map_t;
 
 
 // ANDROID_SCALER_AVAILABLE_FORMATS
@@ -952,6 +982,10 @@ typedef enum camera_metadata_enum_android_scaler_available_recommended_stream_co
                                                                       = 0x6, // HIDL v3.4
     ANDROID_SCALER_AVAILABLE_RECOMMENDED_STREAM_CONFIGURATIONS_PUBLIC_END
                                                                       = 0x7, // HIDL v3.4
+    ANDROID_SCALER_AVAILABLE_RECOMMENDED_STREAM_CONFIGURATIONS_10BIT_OUTPUT
+                                                                      = 0x8, // HIDL v3.8
+    ANDROID_SCALER_AVAILABLE_RECOMMENDED_STREAM_CONFIGURATIONS_PUBLIC_END_3_8
+                                                                      = 0x9, // HIDL v3.8
     ANDROID_SCALER_AVAILABLE_RECOMMENDED_STREAM_CONFIGURATIONS_VENDOR_START
                                                                       = 0x18, // HIDL v3.4
 } camera_metadata_enum_android_scaler_available_recommended_stream_configurations_t;

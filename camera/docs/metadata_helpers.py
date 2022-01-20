@@ -183,6 +183,7 @@ def protobuf_type(entry):
     "capability"             : "Capability",
     "multiResolutionStreamConfigurationMap" : "MultiResolutionStreamConfigurations",
     "deviceStateSensorOrientationMap"  : "DeviceStateSensorOrientationMap",
+    "dynamicRangeProfiles"   : "DynamicRangeProfiles",
   }
 
   if typeName not in typename_to_protobuftype:

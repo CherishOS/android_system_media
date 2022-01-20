@@ -456,6 +456,12 @@ static tag_info_t android_request[ANDROID_REQUEST_END -
     [ ANDROID_REQUEST_CHARACTERISTIC_KEYS_NEEDING_PERMISSION - ANDROID_REQUEST_START ] =
     { "characteristicKeysNeedingPermission",
                                         TYPE_INT32  },
+    [ ANDROID_REQUEST_AVAILABLE_DYNAMIC_RANGE_PROFILES_MAP - ANDROID_REQUEST_START ] =
+    { "availableDynamicRangeProfilesMap",
+                                        TYPE_INT32  },
+    [ ANDROID_REQUEST_RECOMMENDED_TEN_BIT_DYNAMIC_RANGE_PROFILE - ANDROID_REQUEST_START ] =
+    { "recommendedTenBitDynamicRangeProfile",
+                                        TYPE_INT32  },
 };
 
 static tag_info_t android_scaler[ANDROID_SCALER_END -
@@ -2235,6 +2241,10 @@ int camera_metadata_enum_snprint(uint32_t tag,
                     msg = "REMOSAIC_REPROCESSING";
                     ret = 0;
                     break;
+                case ANDROID_REQUEST_AVAILABLE_CAPABILITIES_DYNAMIC_RANGE_TEN_BIT:
+                    msg = "DYNAMIC_RANGE_TEN_BIT";
+                    ret = 0;
+                    break;
                 default:
                     msg = "error: enum value out of range";
             }
@@ -2256,6 +2266,68 @@ int camera_metadata_enum_snprint(uint32_t tag,
             break;
         }
         case ANDROID_REQUEST_CHARACTERISTIC_KEYS_NEEDING_PERMISSION: {
+            break;
+        }
+        case ANDROID_REQUEST_AVAILABLE_DYNAMIC_RANGE_PROFILES_MAP: {
+            switch (value) {
+                case ANDROID_REQUEST_AVAILABLE_DYNAMIC_RANGE_PROFILES_MAP_STANDARD:
+                    msg = "STANDARD";
+                    ret = 0;
+                    break;
+                case ANDROID_REQUEST_AVAILABLE_DYNAMIC_RANGE_PROFILES_MAP_HLG10:
+                    msg = "HLG10";
+                    ret = 0;
+                    break;
+                case ANDROID_REQUEST_AVAILABLE_DYNAMIC_RANGE_PROFILES_MAP_HDR10:
+                    msg = "HDR10";
+                    ret = 0;
+                    break;
+                case ANDROID_REQUEST_AVAILABLE_DYNAMIC_RANGE_PROFILES_MAP_HDR10_PLUS:
+                    msg = "HDR10_PLUS";
+                    ret = 0;
+                    break;
+                case ANDROID_REQUEST_AVAILABLE_DYNAMIC_RANGE_PROFILES_MAP_DOLBY_VISION_10B_HDR_REF:
+                    msg = "DOLBY_VISION_10B_HDR_REF";
+                    ret = 0;
+                    break;
+                case ANDROID_REQUEST_AVAILABLE_DYNAMIC_RANGE_PROFILES_MAP_DOLBY_VISION_10B_HDR_REF_PO:
+                    msg = "DOLBY_VISION_10B_HDR_REF_PO";
+                    ret = 0;
+                    break;
+                case ANDROID_REQUEST_AVAILABLE_DYNAMIC_RANGE_PROFILES_MAP_DOLBY_VISION_10B_HDR_OEM:
+                    msg = "DOLBY_VISION_10B_HDR_OEM";
+                    ret = 0;
+                    break;
+                case ANDROID_REQUEST_AVAILABLE_DYNAMIC_RANGE_PROFILES_MAP_DOLBY_VISION_10B_HDR_OEM_PO:
+                    msg = "DOLBY_VISION_10B_HDR_OEM_PO";
+                    ret = 0;
+                    break;
+                case ANDROID_REQUEST_AVAILABLE_DYNAMIC_RANGE_PROFILES_MAP_DOLBY_VISION_8B_HDR_REF:
+                    msg = "DOLBY_VISION_8B_HDR_REF";
+                    ret = 0;
+                    break;
+                case ANDROID_REQUEST_AVAILABLE_DYNAMIC_RANGE_PROFILES_MAP_DOLBY_VISION_8B_HDR_REF_PO:
+                    msg = "DOLBY_VISION_8B_HDR_REF_PO";
+                    ret = 0;
+                    break;
+                case ANDROID_REQUEST_AVAILABLE_DYNAMIC_RANGE_PROFILES_MAP_DOLBY_VISION_8B_HDR_OEM:
+                    msg = "DOLBY_VISION_8B_HDR_OEM";
+                    ret = 0;
+                    break;
+                case ANDROID_REQUEST_AVAILABLE_DYNAMIC_RANGE_PROFILES_MAP_DOLBY_VISION_8B_HDR_OEM_PO:
+                    msg = "DOLBY_VISION_8B_HDR_OEM_PO";
+                    ret = 0;
+                    break;
+                case ANDROID_REQUEST_AVAILABLE_DYNAMIC_RANGE_PROFILES_MAP_MAX:
+                    msg = "MAX";
+                    ret = 0;
+                    break;
+                default:
+                    msg = "error: enum value out of range";
+            }
+            break;
+        }
+        case ANDROID_REQUEST_RECOMMENDED_TEN_BIT_DYNAMIC_RANGE_PROFILE: {
             break;
         }
 
@@ -2401,6 +2473,14 @@ int camera_metadata_enum_snprint(uint32_t tag,
                     break;
                 case ANDROID_SCALER_AVAILABLE_RECOMMENDED_STREAM_CONFIGURATIONS_PUBLIC_END:
                     msg = "PUBLIC_END";
+                    ret = 0;
+                    break;
+                case ANDROID_SCALER_AVAILABLE_RECOMMENDED_STREAM_CONFIGURATIONS_10BIT_OUTPUT:
+                    msg = "10BIT_OUTPUT";
+                    ret = 0;
+                    break;
+                case ANDROID_SCALER_AVAILABLE_RECOMMENDED_STREAM_CONFIGURATIONS_PUBLIC_END_3_8:
+                    msg = "PUBLIC_END_3_8";
                     ret = 0;
                     break;
                 case ANDROID_SCALER_AVAILABLE_RECOMMENDED_STREAM_CONFIGURATIONS_VENDOR_START:
@@ -4987,6 +5067,12 @@ int camera_metadata_enum_value(uint32_t tag,
                     ret = 0;
                     break;
                 }
+                enumName = "DYNAMIC_RANGE_TEN_BIT";
+                if (strncmp(name, enumName, size) == 0) {
+                    *value = ANDROID_REQUEST_AVAILABLE_CAPABILITIES_DYNAMIC_RANGE_TEN_BIT;
+                    ret = 0;
+                    break;
+                }
             break;
         }
         case ANDROID_REQUEST_AVAILABLE_REQUEST_KEYS: {
@@ -5005,6 +5091,90 @@ int camera_metadata_enum_value(uint32_t tag,
             break;
         }
         case ANDROID_REQUEST_CHARACTERISTIC_KEYS_NEEDING_PERMISSION: {
+            break;
+        }
+        case ANDROID_REQUEST_AVAILABLE_DYNAMIC_RANGE_PROFILES_MAP: {
+                enumName = "STANDARD";
+                if (strncmp(name, enumName, size) == 0) {
+                    *value = ANDROID_REQUEST_AVAILABLE_DYNAMIC_RANGE_PROFILES_MAP_STANDARD;
+                    ret = 0;
+                    break;
+                }
+                enumName = "HLG10";
+                if (strncmp(name, enumName, size) == 0) {
+                    *value = ANDROID_REQUEST_AVAILABLE_DYNAMIC_RANGE_PROFILES_MAP_HLG10;
+                    ret = 0;
+                    break;
+                }
+                enumName = "HDR10";
+                if (strncmp(name, enumName, size) == 0) {
+                    *value = ANDROID_REQUEST_AVAILABLE_DYNAMIC_RANGE_PROFILES_MAP_HDR10;
+                    ret = 0;
+                    break;
+                }
+                enumName = "HDR10_PLUS";
+                if (strncmp(name, enumName, size) == 0) {
+                    *value = ANDROID_REQUEST_AVAILABLE_DYNAMIC_RANGE_PROFILES_MAP_HDR10_PLUS;
+                    ret = 0;
+                    break;
+                }
+                enumName = "DOLBY_VISION_10B_HDR_REF";
+                if (strncmp(name, enumName, size) == 0) {
+                    *value = ANDROID_REQUEST_AVAILABLE_DYNAMIC_RANGE_PROFILES_MAP_DOLBY_VISION_10B_HDR_REF;
+                    ret = 0;
+                    break;
+                }
+                enumName = "DOLBY_VISION_10B_HDR_REF_PO";
+                if (strncmp(name, enumName, size) == 0) {
+                    *value = ANDROID_REQUEST_AVAILABLE_DYNAMIC_RANGE_PROFILES_MAP_DOLBY_VISION_10B_HDR_REF_PO;
+                    ret = 0;
+                    break;
+                }
+                enumName = "DOLBY_VISION_10B_HDR_OEM";
+                if (strncmp(name, enumName, size) == 0) {
+                    *value = ANDROID_REQUEST_AVAILABLE_DYNAMIC_RANGE_PROFILES_MAP_DOLBY_VISION_10B_HDR_OEM;
+                    ret = 0;
+                    break;
+                }
+                enumName = "DOLBY_VISION_10B_HDR_OEM_PO";
+                if (strncmp(name, enumName, size) == 0) {
+                    *value = ANDROID_REQUEST_AVAILABLE_DYNAMIC_RANGE_PROFILES_MAP_DOLBY_VISION_10B_HDR_OEM_PO;
+                    ret = 0;
+                    break;
+                }
+                enumName = "DOLBY_VISION_8B_HDR_REF";
+                if (strncmp(name, enumName, size) == 0) {
+                    *value = ANDROID_REQUEST_AVAILABLE_DYNAMIC_RANGE_PROFILES_MAP_DOLBY_VISION_8B_HDR_REF;
+                    ret = 0;
+                    break;
+                }
+                enumName = "DOLBY_VISION_8B_HDR_REF_PO";
+                if (strncmp(name, enumName, size) == 0) {
+                    *value = ANDROID_REQUEST_AVAILABLE_DYNAMIC_RANGE_PROFILES_MAP_DOLBY_VISION_8B_HDR_REF_PO;
+                    ret = 0;
+                    break;
+                }
+                enumName = "DOLBY_VISION_8B_HDR_OEM";
+                if (strncmp(name, enumName, size) == 0) {
+                    *value = ANDROID_REQUEST_AVAILABLE_DYNAMIC_RANGE_PROFILES_MAP_DOLBY_VISION_8B_HDR_OEM;
+                    ret = 0;
+                    break;
+                }
+                enumName = "DOLBY_VISION_8B_HDR_OEM_PO";
+                if (strncmp(name, enumName, size) == 0) {
+                    *value = ANDROID_REQUEST_AVAILABLE_DYNAMIC_RANGE_PROFILES_MAP_DOLBY_VISION_8B_HDR_OEM_PO;
+                    ret = 0;
+                    break;
+                }
+                enumName = "MAX";
+                if (strncmp(name, enumName, size) == 0) {
+                    *value = ANDROID_REQUEST_AVAILABLE_DYNAMIC_RANGE_PROFILES_MAP_MAX;
+                    ret = 0;
+                    break;
+                }
+            break;
+        }
+        case ANDROID_REQUEST_RECOMMENDED_TEN_BIT_DYNAMIC_RANGE_PROFILE: {
             break;
         }
 
@@ -5180,6 +5350,18 @@ int camera_metadata_enum_value(uint32_t tag,
                 enumName = "PUBLIC_END";
                 if (strncmp(name, enumName, size) == 0) {
                     *value = ANDROID_SCALER_AVAILABLE_RECOMMENDED_STREAM_CONFIGURATIONS_PUBLIC_END;
+                    ret = 0;
+                    break;
+                }
+                enumName = "10BIT_OUTPUT";
+                if (strncmp(name, enumName, size) == 0) {
+                    *value = ANDROID_SCALER_AVAILABLE_RECOMMENDED_STREAM_CONFIGURATIONS_10BIT_OUTPUT;
+                    ret = 0;
+                    break;
+                }
+                enumName = "PUBLIC_END_3_8";
+                if (strncmp(name, enumName, size) == 0) {
+                    *value = ANDROID_SCALER_AVAILABLE_RECOMMENDED_STREAM_CONFIGURATIONS_PUBLIC_END_3_8;
                     ret = 0;
                     break;
                 }
