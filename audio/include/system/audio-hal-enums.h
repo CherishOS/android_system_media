@@ -295,25 +295,26 @@ inline bool audio_channel_mask_from_string(const char* s, audio_channel_mask_t* 
 
 
 #define AUDIO_CONTENT_TYPE_LIST_DEF(V) \
-    V(AUDIO_CONTENT_TYPE_UNKNOWN) \
-    V(AUDIO_CONTENT_TYPE_SPEECH) \
-    V(AUDIO_CONTENT_TYPE_MUSIC) \
-    V(AUDIO_CONTENT_TYPE_MOVIE) \
-    V(AUDIO_CONTENT_TYPE_SONIFICATION)
+    V(AUDIO_CONTENT_TYPE_UNKNOWN, 0) \
+    V(AUDIO_CONTENT_TYPE_SPEECH, 1) \
+    V(AUDIO_CONTENT_TYPE_MUSIC, 2) \
+    V(AUDIO_CONTENT_TYPE_MOVIE, 3) \
+    V(AUDIO_CONTENT_TYPE_SONIFICATION, 4) \
+    V(AUDIO_CONTENT_TYPE_ULTRASOUND, 1997)
 
 typedef enum {
-    AUDIO_CONTENT_TYPE_LIST_DEF(AUDIO_DEFINE_ENUM_SYMBOL)
+    AUDIO_CONTENT_TYPE_LIST_DEF(AUDIO_DEFINE_ENUM_SYMBOL_V)
 } audio_content_type_t;
 
 inline const char* audio_content_type_to_string(audio_content_type_t t) {
     switch (t) {
-    AUDIO_CONTENT_TYPE_LIST_DEF(AUDIO_DEFINE_STRINGIFY_CASE)
+    AUDIO_CONTENT_TYPE_LIST_DEF(AUDIO_DEFINE_STRINGIFY_CASE_V)
     }
     return "";
 }
 
 inline bool audio_content_type_from_string(const char* s, audio_content_type_t* t) {
-    AUDIO_CONTENT_TYPE_LIST_DEF(AUDIO_DEFINE_PARSE_CASE)
+    AUDIO_CONTENT_TYPE_LIST_DEF(AUDIO_DEFINE_PARSE_CASE_V)
     return false;
 }
 
@@ -437,7 +438,8 @@ inline bool audio_device_from_string(const char* s, audio_devices_t* t) {
     V(AUDIO_OUTPUT_FLAG_MMAP_NOIRQ, 0x4000) \
     V(AUDIO_OUTPUT_FLAG_VOIP_RX, 0x8000) \
     V(AUDIO_OUTPUT_FLAG_INCALL_MUSIC, 0x10000) \
-    V(AUDIO_OUTPUT_FLAG_GAPLESS_OFFLOAD, 0x20000)
+    V(AUDIO_OUTPUT_FLAG_GAPLESS_OFFLOAD, 0x20000) \
+    V(AUDIO_OUTPUT_FLAG_ULTRASOUND, 0x80000) /* 0x40000 is for AUDIO_OUTPUT_FLAG_SPATIALIZER */
 
 typedef enum {
     AUDIO_OUTPUT_FLAG_LIST_DEF(AUDIO_DEFINE_ENUM_SYMBOL_V)
@@ -467,7 +469,8 @@ inline bool audio_output_flag_from_string(const char* s, audio_output_flags_t* t
     V(AUDIO_INPUT_FLAG_MMAP_NOIRQ, 0x10) \
     V(AUDIO_INPUT_FLAG_VOIP_TX, 0x20) \
     V(AUDIO_INPUT_FLAG_HW_AV_SYNC, 0x40) \
-    V(AUDIO_INPUT_FLAG_DIRECT, 0x80)
+    V(AUDIO_INPUT_FLAG_DIRECT, 0x80) \
+    V(AUDIO_INPUT_FLAG_ULTRASOUND, 0x100)
 
 typedef enum {
     AUDIO_INPUT_FLAG_LIST_DEF(AUDIO_DEFINE_ENUM_SYMBOL_V)
@@ -680,7 +683,8 @@ inline bool audio_gain_mode_from_string(const char* s, audio_gain_mode_t* t) {
     V(AUDIO_SOURCE_VOICE_PERFORMANCE, 10) \
     V(AUDIO_SOURCE_ECHO_REFERENCE, 1997) \
     V(AUDIO_SOURCE_FM_TUNER, 1998) \
-    V(AUDIO_SOURCE_HOTWORD, 1999)
+    V(AUDIO_SOURCE_HOTWORD, 1999) \
+    V(AUDIO_SOURCE_ULTRASOUND, 2000)
 #ifdef AUDIO_NO_SYSTEM_DECLARATIONS
 #define AUDIO_SOURCE_LIST_DEF AUDIO_SOURCE_LIST_NO_SYS_DEF
 #else
