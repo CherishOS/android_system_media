@@ -21,9 +21,6 @@
 #include "audio-hal-enums.h"
 #include "audio_common-base.h"
 
-//TODO: b/193496180 use spatializer flag at audio HAL when available
-#define AUDIO_OUTPUT_FLAG_SPATIALIZER ((audio_output_flags_t)0x40000)
-
 /** Define helper values to iterate over enum, extend them or checking value validity.
  *  Those values are compatible with the corresponding enum values.
  *  They are not macro like similar values in audio.h to avoid conflicting
@@ -185,6 +182,7 @@ static CONST_ARRAY audio_devices_t AUDIO_DEVICE_OUT_ALL_ARRAY[] = {
     AUDIO_DEVICE_OUT_ECHO_CANCELLER,            // 0x10000000u
     AUDIO_DEVICE_OUT_BLE_HEADSET,               // 0x20000000u
     AUDIO_DEVICE_OUT_BLE_SPEAKER,               // 0x20000001u
+    AUDIO_DEVICE_OUT_BLE_BROADCAST,             // 0x20000002u
     AUDIO_DEVICE_OUT_DEFAULT,                   // 0x40000000u, BIT_DEFAULT
 };
 
@@ -226,6 +224,7 @@ static CONST_ARRAY audio_devices_t AUDIO_DEVICE_OUT_ALL_DIGITAL_ARRAY[] = {
 static CONST_ARRAY audio_devices_t AUDIO_DEVICE_OUT_ALL_BLE_ARRAY[] = {
     AUDIO_DEVICE_OUT_BLE_HEADSET,               // 0x20000000u
     AUDIO_DEVICE_OUT_BLE_SPEAKER,               // 0x20000001u
+    AUDIO_DEVICE_OUT_BLE_BROADCAST,             // 0x20000002u
 };
 
 // inline constexpr
