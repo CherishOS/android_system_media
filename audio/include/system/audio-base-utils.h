@@ -133,6 +133,8 @@ enum {
 
     AUDIO_USAGE_MAX           = AUDIO_USAGE_CALL_ASSISTANT,
     AUDIO_USAGE_CNT           = AUDIO_USAGE_CALL_ASSISTANT + 1,
+
+    AUDIO_LATENCY_MODE_CNT    = AUDIO_LATENCY_MODE_LOW + 1,
 }; // enum
 
 // Microphone Field Dimension Constants

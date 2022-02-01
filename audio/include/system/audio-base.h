@@ -55,6 +55,11 @@ enum {
     HAL_AUDIO_TIMESTRETCH_FALLBACK_FAIL = 2,
 };
 
+typedef enum {
+    AUDIO_LATENCY_MODE_FREE = 0,
+    AUDIO_LATENCY_MODE_LOW = 1,
+} audio_latency_mode_t;
+
 #ifdef __cplusplus
 }
 #endif
