@@ -2935,9 +2935,14 @@ xsi:schemaLocation="http://schemas.android.com/service/camera/metadata/ metadata
           [30, 120] and [30, 240] for each configuration. In doing so, if the application intends to
           do 120fps recording, it can select [30, 120] to start preview, and [120, 120] to start
           recording. For these variable fps ranges, it's up to the HAL to decide the actual fps
-          values that are suitable for smooth preview streaming. If the HAL sees different max_fps
-          values that fall into different sensor modes in a sequence of requests, the HAL must
-          switch the sensor mode as quick as possible to minimize the mode switch caused stutter.
+          values that are suitable for smooth preview streaming.
+          If the HAL sees different max_fps values that fall into different sensor modes in a
+          sequence of requests, the HAL must switch the sensor mode as quick as possible to minimize
+          the mode switch caused stutter.
+
+          HAL can also support 60fps preview during high speed recording session by advertising
+          [60, max_fps] for preview and [max_fps, max_fps] for recording. However, HAL must not
+          advertise both 30fps preview and 60fps preview for the same recording frame rate.
           </hal_details>
           <tag id="V1" />
         </entry>

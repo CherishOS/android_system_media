@@ -6428,9 +6428,13 @@ For example,<wbr/> if the HAL advertises [120,<wbr/> 120] and [240,<wbr/> 240],<
 [30,<wbr/> 120] and [30,<wbr/> 240] for each configuration.<wbr/> In doing so,<wbr/> if the application intends to
 do 120fps recording,<wbr/> it can select [30,<wbr/> 120] to start preview,<wbr/> and [120,<wbr/> 120] to start
 recording.<wbr/> For these variable fps ranges,<wbr/> it's up to the HAL to decide the actual fps
-values that are suitable for smooth preview streaming.<wbr/> If the HAL sees different max_<wbr/>fps
-values that fall into different sensor modes in a sequence of requests,<wbr/> the HAL must
-switch the sensor mode as quick as possible to minimize the mode switch caused stutter.<wbr/></p>
+values that are suitable for smooth preview streaming.<wbr/>
+If the HAL sees different max_<wbr/>fps values that fall into different sensor modes in a
+sequence of requests,<wbr/> the HAL must switch the sensor mode as quick as possible to minimize
+the mode switch caused stutter.<wbr/></p>
+<p>HAL can also support 60fps preview during high speed recording session by advertising
+[60,<wbr/> max_<wbr/>fps] for preview and [max_<wbr/>fps,<wbr/> max_<wbr/>fps] for recording.<wbr/> However,<wbr/> HAL must not
+advertise both 30fps preview and 60fps preview for the same recording frame rate.<wbr/></p>
             </td>
           </tr>
 
