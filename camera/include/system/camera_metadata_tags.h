@@ -340,6 +340,7 @@ typedef enum camera_metadata_tag {
                                                       // int32        | hidden       | HIDL v3.6
     ANDROID_SCALER_MULTI_RESOLUTION_STREAM_SUPPORTED, // enum         | ndk_public   | HIDL v3.6
     ANDROID_SCALER_CROP_REGION_SET,                   // enum         | fwk_only
+    ANDROID_SCALER_AVAILABLE_STREAM_USE_CASES,        // enum[]       | public       | HIDL v3.8
     ANDROID_SCALER_END,
 
     ANDROID_SENSOR_EXPOSURE_TIME =                    // int64        | public       | HIDL v3.2
@@ -912,6 +913,7 @@ typedef enum camera_metadata_enum_android_request_available_capabilities {
                                                                      , // HIDL v3.6
     ANDROID_REQUEST_AVAILABLE_CAPABILITIES_REMOSAIC_REPROCESSING    , // HIDL v3.6
     ANDROID_REQUEST_AVAILABLE_CAPABILITIES_DYNAMIC_RANGE_TEN_BIT    , // HIDL v3.8
+    ANDROID_REQUEST_AVAILABLE_CAPABILITIES_STREAM_USE_CASE          , // HIDL v3.8
 } camera_metadata_enum_android_request_available_capabilities_t;
 
 // ANDROID_REQUEST_AVAILABLE_DYNAMIC_RANGE_PROFILES_MAP
@@ -1026,6 +1028,17 @@ typedef enum camera_metadata_enum_android_scaler_crop_region_set {
     ANDROID_SCALER_CROP_REGION_SET_FALSE                            ,
     ANDROID_SCALER_CROP_REGION_SET_TRUE                             ,
 } camera_metadata_enum_android_scaler_crop_region_set_t;
+
+// ANDROID_SCALER_AVAILABLE_STREAM_USE_CASES
+typedef enum camera_metadata_enum_android_scaler_available_stream_use_cases {
+    ANDROID_SCALER_AVAILABLE_STREAM_USE_CASES_DEFAULT                = 0x0, // HIDL v3.8
+    ANDROID_SCALER_AVAILABLE_STREAM_USE_CASES_PREVIEW                = 0x1, // HIDL v3.8
+    ANDROID_SCALER_AVAILABLE_STREAM_USE_CASES_STILL_CAPTURE          = 0x2, // HIDL v3.8
+    ANDROID_SCALER_AVAILABLE_STREAM_USE_CASES_VIDEO_RECORD           = 0x3, // HIDL v3.8
+    ANDROID_SCALER_AVAILABLE_STREAM_USE_CASES_PREVIEW_VIDEO_STILL    = 0x4, // HIDL v3.8
+    ANDROID_SCALER_AVAILABLE_STREAM_USE_CASES_VIDEO_CALL             = 0x5, // HIDL v3.8
+    ANDROID_SCALER_AVAILABLE_STREAM_USE_CASES_VENDOR_START           = 0x10000, // HIDL v3.8
+} camera_metadata_enum_android_scaler_available_stream_use_cases_t;
 
 
 // ANDROID_SENSOR_REFERENCE_ILLUMINANT1

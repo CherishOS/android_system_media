@@ -816,6 +816,10 @@
             ><a href="#static_android.scaler.mandatoryTenBitOutputStreamCombinations">android.scaler.mandatoryTenBitOutputStreamCombinations</a></li>
             <li
             ><a href="#static_android.scaler.multiResolutionStreamSupported">android.scaler.multiResolutionStreamSupported</a></li>
+            <li
+            ><a href="#static_android.scaler.availableStreamUseCases">android.scaler.availableStreamUseCases</a></li>
+            <li
+            ><a href="#static_android.scaler.mandatoryUseCaseStreamCombinations">android.scaler.mandatoryUseCaseStreamCombinations</a></li>
           </ul>
         </li>
         <li>
@@ -19311,6 +19315,35 @@ Cameras that enable this capability must also support the following:
 * Recommended dynamic range profile listed in
   <a href="https://developer.android.com/reference/android/hardware/camera2/CameraCharacteristics.html#REQUEST_RECOMMENDED_TEN_BIT_DYNAMIC_RANGE_PROFILE">Camera<wbr/>Characteristics#REQUEST_<wbr/>RECOMMENDED_<wbr/>TEN_<wbr/>BIT_<wbr/>DYNAMIC_<wbr/>RANGE_<wbr/>PROFILE</a>.<wbr/></p></span>
                   </li>
+                  <li>
+                    <span class="entry_type_enum_name">STREAM_USE_CASE (v3.8)</span>
+                    <span class="entry_type_enum_optional">[optional]</span>
+                    <span class="entry_type_enum_notes"><p>The camera device supports selecting a per-stream use case via
+<a href="https://developer.android.com/reference/android/hardware/camera2/params/OutputConfiguration.html#setStreamUseCase">OutputConfiguration#setStreamUseCase</a>
+so that the device can optimize camera pipeline parameters such as tuning,<wbr/> sensor
+mode,<wbr/> or ISP settings for a specific user scenario.<wbr/>
+Some sample usages of this capability are:
+* Distinguish high quality YUV captures from a regular YUV stream where
+  the image quality may not be as good as the JPEG stream,<wbr/> or
+* Use one stream to serve multiple purposes: viewfinder,<wbr/> video recording and
+  still capture.<wbr/> This is common with applications that wish to apply edits equally
+  to preview,<wbr/> saved images,<wbr/> and saved videos.<wbr/></p>
+<p>This capability requires the camera device to support the following
+stream use cases:
+* DEFAULT for backward compatibility where the application doesn't set
+  a stream use case
+* PREVIEW for live viewfinder and in-app image analysis
+* STILL_<wbr/>CAPTURE for still photo capture
+* VIDEO_<wbr/>RECORD for recording video clips
+* PREVIEW_<wbr/>VIDEO_<wbr/>STILL for one single stream used for viewfinder,<wbr/> video
+  recording,<wbr/> and still capture.<wbr/>
+* VIDEO_<wbr/>CALL for long running video calls</p>
+<p><a href="https://developer.android.com/reference/android/hardware/camera2/CameraCharacteristics.html#SCALER_AVAILABLE_STREAM_USE_CASES">Camera<wbr/>Characteristics#SCALER_<wbr/>AVAILABLE_<wbr/>STREAM_<wbr/>USE_<wbr/>CASES</a>
+lists all of the supported stream use cases.<wbr/></p>
+<p>Refer to <a href="https://developer.android.com/reference/android/hardware/camera2/CameraDevice.html#createCaptureSession">CameraDevice#createCaptureSession</a> for the
+mandatory stream combinations involving stream use cases,<wbr/> which can also be queried
+via <a href="https://developer.android.com/reference/android/hardware/camera2/params/MandatoryStreamCombination.html">MandatoryStreamCombination</a>.<wbr/></p></span>
+                  </li>
                 </ul>
 
             </td> <!-- entry_type -->
@@ -23936,6 +23969,260 @@ must have the corresponding reprocessing capabilities (PRIVATE_<wbr/>REPROCESSIN
 or YUV_<wbr/>REPROCESSING respectively).<wbr/> The camera HAL must support reprocessing the
 multi-resolution input stream to the output formats specified in the camera's
 <a href="#static_android.scaler.availableInputOutputFormatsMap">android.<wbr/>scaler.<wbr/>available<wbr/>Input<wbr/>Output<wbr/>Formats<wbr/>Map</a>.<wbr/></p>
+            </td>
+          </tr>
+
+          <tr class="entry_spacer"><td class="entry_spacer" colspan="7"></td></tr>
+           <!-- end of entry -->
+        
+                
+          <tr class="entry" id="static_android.scaler.availableStreamUseCases">
+            <td class="entry_name
+             " rowspan="5">
+              android.<wbr/>scaler.<wbr/>available<wbr/>Stream<wbr/>Use<wbr/>Cases
+            </td>
+            <td class="entry_type">
+                <span class="entry_type_name entry_type_name_enum">int32</span>
+                <span class="entry_type_container">x</span>
+
+                <span class="entry_type_array">
+                  n
+                </span>
+              <span class="entry_type_visibility"> [public]</span>
+
+
+
+
+
+                <ul class="entry_type_enum">
+                  <li>
+                    <span class="entry_type_enum_name">DEFAULT (v3.8)</span>
+                    <span class="entry_type_enum_optional">[optional]</span>
+                    <span class="entry_type_enum_value">0x0</span>
+                    <span class="entry_type_enum_notes"><p>Default stream use case.<wbr/></p>
+<p>This use case is the same as when the application doesn't set any use case for
+the stream.<wbr/> The camera device uses the properties of the output target,<wbr/> such as
+format,<wbr/> dataSpace,<wbr/> or surface class type,<wbr/> to optimize the image processing pipeline.<wbr/></p></span>
+                  </li>
+                  <li>
+                    <span class="entry_type_enum_name">PREVIEW (v3.8)</span>
+                    <span class="entry_type_enum_optional">[optional]</span>
+                    <span class="entry_type_enum_value">0x1</span>
+                    <span class="entry_type_enum_notes"><p>Live stream shown to the user.<wbr/></p>
+<p>Optimized for performance and usability as a viewfinder,<wbr/> but not necessarily for
+image quality.<wbr/> The output is not meant to be persisted as saved images or video.<wbr/></p>
+<p>No stall if android.<wbr/>control.<wbr/><em> are set to FAST; may have stall if android.<wbr/>control.<wbr/></em>
+are set to HIGH_<wbr/>QUALITY.<wbr/> This use case has the same behavior as the default
+SurfaceView and SurfaceTexture targets.<wbr/> Additionally,<wbr/> this use case can be used for
+in-app image analysis.<wbr/></p></span>
+                  </li>
+                  <li>
+                    <span class="entry_type_enum_name">STILL_CAPTURE (v3.8)</span>
+                    <span class="entry_type_enum_optional">[optional]</span>
+                    <span class="entry_type_enum_value">0x2</span>
+                    <span class="entry_type_enum_notes"><p>Still photo capture.<wbr/></p>
+<p>Optimized for high-quality high-resolution capture,<wbr/> and not expected to maintain
+preview-like frame rates.<wbr/></p>
+<p>The stream may have stalls regardless of whether android.<wbr/>control.<wbr/>* is HIGH_<wbr/>QUALITY.<wbr/>
+This use case has the same behavior as the default JPEG and RAW related formats.<wbr/></p></span>
+                  </li>
+                  <li>
+                    <span class="entry_type_enum_name">VIDEO_RECORD (v3.8)</span>
+                    <span class="entry_type_enum_optional">[optional]</span>
+                    <span class="entry_type_enum_value">0x3</span>
+                    <span class="entry_type_enum_notes"><p>Recording video clips.<wbr/></p>
+<p>Optimized for high-quality video capture,<wbr/> including high-quality image stabilization
+if supported by the device and enabled by the application.<wbr/> As a result,<wbr/> may produce
+output frames with a substantial lag from real time,<wbr/> to allow for highest-quality
+stabilization or other processing.<wbr/> As such,<wbr/> such an output is not suitable for drawing
+to screen directly,<wbr/> and is expected to be persisted to disk or similar for later
+playback or processing.<wbr/> Only streams that set the VIDEO_<wbr/>RECORD use case are guaranteed
+to have video stabilization applied when the video stabilization control is set
+to ON,<wbr/> as opposed to PREVIEW_<wbr/>STABILIZATION.<wbr/></p>
+<p>This use case has the same behavior as the default MediaRecorder and MediaCodec
+targets.<wbr/></p></span>
+                  </li>
+                  <li>
+                    <span class="entry_type_enum_name">PREVIEW_VIDEO_STILL (v3.8)</span>
+                    <span class="entry_type_enum_optional">[optional]</span>
+                    <span class="entry_type_enum_value">0x4</span>
+                    <span class="entry_type_enum_notes"><p>One single stream used for combined purposes of preview,<wbr/> video,<wbr/> and still capture.<wbr/></p>
+<p>For such multi-purpose streams,<wbr/> the camera device aims to make the best tradeoff
+between the individual use cases.<wbr/> For example,<wbr/> the STILL_<wbr/>CAPTURE use case by itself
+may have stalls for achieving best image quality.<wbr/> But if combined with PREVIEW and
+VIDEO_<wbr/>RECORD,<wbr/> the camera device needs to trade off the additional image processing
+for speed so that preview and video recording aren't slowed down.<wbr/></p>
+<p>Similarly,<wbr/> VIDEO_<wbr/>RECORD may produce frames with a substantial lag,<wbr/> but
+PREVIEW_<wbr/>VIDEO_<wbr/>STILL must have minimal output delay.<wbr/> This means that to enable video
+stabilization with this use case,<wbr/> the device must support and the app must select the
+PREVIEW_<wbr/>STABILIZATION mode for video stabilization.<wbr/></p></span>
+                  </li>
+                  <li>
+                    <span class="entry_type_enum_name">VIDEO_CALL (v3.8)</span>
+                    <span class="entry_type_enum_optional">[optional]</span>
+                    <span class="entry_type_enum_value">0x5</span>
+                    <span class="entry_type_enum_notes"><p>Long-running video call optimized for both power efficienty and video quality.<wbr/></p>
+<p>The camera sensor may run in a lower-resolution mode to reduce power consumption
+at the cost of some image and digital zoom quality.<wbr/> Unlike VIDEO_<wbr/>RECORD,<wbr/> VIDEO_<wbr/>CALL
+outputs are expected to work in dark conditions,<wbr/> so are usually accompanied with
+variable frame rate settings to allow sufficient exposure time in low light.<wbr/></p></span>
+                  </li>
+                  <li>
+                    <span class="entry_type_enum_name">VENDOR_START (v3.8)</span>
+                    <span class="entry_type_enum_optional">[optional]</span>
+                    <span class="entry_type_enum_hidden">[hidden]</span>
+                    <span class="entry_type_enum_value">0x10000</span>
+                    <span class="entry_type_enum_notes"><p>Vendor defined use cases.<wbr/> These depend on the vendor implementation.<wbr/></p></span>
+                  </li>
+                </ul>
+
+            </td> <!-- entry_type -->
+
+            <td class="entry_description">
+              <p>The stream use cases supported by this camera device.<wbr/></p>
+            </td>
+
+            <td class="entry_units">
+            </td>
+
+            <td class="entry_range">
+            </td>
+
+            <td class="entry_hal_version">
+              <p>3.<wbr/>8</p>
+            </td>
+
+            <td class="entry_tags">
+            </td>
+
+          </tr>
+          <tr class="entries_header">
+            <th class="th_details" colspan="6">Details</th>
+          </tr>
+          <tr class="entry_cont">
+            <td class="entry_details" colspan="6">
+              <p>The stream use case indicates the purpose of a particular camera stream from
+the end-user perspective.<wbr/> Some examples of camera use cases are: preview stream for
+live viewfinder shown to the user,<wbr/> still capture for generating high quality photo
+capture,<wbr/> video record for encoding the camera output for the purpose of future playback,<wbr/>
+and video call for live realtime video conferencing.<wbr/></p>
+<p>With this flag,<wbr/> the camera device can optimize the image processing pipeline
+parameters,<wbr/> such as tuning,<wbr/> sensor mode,<wbr/> and ISP settings,<wbr/> indepedent of
+the properties of the immediate camera output surface.<wbr/> For example,<wbr/> if the output
+surface is a SurfaceTexture,<wbr/> the stream use case flag can be used to indicate whether
+the camera frames eventually go to display,<wbr/> video encoder,<wbr/>
+still image capture,<wbr/> or all of them combined.<wbr/></p>
+<p>The application sets the use case of a camera stream by calling
+<a href="https://developer.android.com/reference/android/hardware/camera2/params/OutputConfiguration.html#setStreamUseCase">OutputConfiguration#setStreamUseCase</a>.<wbr/></p>
+<p>A camera device with
+<a href="https://developer.android.com/reference/android/hardware/camera2/CameraCharacteristics.html#REQUEST_AVAILABLE_CAPABILITIES_STREAM_USE_CASE">Camera<wbr/>Characteristics#REQUEST_<wbr/>AVAILABLE_<wbr/>CAPABILITIES_<wbr/>STREAM_<wbr/>USE_<wbr/>CASE</a>
+capability must support the following stream use cases:</p>
+<ul>
+<li>DEFAULT</li>
+<li>PREVIEW</li>
+<li>STILL_<wbr/>CAPTURE</li>
+<li>VIDEO_<wbr/>RECORD</li>
+<li>PREVIEW_<wbr/>VIDEO_<wbr/>STILL</li>
+<li>VIDEO_<wbr/>CALL</li>
+</ul>
+<p>The guaranteed stream combinations related to stream use case for a camera device with
+<a href="https://developer.android.com/reference/android/hardware/camera2/CameraCharacteristics.html#REQUEST_AVAILABLE_CAPABILITIES_STREAM_USE_CASE">Camera<wbr/>Characteristics#REQUEST_<wbr/>AVAILABLE_<wbr/>CAPABILITIES_<wbr/>STREAM_<wbr/>USE_<wbr/>CASE</a>
+capability is documented in the camera device
+<a href="https://developer.android.com/reference/android/hardware/camera2/CameraDevice.html#createCaptureSession">guideline</a>.<wbr/> The
+application is strongly recommended to use one of the guaranteed stream combintations.<wbr/>
+If the application creates a session with a stream combination not in the guaranteed
+list,<wbr/> or with mixed DEFAULT and non-DEFAULT use cases within the same session,<wbr/>
+the camera device may ignore some stream use cases due to hardware constraints
+and implementation details.<wbr/></p>
+<p>For stream combinations not covered by the stream use case mandatory lists,<wbr/> such as
+reprocessable session,<wbr/> constrained high speed session,<wbr/> or RAW stream combinations,<wbr/> the
+application should leave stream use cases within the session as DEFAULT.<wbr/></p>
+            </td>
+          </tr>
+
+          <tr class="entries_header">
+            <th class="th_details" colspan="6">HAL Implementation Details</th>
+          </tr>
+          <tr class="entry_cont">
+            <td class="entry_details" colspan="6">
+              <p>The camera HAL must support DEFAULT stream use case to handle scenarios where the
+application doesn't explicitly set a stream's use case flag,<wbr/> in which case the camera
+framework sets it to DEFAULT.<wbr/></p>
+            </td>
+          </tr>
+
+          <tr class="entry_spacer"><td class="entry_spacer" colspan="7"></td></tr>
+           <!-- end of entry -->
+        
+                
+          <tr class="entry" id="static_android.scaler.mandatoryUseCaseStreamCombinations">
+            <td class="entry_name
+             " rowspan="5">
+              android.<wbr/>scaler.<wbr/>mandatory<wbr/>Use<wbr/>Case<wbr/>Stream<wbr/>Combinations
+            </td>
+            <td class="entry_type">
+                <span class="entry_type_name">int32</span>
+                <span class="entry_type_container">x</span>
+
+                <span class="entry_type_array">
+                  n
+                </span>
+              <span class="entry_type_visibility"> [java_public as mandatoryStreamCombination]</span>
+
+              <span class="entry_type_synthetic">[synthetic] </span>
+
+
+
+
+
+            </td> <!-- entry_type -->
+
+            <td class="entry_description">
+              <p>An array of mandatory stream combinations with stream use cases.<wbr/>
+This is an app-readable conversion of the mandatory stream combination
+<a href="https://developer.android.com/reference/android/hardware/camera2/CameraDevice.html#createCaptureSession">tables</a> with
+each stream's use case being set.<wbr/></p>
+            </td>
+
+            <td class="entry_units">
+            </td>
+
+            <td class="entry_range">
+            </td>
+
+            <td class="entry_hal_version">
+              <p>3.<wbr/>2</p>
+            </td>
+
+            <td class="entry_tags">
+            </td>
+
+          </tr>
+          <tr class="entries_header">
+            <th class="th_details" colspan="6">Details</th>
+          </tr>
+          <tr class="entry_cont">
+            <td class="entry_details" colspan="6">
+              <p>The array of
+<a href="https://developer.android.com/reference/android/hardware/camera2/params/MandatoryStreamCombination.html">combinations</a> is
+generated according to the documented
+<a href="https://developer.android.com/reference/android/hardware/camera2/CameraDevice.html#createCaptureSession">guideline</a> for a
+camera device with
+<a href="https://developer.android.com/reference/android/hardware/camera2/CameraCharacteristics.html#REQUEST_AVAILABLE_CAPABILITIES_STREAM_USE_CASE">Camera<wbr/>Characteristics#REQUEST_<wbr/>AVAILABLE_<wbr/>CAPABILITIES_<wbr/>STREAM_<wbr/>USE_<wbr/>CASE</a>
+capability.<wbr/>
+The mandatory stream combination array will be {@code null} in case the device doesn't
+have <a href="https://developer.android.com/reference/android/hardware/camera2/CameraCharacteristics.html#REQUEST_AVAILABLE_CAPABILITIES_STREAM_USE_CASE">Camera<wbr/>Characteristics#REQUEST_<wbr/>AVAILABLE_<wbr/>CAPABILITIES_<wbr/>STREAM_<wbr/>USE_<wbr/>CASE</a>
+capability.<wbr/></p>
+            </td>
+          </tr>
+
+          <tr class="entries_header">
+            <th class="th_details" colspan="6">HAL Implementation Details</th>
+          </tr>
+          <tr class="entry_cont">
+            <td class="entry_details" colspan="6">
+              <p>Do not set this property directly
+(it is synthetic and will not be available at the HAL layer).<wbr/></p>
             </td>
           </tr>
 

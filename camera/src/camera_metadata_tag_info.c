@@ -528,6 +528,8 @@ static tag_info_t android_scaler[ANDROID_SCALER_END -
                                         TYPE_BYTE   },
     [ ANDROID_SCALER_CROP_REGION_SET - ANDROID_SCALER_START ] =
     { "cropRegionSet",                 TYPE_BYTE   },
+    [ ANDROID_SCALER_AVAILABLE_STREAM_USE_CASES - ANDROID_SCALER_START ] =
+    { "availableStreamUseCases",       TYPE_INT32  },
 };
 
 static tag_info_t android_sensor[ANDROID_SENSOR_END -
@@ -2245,6 +2247,10 @@ int camera_metadata_enum_snprint(uint32_t tag,
                     msg = "DYNAMIC_RANGE_TEN_BIT";
                     ret = 0;
                     break;
+                case ANDROID_REQUEST_AVAILABLE_CAPABILITIES_STREAM_USE_CASE:
+                    msg = "STREAM_USE_CASE";
+                    ret = 0;
+                    break;
                 default:
                     msg = "error: enum value out of range";
             }
@@ -2590,6 +2596,41 @@ int camera_metadata_enum_snprint(uint32_t tag,
                     break;
                 case ANDROID_SCALER_CROP_REGION_SET_TRUE:
                     msg = "TRUE";
+                    ret = 0;
+                    break;
+                default:
+                    msg = "error: enum value out of range";
+            }
+            break;
+        }
+        case ANDROID_SCALER_AVAILABLE_STREAM_USE_CASES: {
+            switch (value) {
+                case ANDROID_SCALER_AVAILABLE_STREAM_USE_CASES_DEFAULT:
+                    msg = "DEFAULT";
+                    ret = 0;
+                    break;
+                case ANDROID_SCALER_AVAILABLE_STREAM_USE_CASES_PREVIEW:
+                    msg = "PREVIEW";
+                    ret = 0;
+                    break;
+                case ANDROID_SCALER_AVAILABLE_STREAM_USE_CASES_STILL_CAPTURE:
+                    msg = "STILL_CAPTURE";
+                    ret = 0;
+                    break;
+                case ANDROID_SCALER_AVAILABLE_STREAM_USE_CASES_VIDEO_RECORD:
+                    msg = "VIDEO_RECORD";
+                    ret = 0;
+                    break;
+                case ANDROID_SCALER_AVAILABLE_STREAM_USE_CASES_PREVIEW_VIDEO_STILL:
+                    msg = "PREVIEW_VIDEO_STILL";
+                    ret = 0;
+                    break;
+                case ANDROID_SCALER_AVAILABLE_STREAM_USE_CASES_VIDEO_CALL:
+                    msg = "VIDEO_CALL";
+                    ret = 0;
+                    break;
+                case ANDROID_SCALER_AVAILABLE_STREAM_USE_CASES_VENDOR_START:
+                    msg = "VENDOR_START";
                     ret = 0;
                     break;
                 default:
@@ -5073,6 +5114,12 @@ int camera_metadata_enum_value(uint32_t tag,
                     ret = 0;
                     break;
                 }
+                enumName = "STREAM_USE_CASE";
+                if (strncmp(name, enumName, size) == 0) {
+                    *value = ANDROID_REQUEST_AVAILABLE_CAPABILITIES_STREAM_USE_CASE;
+                    ret = 0;
+                    break;
+                }
             break;
         }
         case ANDROID_REQUEST_AVAILABLE_REQUEST_KEYS: {
@@ -5479,6 +5526,51 @@ int camera_metadata_enum_value(uint32_t tag,
                 enumName = "TRUE";
                 if (strncmp(name, enumName, size) == 0) {
                     *value = ANDROID_SCALER_CROP_REGION_SET_TRUE;
+                    ret = 0;
+                    break;
+                }
+            break;
+        }
+        case ANDROID_SCALER_AVAILABLE_STREAM_USE_CASES: {
+                enumName = "DEFAULT";
+                if (strncmp(name, enumName, size) == 0) {
+                    *value = ANDROID_SCALER_AVAILABLE_STREAM_USE_CASES_DEFAULT;
+                    ret = 0;
+                    break;
+                }
+                enumName = "PREVIEW";
+                if (strncmp(name, enumName, size) == 0) {
+                    *value = ANDROID_SCALER_AVAILABLE_STREAM_USE_CASES_PREVIEW;
+                    ret = 0;
+                    break;
+                }
+                enumName = "STILL_CAPTURE";
+                if (strncmp(name, enumName, size) == 0) {
+                    *value = ANDROID_SCALER_AVAILABLE_STREAM_USE_CASES_STILL_CAPTURE;
+                    ret = 0;
+                    break;
+                }
+                enumName = "VIDEO_RECORD";
+                if (strncmp(name, enumName, size) == 0) {
+                    *value = ANDROID_SCALER_AVAILABLE_STREAM_USE_CASES_VIDEO_RECORD;
+                    ret = 0;
+                    break;
+                }
+                enumName = "PREVIEW_VIDEO_STILL";
+                if (strncmp(name, enumName, size) == 0) {
+                    *value = ANDROID_SCALER_AVAILABLE_STREAM_USE_CASES_PREVIEW_VIDEO_STILL;
+                    ret = 0;
+                    break;
+                }
+                enumName = "VIDEO_CALL";
+                if (strncmp(name, enumName, size) == 0) {
+                    *value = ANDROID_SCALER_AVAILABLE_STREAM_USE_CASES_VIDEO_CALL;
+                    ret = 0;
+                    break;
+                }
+                enumName = "VENDOR_START";
+                if (strncmp(name, enumName, size) == 0) {
+                    *value = ANDROID_SCALER_AVAILABLE_STREAM_USE_CASES_VENDOR_START;
                     ret = 0;
                     break;
                 }
