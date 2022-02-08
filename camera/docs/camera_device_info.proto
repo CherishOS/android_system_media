@@ -195,6 +195,8 @@ message CameraDeviceInfo {
     optional bool android_depth_depthIsExclusive = 1703936;
     optional int32 android_logicalMultiCamera_sensorSyncType = 1769472;
     repeated int32 android_distortionCorrection_availableModes = 1835008;
+    optional int32 android_automotive_location = 2031616;
+    repeated int32 android_automotive_lens_facing = 2097152;
     // End of codegen fields
   }
 

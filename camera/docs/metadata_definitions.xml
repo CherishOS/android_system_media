@@ -4577,6 +4577,10 @@ xsi:schemaLocation="http://schemas.android.com/service/camera/metadata/ metadata
 
             When android.lens.poseReference is UNDEFINED, this position cannot be accurately
             represented by the camera device, and will be represented as `(0, 0, 0)`.
+
+            When android.lens.poseReference is AUTOMOTIVE, then this position is relative to the
+            origin of the automotive sensor coordinate system, which is at the center of the rear
+            axle.
           </details>
           <tag id="DEPTH" />
         </entry>
@@ -4823,6 +4827,11 @@ xsi:schemaLocation="http://schemas.android.com/service/camera/metadata/ metadata
 
             The value of android.lens.poseTranslation must be all zeros, and
             android.lens.poseRotation must be values matching its default facing.
+            </notes>
+            </value>
+            <value hal_version="3.8">AUTOMOTIVE
+            <notes>The value of android.lens.poseTranslation is relative to the origin of the
+            automotive sensor coodinate system, which is at the center of the rear axle.
             </notes>
             </value>
           </enum>
@@ -13216,6 +13225,218 @@ xsi:schemaLocation="http://schemas.android.com/service/camera/metadata/ metadata
           set by the HAL layer.
           </hal_details>
           <tag id="HEIC" />
+        </entry>
+      </static>
+    </section>
+    <section name="automotive">
+      <static>
+        <namespace name="lens">
+          <entry name="facing" type="byte" visibility="public" enum="true" container="array"
+              hal_version="3.8">
+            <array>
+              <size>n</size>
+            </array>
+            <enum>
+              <value>EXTERIOR_OTHER
+                <notes>
+                  The camera device faces the outside of the vehicle body frame but not exactly
+                  one of the exterior sides defined by this enum.  Applications should determine
+                  the exact facing direction from android.lens.poseRotation and
+                  android.lens.poseTranslation.
+                </notes>
+              </value>
+              <value>EXTERIOR_FRONT
+                <notes>
+                  The camera device faces the front of the vehicle body frame.
+                </notes>
+              </value>
+              <value>EXTERIOR_REAR
+                <notes>
+                  The camera device faces the rear of the vehicle body frame.
+                </notes>
+              </value>
+              <value>EXTERIOR_LEFT
+                <notes>
+                  The camera device faces the left side of the vehicle body frame.
+                </notes>
+              </value>
+              <value>EXTERIOR_RIGHT
+                <notes>
+                  The camera device faces the right side of the vehicle body frame.
+                </notes>
+              </value>
+              <value>INTERIOR_OTHER
+                <notes>
+                  The camera device faces the inside of the vehicle body frame but not exactly
+                  one of seats described by this enum.  Applications should determine the exact
+                  facing direction from android.lens.poseRotation and android.lens.poseTranslation.
+                </notes>
+              </value>
+              <value>INTERIOR_SEAT_ROW_1_LEFT
+                <notes>
+                  The camera device faces the left side seat of the first row.
+                </notes>
+              </value>
+              <value>INTERIOR_SEAT_ROW_1_CENTER
+                <notes>
+                  The camera device faces the center seat of the first row.
+                </notes>
+              </value>
+              <value>INTERIOR_SEAT_ROW_1_RIGHT
+                <notes>
+                  The camera device faces the right seat of the first row.
+                </notes>
+              </value>
+              <value>INTERIOR_SEAT_ROW_2_LEFT
+                <notes>
+                  The camera device faces the left side seat of the second row.
+                </notes>
+              </value>
+              <value>INTERIOR_SEAT_ROW_2_CENTER
+                <notes>
+                  The camera device faces the center seat of the second row.
+                </notes>
+              </value>
+              <value>INTERIOR_SEAT_ROW_2_RIGHT
+                <notes>
+                  The camera device faces the right side seat of the second row.
+                </notes>
+              </value>
+              <value>INTERIOR_SEAT_ROW_3_LEFT
+                <notes>
+                  The camera device faces the left side seat of the third row.
+                </notes>
+              </value>
+              <value>INTERIOR_SEAT_ROW_3_CENTER
+                <notes>
+                  The camera device faces the center seat of the third row.
+                </notes>
+              </value>
+              <value>INTERIOR_SEAT_ROW_3_RIGHT
+                <notes>
+                  The camera device faces the right seat of the third row.
+                </notes>
+              </value>
+            </enum>
+            <description>
+              The direction of the camera faces relative to the vehicle body frame and the
+              passenger seats.
+            </description>
+            <details>
+              This enum defines the lens facing characteristic of the cameras on the automotive
+              devices with locations android.automotive.location defines.  If the system has
+              FEATURE_AUTOMOTIVE, the camera will have this entry in its static metadata.
+
+              When android.automotive.location is INTERIOR, this has one or more INTERIOR_\*
+              values or a single EXTERIOR_\* value.  When this has more than one INTERIOR_\*,
+              the first value must be the one for the seat closest to the optical axis. If this
+              contains INTERIOR_OTHER, all other values will be ineffective.
+
+              When android.automotive.location is EXTERIOR_\* or EXTRA, this has a single
+              EXTERIOR_\* value.
+
+              If a camera has INTERIOR_OTHER or EXTERIOR_OTHER, or more than one camera is at the
+              same location and facing the same direction, their static metadata will list the
+              following entries, so that applications can determain their lenses' exact facing
+              directions:
+
+              * android.lens.poseReference
+              * android.lens.poseRotation
+              * android.lens.poseTranslation
+            </details>
+          </entry>
+        </namespace>
+        <entry name="location" type="byte" visibility="public" enum="true" hal_version="3.8">
+          <enum>
+            <value>INTERIOR
+              <notes>
+                The camera device exists inside of the vehicle cabin.
+              </notes>
+            </value>
+            <value>EXTERIOR_OTHER
+              <notes>
+                The camera exists outside of the vehicle body frame but not exactly on one of the
+                exterior locations this enum defines.  The applications should determine the exact
+                location from android.lens.poseTranslation.
+              </notes>
+            </value>
+            <value>EXTERIOR_FRONT
+              <notes>
+                The camera device exists outside of the vehicle body frame and on its front side.
+              </notes>
+            </value>
+            <value>EXTERIOR_REAR
+              <notes>
+                The camera device exists outside of the vehicle body frame and on its rear side.
+              </notes>
+            </value>
+            <value>EXTERIOR_LEFT
+              <notes>
+                The camera device exists outside and on left side of the vehicle body frame.
+              </notes>
+            </value>
+            <value>EXTERIOR_RIGHT
+              <notes>
+                The camera device exists outside and on right side of the vehicle body frame.
+              </notes>
+            </value>
+            <value>EXTRA_OTHER
+              <notes>
+                The camera device exists on an extra vehicle, such as the trailer, but not exactly
+                on one of front, rear, left, or right side.  Applications should determine the exact
+                location from android.lens.poseTranslation.
+              </notes>
+            </value>
+            <value>EXTRA_FRONT
+              <notes>
+                The camera device exists outside of the extra vehicle's body frame and on its front
+                side.
+              </notes>
+            </value>
+            <value>EXTRA_REAR
+              <notes>
+                The camera device exists outside of the extra vehicle's body frame and on its rear
+                side.
+              </notes>
+            </value>
+            <value>EXTRA_LEFT
+              <notes>
+                The camera device exists outside and on left side of the extra vehicle body.
+              </notes>
+            </value>
+            <value>EXTRA_RIGHT
+              <notes>
+                The camera device exists outside and on right side of the extra vehicle body.
+              </notes>
+            </value>
+          </enum>
+          <description>
+            Location of the cameras on the automotive devices.
+          </description>
+          <details>
+            This enum defines the locations of the cameras relative to the vehicle body frame on
+            [the automotive sensor coordinate system](https://source.android.com/devices/sensors/sensor-types#auto_axes).
+            If the system has FEATURE_AUTOMOTIVE, the camera will have this entry in its static
+            metadata.
+
+            * INTERIOR is the inside of the vehicle body frame (or the passenger cabin).
+            * EXTERIOR is the outside of the vehicle body frame.
+            * EXTRA is the extra vehicle such as a trailer.
+
+            Each side of the vehicle body frame on this coordinate system is defined as below:
+
+            * FRONT is where the Y-axis increases toward.
+            * REAR is where the Y-axis decreases toward.
+            * LEFT is where the X-axis decreases toward.
+            * RIGHT is where the X-axis increases toward.
+
+            If the camera has either EXTERIOR_OTHER or EXTRA_OTHER, its static metadata will list
+            the following entries, so that applications can determine the camera's exact location:
+
+            * android.lens.poseReference
+            * android.lens.poseRotation
+            * android.lens.poseTranslation
+          </details>
         </entry>
       </static>
     </section>

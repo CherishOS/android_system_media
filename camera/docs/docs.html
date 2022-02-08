@@ -1370,6 +1370,22 @@
         </li>
       </ul> <!-- toc_section -->
     </li>
+    <li>
+      <span class="toc_section_header"><a href="#section_automotive">automotive</a></span>
+      <ul class="toc_section">
+        <li>
+          <span class="toc_kind_header">static</span>
+          <ul class="toc_section">
+
+            <li
+            ><a href="#static_android.automotive.lens.facing">android.automotive.lens.facing</a></li>
+
+            <li
+            ><a href="#static_android.automotive.location">android.automotive.location</a></li>
+          </ul>
+        </li>
+      </ul> <!-- toc_section -->
+    </li>
   </ul>
 
 
@@ -15315,6 +15331,9 @@ the center of the primary gyroscope on the device.<wbr/> The axis definitions ar
 with PRIMARY_<wbr/>CAMERA.<wbr/></p>
 <p>When <a href="#static_android.lens.poseReference">android.<wbr/>lens.<wbr/>pose<wbr/>Reference</a> is UNDEFINED,<wbr/> this position cannot be accurately
 represented by the camera device,<wbr/> and will be represented as <code>(0,<wbr/> 0,<wbr/> 0)</code>.<wbr/></p>
+<p>When <a href="#static_android.lens.poseReference">android.<wbr/>lens.<wbr/>pose<wbr/>Reference</a> is AUTOMOTIVE,<wbr/> then this position is relative to the
+origin of the automotive sensor coordinate system,<wbr/> which is at the center of the rear
+axle.<wbr/></p>
             </td>
           </tr>
 
@@ -15559,6 +15578,11 @@ on the cover of a foldable phone: in order to measure the pose translation and r
 some kind of hinge position sensor would be needed.<wbr/></p>
 <p>The value of <a href="#static_android.lens.poseTranslation">android.<wbr/>lens.<wbr/>pose<wbr/>Translation</a> must be all zeros,<wbr/> and
 <a href="#static_android.lens.poseRotation">android.<wbr/>lens.<wbr/>pose<wbr/>Rotation</a> must be values matching its default facing.<wbr/></p></span>
+                  </li>
+                  <li>
+                    <span class="entry_type_enum_name">AUTOMOTIVE (v3.8)</span>
+                    <span class="entry_type_enum_notes"><p>The value of <a href="#static_android.lens.poseTranslation">android.<wbr/>lens.<wbr/>pose<wbr/>Translation</a> is relative to the origin of the
+automotive sensor coodinate system,<wbr/> which is at the center of the rear axle.<wbr/></p></span>
                   </li>
                 </ul>
 
@@ -16509,6 +16533,9 @@ the center of the primary gyroscope on the device.<wbr/> The axis definitions ar
 with PRIMARY_<wbr/>CAMERA.<wbr/></p>
 <p>When <a href="#static_android.lens.poseReference">android.<wbr/>lens.<wbr/>pose<wbr/>Reference</a> is UNDEFINED,<wbr/> this position cannot be accurately
 represented by the camera device,<wbr/> and will be represented as <code>(0,<wbr/> 0,<wbr/> 0)</code>.<wbr/></p>
+<p>When <a href="#static_android.lens.poseReference">android.<wbr/>lens.<wbr/>pose<wbr/>Reference</a> is AUTOMOTIVE,<wbr/> then this position is relative to the
+origin of the automotive sensor coordinate system,<wbr/> which is at the center of the rear
+axle.<wbr/></p>
             </td>
           </tr>
 
@@ -37557,6 +37584,305 @@ output format/<wbr/>size combination for HEIC streams for CaptureRequests where
 set by the HAL layer.<wbr/></p>
             </td>
           </tr>
+
+          <tr class="entry_spacer"><td class="entry_spacer" colspan="7"></td></tr>
+           <!-- end of entry -->
+        
+        
+
+      <!-- end of kind -->
+      </tbody>
+
+  <!-- end of section -->
+  <tr><td colspan="7" id="section_automotive" class="section">automotive</td></tr>
+
+
+      <tr><td colspan="7" class="kind">static</td></tr>
+
+      <thead class="entries_header">
+        <tr>
+          <th class="th_name">Property Name</th>
+          <th class="th_type">Type</th>
+          <th class="th_description">Description</th>
+          <th class="th_units">Units</th>
+          <th class="th_range">Range</th>
+          <th class="th_hal_version">Initial HIDL HAL version</th>
+          <th class="th_tags">Tags</th>
+        </tr>
+      </thead>
+
+      <tbody>
+
+        
+
+        
+
+        
+
+        
+                
+            
+
+                
+          <tr class="entry" id="static_android.automotive.lens.facing">
+            <td class="entry_name
+             " rowspan="3">
+              android.<wbr/>automotive.<wbr/>lens.<wbr/>facing
+            </td>
+            <td class="entry_type">
+                <span class="entry_type_name entry_type_name_enum">byte</span>
+                <span class="entry_type_container">x</span>
+
+                <span class="entry_type_array">
+                  n
+                </span>
+              <span class="entry_type_visibility"> [public]</span>
+
+
+
+
+
+                <ul class="entry_type_enum">
+                  <li>
+                    <span class="entry_type_enum_name">EXTERIOR_OTHER (v3.8)</span>
+                    <span class="entry_type_enum_notes"><p>The camera device faces the outside of the vehicle body frame but not exactly
+one of the exterior sides defined by this enum.<wbr/>  Applications should determine
+the exact facing direction from <a href="#static_android.lens.poseRotation">android.<wbr/>lens.<wbr/>pose<wbr/>Rotation</a> and
+<a href="#static_android.lens.poseTranslation">android.<wbr/>lens.<wbr/>pose<wbr/>Translation</a>.<wbr/></p></span>
+                  </li>
+                  <li>
+                    <span class="entry_type_enum_name">EXTERIOR_FRONT (v3.8)</span>
+                    <span class="entry_type_enum_notes"><p>The camera device faces the front of the vehicle body frame.<wbr/></p></span>
+                  </li>
+                  <li>
+                    <span class="entry_type_enum_name">EXTERIOR_REAR (v3.8)</span>
+                    <span class="entry_type_enum_notes"><p>The camera device faces the rear of the vehicle body frame.<wbr/></p></span>
+                  </li>
+                  <li>
+                    <span class="entry_type_enum_name">EXTERIOR_LEFT (v3.8)</span>
+                    <span class="entry_type_enum_notes"><p>The camera device faces the left side of the vehicle body frame.<wbr/></p></span>
+                  </li>
+                  <li>
+                    <span class="entry_type_enum_name">EXTERIOR_RIGHT (v3.8)</span>
+                    <span class="entry_type_enum_notes"><p>The camera device faces the right side of the vehicle body frame.<wbr/></p></span>
+                  </li>
+                  <li>
+                    <span class="entry_type_enum_name">INTERIOR_OTHER (v3.8)</span>
+                    <span class="entry_type_enum_notes"><p>The camera device faces the inside of the vehicle body frame but not exactly
+one of seats described by this enum.<wbr/>  Applications should determine the exact
+facing direction from <a href="#static_android.lens.poseRotation">android.<wbr/>lens.<wbr/>pose<wbr/>Rotation</a> and <a href="#static_android.lens.poseTranslation">android.<wbr/>lens.<wbr/>pose<wbr/>Translation</a>.<wbr/></p></span>
+                  </li>
+                  <li>
+                    <span class="entry_type_enum_name">INTERIOR_SEAT_ROW_1_LEFT (v3.8)</span>
+                    <span class="entry_type_enum_notes"><p>The camera device faces the left side seat of the first row.<wbr/></p></span>
+                  </li>
+                  <li>
+                    <span class="entry_type_enum_name">INTERIOR_SEAT_ROW_1_CENTER (v3.8)</span>
+                    <span class="entry_type_enum_notes"><p>The camera device faces the center seat of the first row.<wbr/></p></span>
+                  </li>
+                  <li>
+                    <span class="entry_type_enum_name">INTERIOR_SEAT_ROW_1_RIGHT (v3.8)</span>
+                    <span class="entry_type_enum_notes"><p>The camera device faces the right seat of the first row.<wbr/></p></span>
+                  </li>
+                  <li>
+                    <span class="entry_type_enum_name">INTERIOR_SEAT_ROW_2_LEFT (v3.8)</span>
+                    <span class="entry_type_enum_notes"><p>The camera device faces the left side seat of the second row.<wbr/></p></span>
+                  </li>
+                  <li>
+                    <span class="entry_type_enum_name">INTERIOR_SEAT_ROW_2_CENTER (v3.8)</span>
+                    <span class="entry_type_enum_notes"><p>The camera device faces the center seat of the second row.<wbr/></p></span>
+                  </li>
+                  <li>
+                    <span class="entry_type_enum_name">INTERIOR_SEAT_ROW_2_RIGHT (v3.8)</span>
+                    <span class="entry_type_enum_notes"><p>The camera device faces the right side seat of the second row.<wbr/></p></span>
+                  </li>
+                  <li>
+                    <span class="entry_type_enum_name">INTERIOR_SEAT_ROW_3_LEFT (v3.8)</span>
+                    <span class="entry_type_enum_notes"><p>The camera device faces the left side seat of the third row.<wbr/></p></span>
+                  </li>
+                  <li>
+                    <span class="entry_type_enum_name">INTERIOR_SEAT_ROW_3_CENTER (v3.8)</span>
+                    <span class="entry_type_enum_notes"><p>The camera device faces the center seat of the third row.<wbr/></p></span>
+                  </li>
+                  <li>
+                    <span class="entry_type_enum_name">INTERIOR_SEAT_ROW_3_RIGHT (v3.8)</span>
+                    <span class="entry_type_enum_notes"><p>The camera device faces the right seat of the third row.<wbr/></p></span>
+                  </li>
+                </ul>
+
+            </td> <!-- entry_type -->
+
+            <td class="entry_description">
+              <p>The direction of the camera faces relative to the vehicle body frame and the
+passenger seats.<wbr/></p>
+            </td>
+
+            <td class="entry_units">
+            </td>
+
+            <td class="entry_range">
+            </td>
+
+            <td class="entry_hal_version">
+              <p>3.<wbr/>8</p>
+            </td>
+
+            <td class="entry_tags">
+            </td>
+
+          </tr>
+          <tr class="entries_header">
+            <th class="th_details" colspan="6">Details</th>
+          </tr>
+          <tr class="entry_cont">
+            <td class="entry_details" colspan="6">
+              <p>This enum defines the lens facing characteristic of the cameras on the automotive
+devices with locations <a href="#static_android.automotive.location">android.<wbr/>automotive.<wbr/>location</a> defines.<wbr/>  If the system has
+FEATURE_<wbr/>AUTOMOTIVE,<wbr/> the camera will have this entry in its static metadata.<wbr/></p>
+<p>When <a href="#static_android.automotive.location">android.<wbr/>automotive.<wbr/>location</a> is INTERIOR,<wbr/> this has one or more INTERIOR_<wbr/>*
+values or a single EXTERIOR_<wbr/>* value.<wbr/>  When this has more than one INTERIOR_<wbr/>*,<wbr/>
+the first value must be the one for the seat closest to the optical axis.<wbr/> If this
+contains INTERIOR_<wbr/>OTHER,<wbr/> all other values will be ineffective.<wbr/></p>
+<p>When <a href="#static_android.automotive.location">android.<wbr/>automotive.<wbr/>location</a> is EXTERIOR_<wbr/>* or EXTRA,<wbr/> this has a single
+EXTERIOR_<wbr/>* value.<wbr/></p>
+<p>If a camera has INTERIOR_<wbr/>OTHER or EXTERIOR_<wbr/>OTHER,<wbr/> or more than one camera is at the
+same location and facing the same direction,<wbr/> their static metadata will list the
+following entries,<wbr/> so that applications can determain their lenses' exact facing
+directions:</p>
+<ul>
+<li><a href="#static_android.lens.poseReference">android.<wbr/>lens.<wbr/>pose<wbr/>Reference</a></li>
+<li><a href="#static_android.lens.poseRotation">android.<wbr/>lens.<wbr/>pose<wbr/>Rotation</a></li>
+<li><a href="#static_android.lens.poseTranslation">android.<wbr/>lens.<wbr/>pose<wbr/>Translation</a></li>
+</ul>
+            </td>
+          </tr>
+
+
+          <tr class="entry_spacer"><td class="entry_spacer" colspan="7"></td></tr>
+           <!-- end of entry -->
+        
+        
+        
+
+                
+          <tr class="entry" id="static_android.automotive.location">
+            <td class="entry_name
+             " rowspan="3">
+              android.<wbr/>automotive.<wbr/>location
+            </td>
+            <td class="entry_type">
+                <span class="entry_type_name entry_type_name_enum">byte</span>
+
+              <span class="entry_type_visibility"> [public]</span>
+
+
+
+
+
+                <ul class="entry_type_enum">
+                  <li>
+                    <span class="entry_type_enum_name">INTERIOR (v3.8)</span>
+                    <span class="entry_type_enum_notes"><p>The camera device exists inside of the vehicle cabin.<wbr/></p></span>
+                  </li>
+                  <li>
+                    <span class="entry_type_enum_name">EXTERIOR_OTHER (v3.8)</span>
+                    <span class="entry_type_enum_notes"><p>The camera exists outside of the vehicle body frame but not exactly on one of the
+exterior locations this enum defines.<wbr/>  The applications should determine the exact
+location from <a href="#static_android.lens.poseTranslation">android.<wbr/>lens.<wbr/>pose<wbr/>Translation</a>.<wbr/></p></span>
+                  </li>
+                  <li>
+                    <span class="entry_type_enum_name">EXTERIOR_FRONT (v3.8)</span>
+                    <span class="entry_type_enum_notes"><p>The camera device exists outside of the vehicle body frame and on its front side.<wbr/></p></span>
+                  </li>
+                  <li>
+                    <span class="entry_type_enum_name">EXTERIOR_REAR (v3.8)</span>
+                    <span class="entry_type_enum_notes"><p>The camera device exists outside of the vehicle body frame and on its rear side.<wbr/></p></span>
+                  </li>
+                  <li>
+                    <span class="entry_type_enum_name">EXTERIOR_LEFT (v3.8)</span>
+                    <span class="entry_type_enum_notes"><p>The camera device exists outside and on left side of the vehicle body frame.<wbr/></p></span>
+                  </li>
+                  <li>
+                    <span class="entry_type_enum_name">EXTERIOR_RIGHT (v3.8)</span>
+                    <span class="entry_type_enum_notes"><p>The camera device exists outside and on right side of the vehicle body frame.<wbr/></p></span>
+                  </li>
+                  <li>
+                    <span class="entry_type_enum_name">EXTRA_OTHER (v3.8)</span>
+                    <span class="entry_type_enum_notes"><p>The camera device exists on an extra vehicle,<wbr/> such as the trailer,<wbr/> but not exactly
+on one of front,<wbr/> rear,<wbr/> left,<wbr/> or right side.<wbr/>  Applications should determine the exact
+location from <a href="#static_android.lens.poseTranslation">android.<wbr/>lens.<wbr/>pose<wbr/>Translation</a>.<wbr/></p></span>
+                  </li>
+                  <li>
+                    <span class="entry_type_enum_name">EXTRA_FRONT (v3.8)</span>
+                    <span class="entry_type_enum_notes"><p>The camera device exists outside of the extra vehicle's body frame and on its front
+side.<wbr/></p></span>
+                  </li>
+                  <li>
+                    <span class="entry_type_enum_name">EXTRA_REAR (v3.8)</span>
+                    <span class="entry_type_enum_notes"><p>The camera device exists outside of the extra vehicle's body frame and on its rear
+side.<wbr/></p></span>
+                  </li>
+                  <li>
+                    <span class="entry_type_enum_name">EXTRA_LEFT (v3.8)</span>
+                    <span class="entry_type_enum_notes"><p>The camera device exists outside and on left side of the extra vehicle body.<wbr/></p></span>
+                  </li>
+                  <li>
+                    <span class="entry_type_enum_name">EXTRA_RIGHT (v3.8)</span>
+                    <span class="entry_type_enum_notes"><p>The camera device exists outside and on right side of the extra vehicle body.<wbr/></p></span>
+                  </li>
+                </ul>
+
+            </td> <!-- entry_type -->
+
+            <td class="entry_description">
+              <p>Location of the cameras on the automotive devices.<wbr/></p>
+            </td>
+
+            <td class="entry_units">
+            </td>
+
+            <td class="entry_range">
+            </td>
+
+            <td class="entry_hal_version">
+              <p>3.<wbr/>8</p>
+            </td>
+
+            <td class="entry_tags">
+            </td>
+
+          </tr>
+          <tr class="entries_header">
+            <th class="th_details" colspan="6">Details</th>
+          </tr>
+          <tr class="entry_cont">
+            <td class="entry_details" colspan="6">
+              <p>This enum defines the locations of the cameras relative to the vehicle body frame on
+<a href="https://source.android.com/devices/sensors/sensor-types#auto_axes">the automotive sensor coordinate system</a>.<wbr/>
+If the system has FEATURE_<wbr/>AUTOMOTIVE,<wbr/> the camera will have this entry in its static
+metadata.<wbr/></p>
+<ul>
+<li>INTERIOR is the inside of the vehicle body frame (or the passenger cabin).<wbr/></li>
+<li>EXTERIOR is the outside of the vehicle body frame.<wbr/></li>
+<li>EXTRA is the extra vehicle such as a trailer.<wbr/></li>
+</ul>
+<p>Each side of the vehicle body frame on this coordinate system is defined as below:</p>
+<ul>
+<li>FRONT is where the Y-axis increases toward.<wbr/></li>
+<li>REAR is where the Y-axis decreases toward.<wbr/></li>
+<li>LEFT is where the X-axis decreases toward.<wbr/></li>
+<li>RIGHT is where the X-axis increases toward.<wbr/></li>
+</ul>
+<p>If the camera has either EXTERIOR_<wbr/>OTHER or EXTRA_<wbr/>OTHER,<wbr/> its static metadata will list
+the following entries,<wbr/> so that applications can determine the camera's exact location:</p>
+<ul>
+<li><a href="#static_android.lens.poseReference">android.<wbr/>lens.<wbr/>pose<wbr/>Reference</a></li>
+<li><a href="#static_android.lens.poseRotation">android.<wbr/>lens.<wbr/>pose<wbr/>Rotation</a></li>
+<li><a href="#static_android.lens.poseTranslation">android.<wbr/>lens.<wbr/>pose<wbr/>Translation</a></li>
+</ul>
+            </td>
+          </tr>
+
 
           <tr class="entry_spacer"><td class="entry_spacer" colspan="7"></td></tr>
            <!-- end of entry -->

@@ -65,6 +65,8 @@ typedef enum camera_metadata_section {
     ANDROID_DISTORTION_CORRECTION,
     ANDROID_HEIC,
     ANDROID_HEIC_INFO,
+    ANDROID_AUTOMOTIVE,
+    ANDROID_AUTOMOTIVE_LENS,
     ANDROID_SECTION_COUNT,
 
     VENDOR_SECTION = 0x8000
@@ -109,6 +111,8 @@ typedef enum camera_metadata_section_start {
                                                                 << 16,
     ANDROID_HEIC_START             = ANDROID_HEIC              << 16,
     ANDROID_HEIC_INFO_START        = ANDROID_HEIC_INFO         << 16,
+    ANDROID_AUTOMOTIVE_START       = ANDROID_AUTOMOTIVE        << 16,
+    ANDROID_AUTOMOTIVE_LENS_START  = ANDROID_AUTOMOTIVE_LENS   << 16,
     VENDOR_SECTION_START           = VENDOR_SECTION            << 16
 } camera_metadata_section_start_t;
 
@@ -542,6 +546,14 @@ typedef enum camera_metadata_tag {
     ANDROID_HEIC_INFO_MAX_JPEG_APP_SEGMENTS_COUNT,    // byte         | system       | HIDL v3.4
     ANDROID_HEIC_INFO_END,
 
+    ANDROID_AUTOMOTIVE_LOCATION =                     // enum         | public       | HIDL v3.8
+            ANDROID_AUTOMOTIVE_START,
+    ANDROID_AUTOMOTIVE_END,
+
+    ANDROID_AUTOMOTIVE_LENS_FACING =                  // enum[]       | public       | HIDL v3.8
+            ANDROID_AUTOMOTIVE_LENS_START,
+    ANDROID_AUTOMOTIVE_LENS_END,
+
 } camera_metadata_tag_t;
 
 /**
@@ -850,6 +862,7 @@ typedef enum camera_metadata_enum_android_lens_pose_reference {
     ANDROID_LENS_POSE_REFERENCE_PRIMARY_CAMERA                      , // HIDL v3.3
     ANDROID_LENS_POSE_REFERENCE_GYROSCOPE                           , // HIDL v3.3
     ANDROID_LENS_POSE_REFERENCE_UNDEFINED                           , // HIDL v3.5
+    ANDROID_LENS_POSE_REFERENCE_AUTOMOTIVE                          , // HIDL v3.8
 } camera_metadata_enum_android_lens_pose_reference_t;
 
 
@@ -1302,5 +1315,41 @@ typedef enum camera_metadata_enum_android_heic_info_supported {
     ANDROID_HEIC_INFO_SUPPORTED_FALSE                               , // HIDL v3.4
     ANDROID_HEIC_INFO_SUPPORTED_TRUE                                , // HIDL v3.4
 } camera_metadata_enum_android_heic_info_supported_t;
+
+
+// ANDROID_AUTOMOTIVE_LOCATION
+typedef enum camera_metadata_enum_android_automotive_location {
+    ANDROID_AUTOMOTIVE_LOCATION_INTERIOR                            , // HIDL v3.8
+    ANDROID_AUTOMOTIVE_LOCATION_EXTERIOR_OTHER                      , // HIDL v3.8
+    ANDROID_AUTOMOTIVE_LOCATION_EXTERIOR_FRONT                      , // HIDL v3.8
+    ANDROID_AUTOMOTIVE_LOCATION_EXTERIOR_REAR                       , // HIDL v3.8
+    ANDROID_AUTOMOTIVE_LOCATION_EXTERIOR_LEFT                       , // HIDL v3.8
+    ANDROID_AUTOMOTIVE_LOCATION_EXTERIOR_RIGHT                      , // HIDL v3.8
+    ANDROID_AUTOMOTIVE_LOCATION_EXTRA_OTHER                         , // HIDL v3.8
+    ANDROID_AUTOMOTIVE_LOCATION_EXTRA_FRONT                         , // HIDL v3.8
+    ANDROID_AUTOMOTIVE_LOCATION_EXTRA_REAR                          , // HIDL v3.8
+    ANDROID_AUTOMOTIVE_LOCATION_EXTRA_LEFT                          , // HIDL v3.8
+    ANDROID_AUTOMOTIVE_LOCATION_EXTRA_RIGHT                         , // HIDL v3.8
+} camera_metadata_enum_android_automotive_location_t;
+
+
+// ANDROID_AUTOMOTIVE_LENS_FACING
+typedef enum camera_metadata_enum_android_automotive_lens_facing {
+    ANDROID_AUTOMOTIVE_LENS_FACING_EXTERIOR_OTHER                   , // HIDL v3.8
+    ANDROID_AUTOMOTIVE_LENS_FACING_EXTERIOR_FRONT                   , // HIDL v3.8
+    ANDROID_AUTOMOTIVE_LENS_FACING_EXTERIOR_REAR                    , // HIDL v3.8
+    ANDROID_AUTOMOTIVE_LENS_FACING_EXTERIOR_LEFT                    , // HIDL v3.8
+    ANDROID_AUTOMOTIVE_LENS_FACING_EXTERIOR_RIGHT                   , // HIDL v3.8
+    ANDROID_AUTOMOTIVE_LENS_FACING_INTERIOR_OTHER                   , // HIDL v3.8
+    ANDROID_AUTOMOTIVE_LENS_FACING_INTERIOR_SEAT_ROW_1_LEFT         , // HIDL v3.8
+    ANDROID_AUTOMOTIVE_LENS_FACING_INTERIOR_SEAT_ROW_1_CENTER       , // HIDL v3.8
+    ANDROID_AUTOMOTIVE_LENS_FACING_INTERIOR_SEAT_ROW_1_RIGHT        , // HIDL v3.8
+    ANDROID_AUTOMOTIVE_LENS_FACING_INTERIOR_SEAT_ROW_2_LEFT         , // HIDL v3.8
+    ANDROID_AUTOMOTIVE_LENS_FACING_INTERIOR_SEAT_ROW_2_CENTER       , // HIDL v3.8
+    ANDROID_AUTOMOTIVE_LENS_FACING_INTERIOR_SEAT_ROW_2_RIGHT        , // HIDL v3.8
+    ANDROID_AUTOMOTIVE_LENS_FACING_INTERIOR_SEAT_ROW_3_LEFT         , // HIDL v3.8
+    ANDROID_AUTOMOTIVE_LENS_FACING_INTERIOR_SEAT_ROW_3_CENTER       , // HIDL v3.8
+    ANDROID_AUTOMOTIVE_LENS_FACING_INTERIOR_SEAT_ROW_3_RIGHT        , // HIDL v3.8
+} camera_metadata_enum_android_automotive_lens_facing_t;
 
 
