@@ -1946,6 +1946,7 @@ static inline bool audio_is_valid_audio_source(audio_source_t audioSource)
 #ifndef AUDIO_NO_SYSTEM_DECLARATIONS
     case AUDIO_SOURCE_HOTWORD:
 #endif // AUDIO_NO_SYSTEM_DECLARATIONS
+    case AUDIO_SOURCE_ULTRASOUND:
         return true;
     default:
         return false;
