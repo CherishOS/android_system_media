@@ -149,8 +149,9 @@ message CameraDeviceInfo {
     optional StreamConfigurations android_scaler_streamConfigurationMapMaximumResolution = 917512;
     repeated MandatoryStreamCombination android_scaler_mandatoryMaximumResolutionStreamCombinations = 917513;
     repeated MandatoryStreamCombination android_scaler_mandatoryTenBitOutputStreamCombinations = 917514;
-    repeated int32 android_scaler_availableStreamUseCases = 917515;
-    repeated MandatoryStreamCombination android_scaler_mandatoryUseCaseStreamCombinations = 917516;
+    repeated MandatoryStreamCombination android_scaler_mandatoryPreviewStabilizationOutputStreamCombinations = 917515;
+    repeated int32 android_scaler_availableStreamUseCases = 917516;
+    repeated MandatoryStreamCombination android_scaler_mandatoryUseCaseStreamCombinations = 917517;
     optional int32 android_sensor_referenceIlluminant1 = 983040;
     optional int32 android_sensor_referenceIlluminant2 = 983041;
     optional ColorSpaceTransform android_sensor_calibrationTransform1 = 983042;

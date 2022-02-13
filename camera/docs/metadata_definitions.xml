@@ -8463,6 +8463,35 @@ xsi:schemaLocation="http://schemas.android.com/service/camera/metadata/ metadata
           (it is synthetic and will not be available at the HAL layer).
           </hal_details>
         </entry>
+        <entry name="mandatoryPreviewStabilizationOutputStreamCombinations" type="int32"
+          visibility="java_public" synthetic="true" container="array"
+          typedef="mandatoryStreamCombination">
+          <array>
+            <size>n</size>
+          </array>
+          <description>
+          An array of mandatory stream combinations which are applicable when device lists
+          {@code PREVIEW_STABILIZATION} in android.control.availableVideoStabilizationModes.
+          This is an app-readable conversion of the maximum resolution mandatory stream combination
+          {@link android.hardware.camera2.CameraDevice#createCaptureSession tables}.
+          </description>
+          <details>
+          The array of
+          {@link android.hardware.camera2.params.MandatoryStreamCombination combinations} is
+          generated according to the documented
+          {@link android.hardware.camera2.CameraDevice#createCaptureSession guideline} for each
+          device which supports {@code PREVIEW_STABILIZATION}
+          Clients can use the array as a quick reference to find an appropriate camera stream
+          combination.
+          The mandatory stream combination array will be {@code null} in case the device does not
+          list {@code PREVIEW_STABILIZATION} in android.control.availableVideoStabilizationModes.
+          </details>
+          <hal_details>
+          Do not set this property directly
+          (it is synthetic and will not be available at the HAL layer).
+          </hal_details>
+        </entry>
+
         <entry name="multiResolutionStreamSupported" type="byte" visibility="ndk_public" enum="true"
           typedef="boolean" hwlevel="limited" hal_version="3.6">
           <enum>

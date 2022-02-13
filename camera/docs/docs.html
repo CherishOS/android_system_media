@@ -815,6 +815,8 @@
             <li
             ><a href="#static_android.scaler.mandatoryTenBitOutputStreamCombinations">android.scaler.mandatoryTenBitOutputStreamCombinations</a></li>
             <li
+            ><a href="#static_android.scaler.mandatoryPreviewStabilizationOutputStreamCombinations">android.scaler.mandatoryPreviewStabilizationOutputStreamCombinations</a></li>
+            <li
             ><a href="#static_android.scaler.multiResolutionStreamSupported">android.scaler.multiResolutionStreamSupported</a></li>
             <li
             ><a href="#static_android.scaler.availableStreamUseCases">android.scaler.availableStreamUseCases</a></li>
@@ -23893,6 +23895,80 @@ combination.<wbr/>
 The mandatory stream combination array will be {@code null} in case the device is not an
 <a href="https://developer.android.com/reference/android/hardware/camera2/CameraCharacteristics.html#REQUEST_AVAILABLE_CAPABILITIES_DYNAMIC_RANGE_TEN_BIT">Camera<wbr/>Characteristics#REQUEST_<wbr/>AVAILABLE_<wbr/>CAPABILITIES_<wbr/>DYNAMIC_<wbr/>RANGE_<wbr/>TEN_<wbr/>BIT</a>
 device.<wbr/></p>
+            </td>
+          </tr>
+
+          <tr class="entries_header">
+            <th class="th_details" colspan="6">HAL Implementation Details</th>
+          </tr>
+          <tr class="entry_cont">
+            <td class="entry_details" colspan="6">
+              <p>Do not set this property directly
+(it is synthetic and will not be available at the HAL layer).<wbr/></p>
+            </td>
+          </tr>
+
+          <tr class="entry_spacer"><td class="entry_spacer" colspan="7"></td></tr>
+           <!-- end of entry -->
+        
+                
+          <tr class="entry" id="static_android.scaler.mandatoryPreviewStabilizationOutputStreamCombinations">
+            <td class="entry_name
+             " rowspan="5">
+              android.<wbr/>scaler.<wbr/>mandatory<wbr/>Preview<wbr/>Stabilization<wbr/>Output<wbr/>Stream<wbr/>Combinations
+            </td>
+            <td class="entry_type">
+                <span class="entry_type_name">int32</span>
+                <span class="entry_type_container">x</span>
+
+                <span class="entry_type_array">
+                  n
+                </span>
+              <span class="entry_type_visibility"> [java_public as mandatoryStreamCombination]</span>
+
+              <span class="entry_type_synthetic">[synthetic] </span>
+
+
+
+
+
+            </td> <!-- entry_type -->
+
+            <td class="entry_description">
+              <p>An array of mandatory stream combinations which are applicable when device lists
+{@code PREVIEW_<wbr/>STABILIZATION} in <a href="#static_android.control.availableVideoStabilizationModes">android.<wbr/>control.<wbr/>available<wbr/>Video<wbr/>Stabilization<wbr/>Modes</a>.<wbr/>
+This is an app-readable conversion of the maximum resolution mandatory stream combination
+<a href="https://developer.android.com/reference/android/hardware/camera2/CameraDevice.html#createCaptureSession">tables</a>.<wbr/></p>
+            </td>
+
+            <td class="entry_units">
+            </td>
+
+            <td class="entry_range">
+            </td>
+
+            <td class="entry_hal_version">
+              <p>3.<wbr/>2</p>
+            </td>
+
+            <td class="entry_tags">
+            </td>
+
+          </tr>
+          <tr class="entries_header">
+            <th class="th_details" colspan="6">Details</th>
+          </tr>
+          <tr class="entry_cont">
+            <td class="entry_details" colspan="6">
+              <p>The array of
+<a href="https://developer.android.com/reference/android/hardware/camera2/params/MandatoryStreamCombination.html">combinations</a> is
+generated according to the documented
+<a href="https://developer.android.com/reference/android/hardware/camera2/CameraDevice.html#createCaptureSession">guideline</a> for each
+device which supports {@code PREVIEW_<wbr/>STABILIZATION}
+Clients can use the array as a quick reference to find an appropriate camera stream
+combination.<wbr/>
+The mandatory stream combination array will be {@code null} in case the device does not
+list {@code PREVIEW_<wbr/>STABILIZATION} in <a href="#static_android.control.availableVideoStabilizationModes">android.<wbr/>control.<wbr/>available<wbr/>Video<wbr/>Stabilization<wbr/>Modes</a>.<wbr/></p>
             </td>
           </tr>
 
