@@ -2115,6 +2115,7 @@ static const audio_playback_rate_t AUDIO_PLAYBACK_RATE_INITIALIZER = {
     /* .mFallbackMode = */ AUDIO_TIMESTRETCH_FALLBACK_FAIL
 };
 
+#ifndef AUDIO_NO_SYSTEM_DECLARATIONS
 typedef enum {
     AUDIO_DIRECT_NOT_SUPPORTED = 0x0u,
     AUDIO_DIRECT_OFFLOAD_SUPPORTED = 0x1u,
@@ -2123,7 +2124,6 @@ typedef enum {
     AUDIO_DIRECT_BITSTREAM_SUPPORTED = 0x4u,
 } audio_direct_mode_t;
 
-#ifndef AUDIO_NO_SYSTEM_DECLARATIONS
 // TODO: Deprecate audio_offload_mode_t and use audio_direct_mode_t instead.
 typedef enum {
     AUDIO_OFFLOAD_NOT_SUPPORTED = AUDIO_DIRECT_NOT_SUPPORTED,
