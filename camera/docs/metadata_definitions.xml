@@ -6681,11 +6681,11 @@ xsi:schemaLocation="http://schemas.android.com/service/camera/metadata/ metadata
           {@link android.hardware.camera2.params.DynamicRangeProfiles#getProfileCaptureRequestConstraints}.
           </details>
         </entry>
-        <entry name="availableDynamicRangeProfilesMap" type="int32" visibility="ndk_public"
+        <entry name="availableDynamicRangeProfilesMap" type="int64" visibility="ndk_public"
             optional="true" enum="true" container="array" hal_version="3.8">
           <array>
             <size>n</size>
-            <size>2</size>
+            <size>3</size>
           </array>
           <enum>
             <value id="0x1">STANDARD
@@ -6777,29 +6777,37 @@ xsi:schemaLocation="http://schemas.android.com/service/camera/metadata/ metadata
           constraints must be listed here as well.
           </details>
           <hal_details>
-          The array contains two entries per supported profile:
+          The array contains three entries per supported profile:
           1) The supported dynamic profile value. Do note that
           ANDROID_REQUEST_AVAILABLE_DYNAMIC_RANGE_PROFILES_STANDARD is assumed to be always
           present and must not be listed.
           2) A bitmap combination of all supported profiles that can be referenced at the same
           time within a single capture request. Do note that a value of 0 means that there are
           no constraints and all combinations are supported.
+          3) A flag indicating the presence of an internal lookahead functionality that
+          can increase the streaming latency by more than 3 buffers. The value 0 will indicate
+          that latency doesn't exceed 3 buffers, everything different than 0 will indicate
+          latency that is beyond 3 buffers. In case the flag is set, then Camera clients will be
+          advised to avoid configuring this profile for camera latency sensitive outputs such as
+          preview.
 
           For example if we assume that a device exists that can only support HLG10, HDR10 and
           HDR10_PLUS from the possible 10-bit profiles with the following capture constraints:
           1) HLG10 can be included in any capture request without constraints.
           2) HDR10 and HDR10_PLUS can only be referenced together and/or with HGL10 but not with
           STANDARD.
+          In the same example, HLG10 and HDR10 will not have additional lookahead latency, and
+          HDR10+ will have latency that exceeds 3 buffers.
           The resulting array should look like this:
-          [ANDROID_REQUEST_AVAILABLE_DYNAMIC_RANGE_PROFILES_HLG10, 0,
+          [ANDROID_REQUEST_AVAILABLE_DYNAMIC_RANGE_PROFILES_HLG10, 0, 0,
           ANDROID_REQUEST_AVAILABLE_DYNAMIC_RANGE_PROFILES_HDR10,
           (ANDROID_REQUEST_AVAILABLE_DYNAMIC_RANGE_PROFILES_HDR10 |
           ANDROID_REQUEST_AVAILABLE_DYNAMIC_RANGE_PROFILES_HLG10 |
-           ANDROID_REQUEST_AVAILABLE_DYNAMIC_RANGE_PROFILES_HDR10_PLUS),
+           ANDROID_REQUEST_AVAILABLE_DYNAMIC_RANGE_PROFILES_HDR10_PLUS), 0,
           ANDROID_REQUEST_AVAILABLE_DYNAMIC_RANGE_PROFILES_HDR10_PLUS,
           (ANDROID_REQUEST_AVAILABLE_DYNAMIC_RANGE_PROFILES_HDR10_PLUS |
           ANDROID_REQUEST_AVAILABLE_DYNAMIC_RANGE_PROFILES_HLG10 |
-           ANDROID_REQUEST_AVAILABLE_DYNAMIC_RANGE_PROFILES_HDR10)]
+           ANDROID_REQUEST_AVAILABLE_DYNAMIC_RANGE_PROFILES_HDR10), 1]
 
           Camera providers must ensure that each processed buffer from a stream configured with the
           HDR10 dynamic range profile includes SMPTE ST 2086 static metadata by calling
@@ -6816,7 +6824,7 @@ xsi:schemaLocation="http://schemas.android.com/service/camera/metadata/ metadata
           before returning the buffer.
           </hal_details>
         </entry>
-        <entry name="recommendedTenBitDynamicRangeProfile" type="int32" visibility="java_public"
+        <entry name="recommendedTenBitDynamicRangeProfile" type="int64" visibility="java_public"
             optional="true" hal_version="3.8">
           <description>Recommended 10-bit dynamic range profile.</description>
           <details>Devices supporting the 10-bit output capability

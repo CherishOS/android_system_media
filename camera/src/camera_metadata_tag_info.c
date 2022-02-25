@@ -464,10 +464,10 @@ static tag_info_t android_request[ANDROID_REQUEST_END -
                                         TYPE_INT32  },
     [ ANDROID_REQUEST_AVAILABLE_DYNAMIC_RANGE_PROFILES_MAP - ANDROID_REQUEST_START ] =
     { "availableDynamicRangeProfilesMap",
-                                        TYPE_INT32  },
+                                        TYPE_INT64  },
     [ ANDROID_REQUEST_RECOMMENDED_TEN_BIT_DYNAMIC_RANGE_PROFILE - ANDROID_REQUEST_START ] =
     { "recommendedTenBitDynamicRangeProfile",
-                                        TYPE_INT32  },
+                                        TYPE_INT64  },
 };
 
 static tag_info_t android_scaler[ANDROID_SCALER_END -

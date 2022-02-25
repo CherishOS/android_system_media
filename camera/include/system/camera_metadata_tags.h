@@ -307,7 +307,7 @@ typedef enum camera_metadata_tag {
     ANDROID_REQUEST_AVAILABLE_DYNAMIC_RANGE_PROFILES_MAP,
                                                       // enum[]       | ndk_public   | HIDL v3.8
     ANDROID_REQUEST_RECOMMENDED_TEN_BIT_DYNAMIC_RANGE_PROFILE,
-                                                      // int32        | java_public  | HIDL v3.8
+                                                      // int64        | java_public  | HIDL v3.8
     ANDROID_REQUEST_END,
 
     ANDROID_SCALER_CROP_REGION =                      // int32[]      | public       | HIDL v3.2

@@ -137,7 +137,7 @@ message CameraDeviceInfo {
     optional int32 android_request_partialResultCount = 851973;
     repeated int32 android_request_availableCapabilities = 851974;
     optional DynamicRangeProfiles android_request_availableDynamicRangeProfiles = 851975;
-    optional int32 android_request_recommendedTenBitDynamicRangeProfile = 851976;
+    optional int64 android_request_recommendedTenBitDynamicRangeProfile = 851976;
     optional float android_scaler_availableMaxDigitalZoom = 917504;
     optional StreamConfigurations android_scaler_streamConfigurationMap = 917505;
     optional int32 android_scaler_croppingType = 917506;
