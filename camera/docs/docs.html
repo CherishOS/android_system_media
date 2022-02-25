@@ -20097,11 +20097,11 @@ of supported profiles that can be referenced within a single capture request by 
               android.<wbr/>request.<wbr/>available<wbr/>Dynamic<wbr/>Range<wbr/>Profiles<wbr/>Map
             </td>
             <td class="entry_type">
-                <span class="entry_type_name entry_type_name_enum">int32</span>
+                <span class="entry_type_name entry_type_name_enum">int64</span>
                 <span class="entry_type_container">x</span>
 
                 <span class="entry_type_array">
-                  n x 2
+                  n x 3
                 </span>
               <span class="entry_type_visibility"> [ndk_public]</span>
 
@@ -20230,28 +20230,36 @@ constraints must be listed here as well.<wbr/></p>
           </tr>
           <tr class="entry_cont">
             <td class="entry_details" colspan="6">
-              <p>The array contains two entries per supported profile:
+              <p>The array contains three entries per supported profile:
 1) The supported dynamic profile value.<wbr/> Do note that
 ANDROID_<wbr/>REQUEST_<wbr/>AVAILABLE_<wbr/>DYNAMIC_<wbr/>RANGE_<wbr/>PROFILES_<wbr/>STANDARD is assumed to be always
 present and must not be listed.<wbr/>
 2) A bitmap combination of all supported profiles that can be referenced at the same
 time within a single capture request.<wbr/> Do note that a value of 0 means that there are
-no constraints and all combinations are supported.<wbr/></p>
+no constraints and all combinations are supported.<wbr/>
+3) A flag indicating the presence of an internal lookahead functionality that
+can increase the streaming latency by more than 3 buffers.<wbr/> The value 0 will indicate
+that latency doesn't exceed 3 buffers,<wbr/> everything different than 0 will indicate
+latency that is beyond 3 buffers.<wbr/> In case the flag is set,<wbr/> then Camera clients will be
+advised to avoid configuring this profile for camera latency sensitive outputs such as
+preview.<wbr/></p>
 <p>For example if we assume that a device exists that can only support HLG10,<wbr/> HDR10 and
 HDR10_<wbr/>PLUS from the possible 10-bit profiles with the following capture constraints:
 1) HLG10 can be included in any capture request without constraints.<wbr/>
 2) HDR10 and HDR10_<wbr/>PLUS can only be referenced together and/<wbr/>or with HGL10 but not with
 STANDARD.<wbr/>
+In the same example,<wbr/> HLG10 and HDR10 will not have additional lookahead latency,<wbr/> and
+HDR10+ will have latency that exceeds 3 buffers.<wbr/>
 The resulting array should look like this:
-[ANDROID_<wbr/>REQUEST_<wbr/>AVAILABLE_<wbr/>DYNAMIC_<wbr/>RANGE_<wbr/>PROFILES_<wbr/>HLG10,<wbr/> 0,<wbr/>
+[ANDROID_<wbr/>REQUEST_<wbr/>AVAILABLE_<wbr/>DYNAMIC_<wbr/>RANGE_<wbr/>PROFILES_<wbr/>HLG10,<wbr/> 0,<wbr/> 0,<wbr/>
 ANDROID_<wbr/>REQUEST_<wbr/>AVAILABLE_<wbr/>DYNAMIC_<wbr/>RANGE_<wbr/>PROFILES_<wbr/>HDR10,<wbr/>
 (ANDROID_<wbr/>REQUEST_<wbr/>AVAILABLE_<wbr/>DYNAMIC_<wbr/>RANGE_<wbr/>PROFILES_<wbr/>HDR10 |<wbr/>
 ANDROID_<wbr/>REQUEST_<wbr/>AVAILABLE_<wbr/>DYNAMIC_<wbr/>RANGE_<wbr/>PROFILES_<wbr/>HLG10 |<wbr/>
- ANDROID_<wbr/>REQUEST_<wbr/>AVAILABLE_<wbr/>DYNAMIC_<wbr/>RANGE_<wbr/>PROFILES_<wbr/>HDR10_<wbr/>PLUS),<wbr/>
+ ANDROID_<wbr/>REQUEST_<wbr/>AVAILABLE_<wbr/>DYNAMIC_<wbr/>RANGE_<wbr/>PROFILES_<wbr/>HDR10_<wbr/>PLUS),<wbr/> 0,<wbr/>
 ANDROID_<wbr/>REQUEST_<wbr/>AVAILABLE_<wbr/>DYNAMIC_<wbr/>RANGE_<wbr/>PROFILES_<wbr/>HDR10_<wbr/>PLUS,<wbr/>
 (ANDROID_<wbr/>REQUEST_<wbr/>AVAILABLE_<wbr/>DYNAMIC_<wbr/>RANGE_<wbr/>PROFILES_<wbr/>HDR10_<wbr/>PLUS |<wbr/>
 ANDROID_<wbr/>REQUEST_<wbr/>AVAILABLE_<wbr/>DYNAMIC_<wbr/>RANGE_<wbr/>PROFILES_<wbr/>HLG10 |<wbr/>
- ANDROID_<wbr/>REQUEST_<wbr/>AVAILABLE_<wbr/>DYNAMIC_<wbr/>RANGE_<wbr/>PROFILES_<wbr/>HDR10)]</p>
+ ANDROID_<wbr/>REQUEST_<wbr/>AVAILABLE_<wbr/>DYNAMIC_<wbr/>RANGE_<wbr/>PROFILES_<wbr/>HDR10),<wbr/> 1]</p>
 <p>Camera providers must ensure that each processed buffer from a stream configured with the
 HDR10 dynamic range profile includes SMPTE ST 2086 static metadata by calling
 'android::hardware::graphics::mapper::V4_<wbr/>0::IMapper::set' before returning the buffer.<wbr/></p>
@@ -20276,7 +20284,7 @@ before returning the buffer.<wbr/></p>
               android.<wbr/>request.<wbr/>recommended<wbr/>Ten<wbr/>Bit<wbr/>Dynamic<wbr/>Range<wbr/>Profile
             </td>
             <td class="entry_type">
-                <span class="entry_type_name">int32</span>
+                <span class="entry_type_name">int64</span>
 
               <span class="entry_type_visibility"> [java_public]</span>
 
