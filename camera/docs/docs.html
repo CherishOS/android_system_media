@@ -20242,11 +20242,11 @@ can increase the streaming latency by more than 3 buffers.<wbr/> The value 0 wil
 that latency doesn't exceed 3 buffers,<wbr/> everything different than 0 will indicate
 latency that is beyond 3 buffers.<wbr/> In case the flag is set,<wbr/> then Camera clients will be
 advised to avoid configuring this profile for camera latency sensitive outputs such as
-preview.<wbr/></p>
+preview.<wbr/> Do note,<wbr/> that such extra latency must not be present for the HLG10 profile.<wbr/></p>
 <p>For example if we assume that a device exists that can only support HLG10,<wbr/> HDR10 and
 HDR10_<wbr/>PLUS from the possible 10-bit profiles with the following capture constraints:
 1) HLG10 can be included in any capture request without constraints.<wbr/>
-2) HDR10 and HDR10_<wbr/>PLUS can only be referenced together and/<wbr/>or with HGL10 but not with
+2) HDR10 and HDR10_<wbr/>PLUS can only be referenced together and/<wbr/>or with HLG10 but not with
 STANDARD.<wbr/>
 In the same example,<wbr/> HLG10 and HDR10 will not have additional lookahead latency,<wbr/> and
 HDR10+ will have latency that exceeds 3 buffers.<wbr/>

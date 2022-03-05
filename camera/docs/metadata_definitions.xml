@@ -6789,12 +6789,12 @@ xsi:schemaLocation="http://schemas.android.com/service/camera/metadata/ metadata
           that latency doesn't exceed 3 buffers, everything different than 0 will indicate
           latency that is beyond 3 buffers. In case the flag is set, then Camera clients will be
           advised to avoid configuring this profile for camera latency sensitive outputs such as
-          preview.
+          preview. Do note, that such extra latency must not be present for the HLG10 profile.
 
           For example if we assume that a device exists that can only support HLG10, HDR10 and
           HDR10_PLUS from the possible 10-bit profiles with the following capture constraints:
           1) HLG10 can be included in any capture request without constraints.
-          2) HDR10 and HDR10_PLUS can only be referenced together and/or with HGL10 but not with
+          2) HDR10 and HDR10_PLUS can only be referenced together and/or with HLG10 but not with
           STANDARD.
           In the same example, HLG10 and HDR10 will not have additional lookahead latency, and
           HDR10+ will have latency that exceeds 3 buffers.
