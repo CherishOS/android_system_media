@@ -8572,7 +8572,7 @@ xsi:schemaLocation="http://schemas.android.com/service/camera/metadata/ metadata
         </entry>
       </controls>
       <static>
-        <entry name="availableStreamUseCases" type="int32" visibility="public"
+        <entry name="availableStreamUseCases" type="int64" visibility="public"
             enum="true" container="array" hal_version="3.8">
           <array>
             <size>n</size>

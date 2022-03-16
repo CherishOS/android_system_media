@@ -535,7 +535,7 @@ static tag_info_t android_scaler[ANDROID_SCALER_END -
     [ ANDROID_SCALER_CROP_REGION_SET - ANDROID_SCALER_START ] =
     { "cropRegionSet",                 TYPE_BYTE   },
     [ ANDROID_SCALER_AVAILABLE_STREAM_USE_CASES - ANDROID_SCALER_START ] =
-    { "availableStreamUseCases",       TYPE_INT32  },
+    { "availableStreamUseCases",       TYPE_INT64  },
 };
 
 static tag_info_t android_sensor[ANDROID_SENSOR_END -
