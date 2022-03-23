@@ -231,6 +231,7 @@ gen_file html.mako docs.html || exit 1
 # Generate C API headers and implementation
 gen_file camera_metadata_tag_info.mako ../src/camera_metadata_tag_info.c || exit 1
 gen_file camera_metadata_tags.mako ../include/system/camera_metadata_tags.h || exit 1
+gen_file camera_metadata_asserts.mako ../src/camera_metadata_asserts.cpp || exit 1
 
 #Generate NDK header
 gen_file_abs ndk_camera_metadata_tags.mako "$ndk_header_dir/NdkCameraMetadataTags.h" yes || exit 1
