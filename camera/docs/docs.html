@@ -2849,6 +2849,14 @@ capture result metadata,<wbr/> the camera device will ignore the sections outsid
 region and output only the intersection rectangle as the metering region in the result
 metadata.<wbr/>  If the region is entirely outside the crop region,<wbr/> it will be ignored and
 not reported in the result metadata.<wbr/></p>
+<p>When setting the AE metering regions,<wbr/> the application must consider the additional
+crop resulted from the aspect ratio differences between the preview stream and
+<a href="#controls_android.scaler.cropRegion">android.<wbr/>scaler.<wbr/>crop<wbr/>Region</a>.<wbr/> For example,<wbr/> if the <a href="#controls_android.scaler.cropRegion">android.<wbr/>scaler.<wbr/>crop<wbr/>Region</a> is the full
+active array size with 4:3 aspect ratio,<wbr/> and the preview stream is 16:9,<wbr/>
+the boundary of AE regions will be [0,<wbr/> y_<wbr/>crop] and
+[active_<wbr/>width,<wbr/> active_<wbr/>height - 2 * y_<wbr/>crop] rather than [0,<wbr/> 0] and
+[active_<wbr/>width,<wbr/> active_<wbr/>height],<wbr/> where y_<wbr/>crop is the additional crop due to aspect ratio
+mismatch.<wbr/></p>
 <p>Starting from API level 30,<wbr/> the coordinate system of activeArraySize or
 preCorrectionActiveArraySize is used to represent post-zoomRatio field of view,<wbr/> not
 pre-zoom field of view.<wbr/> This means that the same aeRegions values at different
@@ -3348,6 +3356,14 @@ capture result metadata,<wbr/> the camera device will ignore the sections outsid
 region and output only the intersection rectangle as the metering region in the result
 metadata.<wbr/> If the region is entirely outside the crop region,<wbr/> it will be ignored and
 not reported in the result metadata.<wbr/></p>
+<p>When setting the AF metering regions,<wbr/> the application must consider the additional
+crop resulted from the aspect ratio differences between the preview stream and
+<a href="#controls_android.scaler.cropRegion">android.<wbr/>scaler.<wbr/>crop<wbr/>Region</a>.<wbr/> For example,<wbr/> if the <a href="#controls_android.scaler.cropRegion">android.<wbr/>scaler.<wbr/>crop<wbr/>Region</a> is the full
+active array size with 4:3 aspect ratio,<wbr/> and the preview stream is 16:9,<wbr/>
+the boundary of AF regions will be [0,<wbr/> y_<wbr/>crop] and
+[active_<wbr/>width,<wbr/> active_<wbr/>height - 2 * y_<wbr/>crop] rather than [0,<wbr/> 0] and
+[active_<wbr/>width,<wbr/> active_<wbr/>height],<wbr/> where y_<wbr/>crop is the additional crop due to aspect ratio
+mismatch.<wbr/></p>
 <p>Starting from API level 30,<wbr/> the coordinate system of activeArraySize or
 preCorrectionActiveArraySize is used to represent post-zoomRatio field of view,<wbr/> not
 pre-zoom field of view.<wbr/> This means that the same afRegions values at different
@@ -3844,6 +3860,14 @@ capture result metadata,<wbr/> the camera device will ignore the sections outsid
 region and output only the intersection rectangle as the metering region in the result
 metadata.<wbr/>  If the region is entirely outside the crop region,<wbr/> it will be ignored and
 not reported in the result metadata.<wbr/></p>
+<p>When setting the AWB metering regions,<wbr/> the application must consider the additional
+crop resulted from the aspect ratio differences between the preview stream and
+<a href="#controls_android.scaler.cropRegion">android.<wbr/>scaler.<wbr/>crop<wbr/>Region</a>.<wbr/> For example,<wbr/> if the <a href="#controls_android.scaler.cropRegion">android.<wbr/>scaler.<wbr/>crop<wbr/>Region</a> is the full
+active array size with 4:3 aspect ratio,<wbr/> and the preview stream is 16:9,<wbr/>
+the boundary of AWB regions will be [0,<wbr/> y_<wbr/>crop] and
+[active_<wbr/>width,<wbr/> active_<wbr/>height - 2 * y_<wbr/>crop] rather than [0,<wbr/> 0] and
+[active_<wbr/>width,<wbr/> active_<wbr/>height],<wbr/> where y_<wbr/>crop is the additional crop due to aspect ratio
+mismatch.<wbr/></p>
 <p>Starting from API level 30,<wbr/> the coordinate system of activeArraySize or
 preCorrectionActiveArraySize is used to represent post-zoomRatio field of view,<wbr/> not
 pre-zoom field of view.<wbr/> This means that the same awbRegions values at different
@@ -7702,6 +7726,14 @@ capture result metadata,<wbr/> the camera device will ignore the sections outsid
 region and output only the intersection rectangle as the metering region in the result
 metadata.<wbr/>  If the region is entirely outside the crop region,<wbr/> it will be ignored and
 not reported in the result metadata.<wbr/></p>
+<p>When setting the AE metering regions,<wbr/> the application must consider the additional
+crop resulted from the aspect ratio differences between the preview stream and
+<a href="#controls_android.scaler.cropRegion">android.<wbr/>scaler.<wbr/>crop<wbr/>Region</a>.<wbr/> For example,<wbr/> if the <a href="#controls_android.scaler.cropRegion">android.<wbr/>scaler.<wbr/>crop<wbr/>Region</a> is the full
+active array size with 4:3 aspect ratio,<wbr/> and the preview stream is 16:9,<wbr/>
+the boundary of AE regions will be [0,<wbr/> y_<wbr/>crop] and
+[active_<wbr/>width,<wbr/> active_<wbr/>height - 2 * y_<wbr/>crop] rather than [0,<wbr/> 0] and
+[active_<wbr/>width,<wbr/> active_<wbr/>height],<wbr/> where y_<wbr/>crop is the additional crop due to aspect ratio
+mismatch.<wbr/></p>
 <p>Starting from API level 30,<wbr/> the coordinate system of activeArraySize or
 preCorrectionActiveArraySize is used to represent post-zoomRatio field of view,<wbr/> not
 pre-zoom field of view.<wbr/> This means that the same aeRegions values at different
@@ -8508,6 +8540,14 @@ capture result metadata,<wbr/> the camera device will ignore the sections outsid
 region and output only the intersection rectangle as the metering region in the result
 metadata.<wbr/> If the region is entirely outside the crop region,<wbr/> it will be ignored and
 not reported in the result metadata.<wbr/></p>
+<p>When setting the AF metering regions,<wbr/> the application must consider the additional
+crop resulted from the aspect ratio differences between the preview stream and
+<a href="#controls_android.scaler.cropRegion">android.<wbr/>scaler.<wbr/>crop<wbr/>Region</a>.<wbr/> For example,<wbr/> if the <a href="#controls_android.scaler.cropRegion">android.<wbr/>scaler.<wbr/>crop<wbr/>Region</a> is the full
+active array size with 4:3 aspect ratio,<wbr/> and the preview stream is 16:9,<wbr/>
+the boundary of AF regions will be [0,<wbr/> y_<wbr/>crop] and
+[active_<wbr/>width,<wbr/> active_<wbr/>height - 2 * y_<wbr/>crop] rather than [0,<wbr/> 0] and
+[active_<wbr/>width,<wbr/> active_<wbr/>height],<wbr/> where y_<wbr/>crop is the additional crop due to aspect ratio
+mismatch.<wbr/></p>
 <p>Starting from API level 30,<wbr/> the coordinate system of activeArraySize or
 preCorrectionActiveArraySize is used to represent post-zoomRatio field of view,<wbr/> not
 pre-zoom field of view.<wbr/> This means that the same afRegions values at different
@@ -9550,6 +9590,14 @@ capture result metadata,<wbr/> the camera device will ignore the sections outsid
 region and output only the intersection rectangle as the metering region in the result
 metadata.<wbr/>  If the region is entirely outside the crop region,<wbr/> it will be ignored and
 not reported in the result metadata.<wbr/></p>
+<p>When setting the AWB metering regions,<wbr/> the application must consider the additional
+crop resulted from the aspect ratio differences between the preview stream and
+<a href="#controls_android.scaler.cropRegion">android.<wbr/>scaler.<wbr/>crop<wbr/>Region</a>.<wbr/> For example,<wbr/> if the <a href="#controls_android.scaler.cropRegion">android.<wbr/>scaler.<wbr/>crop<wbr/>Region</a> is the full
+active array size with 4:3 aspect ratio,<wbr/> and the preview stream is 16:9,<wbr/>
+the boundary of AWB regions will be [0,<wbr/> y_<wbr/>crop] and
+[active_<wbr/>width,<wbr/> active_<wbr/>height - 2 * y_<wbr/>crop] rather than [0,<wbr/> 0] and
+[active_<wbr/>width,<wbr/> active_<wbr/>height],<wbr/> where y_<wbr/>crop is the additional crop due to aspect ratio
+mismatch.<wbr/></p>
 <p>Starting from API level 30,<wbr/> the coordinate system of activeArraySize or
 preCorrectionActiveArraySize is used to represent post-zoomRatio field of view,<wbr/> not
 pre-zoom field of view.<wbr/> This means that the same awbRegions values at different
