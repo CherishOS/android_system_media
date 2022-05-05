@@ -3745,7 +3745,7 @@ is.<wbr/></p>
 routine is enabled,<wbr/> overriding the application's selected
 <a href="#controls_android.colorCorrection.transform">android.<wbr/>color<wbr/>Correction.<wbr/>transform</a>,<wbr/> <a href="#controls_android.colorCorrection.gains">android.<wbr/>color<wbr/>Correction.<wbr/>gains</a> and
 <a href="#controls_android.colorCorrection.mode">android.<wbr/>color<wbr/>Correction.<wbr/>mode</a>.<wbr/> Note that when <a href="#controls_android.control.aeMode">android.<wbr/>control.<wbr/>ae<wbr/>Mode</a>
-is OFF,<wbr/> the behavior of AWB is device dependent.<wbr/> It is recommened to
+is OFF,<wbr/> the behavior of AWB is device dependent.<wbr/> It is recommended to
 also set AWB mode to OFF or lock AWB by using <a href="#controls_android.control.awbLock">android.<wbr/>control.<wbr/>awb<wbr/>Lock</a> before
 setting AE mode to OFF.<wbr/></p>
 <p>When set to the OFF mode,<wbr/> the camera device's auto-white balance
@@ -4011,13 +4011,15 @@ strategy.<wbr/></p>
             <td class="entry_details" colspan="6">
               <p>This control (except for MANUAL) is only effective if
 <code><a href="#controls_android.control.mode">android.<wbr/>control.<wbr/>mode</a> != OFF</code> and any 3A routine is active.<wbr/></p>
-<p>All intents are supported by all devices,<wbr/> except that:
-  * ZERO_<wbr/>SHUTTER_<wbr/>LAG will be supported if <a href="#static_android.request.availableCapabilities">android.<wbr/>request.<wbr/>available<wbr/>Capabilities</a> contains
-PRIVATE_<wbr/>REPROCESSING or YUV_<wbr/>REPROCESSING.<wbr/>
-  * MANUAL will be supported if <a href="#static_android.request.availableCapabilities">android.<wbr/>request.<wbr/>available<wbr/>Capabilities</a> contains
-MANUAL_<wbr/>SENSOR.<wbr/>
-  * MOTION_<wbr/>TRACKING will be supported if <a href="#static_android.request.availableCapabilities">android.<wbr/>request.<wbr/>available<wbr/>Capabilities</a> contains
-MOTION_<wbr/>TRACKING.<wbr/></p>
+<p>All intents are supported by all devices,<wbr/> except that:</p>
+<ul>
+<li>ZERO_<wbr/>SHUTTER_<wbr/>LAG will be supported if <a href="#static_android.request.availableCapabilities">android.<wbr/>request.<wbr/>available<wbr/>Capabilities</a> contains
+PRIVATE_<wbr/>REPROCESSING or YUV_<wbr/>REPROCESSING.<wbr/></li>
+<li>MANUAL will be supported if <a href="#static_android.request.availableCapabilities">android.<wbr/>request.<wbr/>available<wbr/>Capabilities</a> contains
+MANUAL_<wbr/>SENSOR.<wbr/></li>
+<li>MOTION_<wbr/>TRACKING will be supported if <a href="#static_android.request.availableCapabilities">android.<wbr/>request.<wbr/>available<wbr/>Capabilities</a> contains
+MOTION_<wbr/>TRACKING.<wbr/></li>
+</ul>
             </td>
           </tr>
 
@@ -4447,10 +4449,10 @@ min(2,<wbr/> <a href="#static_android.request.maxNumOutputStreams">android.<wbr/
 <a href="#static_android.control.availableHighSpeedVideoConfigurations">android.<wbr/>control.<wbr/>available<wbr/>High<wbr/>Speed<wbr/>Video<wbr/>Configurations</a>.<wbr/></li>
 <li>No processed non-stalling or raw streams are configured.<wbr/></li>
 </ul>
-<p>When above conditions are NOT satistied,<wbr/> the controls of this mode and
+<p>When above conditions are NOT satisfied,<wbr/> the controls of this mode and
 <a href="#controls_android.control.aeTargetFpsRange">android.<wbr/>control.<wbr/>ae<wbr/>Target<wbr/>Fps<wbr/>Range</a> will be ignored by the camera device,<wbr/>
 the camera device will fall back to <a href="#controls_android.control.mode">android.<wbr/>control.<wbr/>mode</a> <code>==</code> AUTO,<wbr/>
-and the returned capture result metadata will give the fps range choosen
+and the returned capture result metadata will give the fps range chosen
 by the camera device.<wbr/></p>
 <p>Switching into or out of this mode may trigger some camera ISP/<wbr/>sensor
 reconfigurations,<wbr/> which may introduce extra latency.<wbr/> It is recommended that
@@ -4513,7 +4515,7 @@ sensitivity range to produce the best quality images.<wbr/> For example,<wbr/>
 if the <a href="#static_android.sensor.info.sensitivityRange">android.<wbr/>sensor.<wbr/>info.<wbr/>sensitivity<wbr/>Range</a> gives range of [100,<wbr/> 1600],<wbr/>
 the camera device auto-exposure routine tuning process may limit the actual
 exposure sensitivity range to [100,<wbr/> 1200] to ensure that the noise level isn't
-exessive in order to preserve the image quality.<wbr/> Under this situation,<wbr/> the image under
+excessive in order to preserve the image quality.<wbr/> Under this situation,<wbr/> the image under
 low light may be under-exposed when the sensor max exposure time (bounded by the
 <a href="#controls_android.control.aeTargetFpsRange">android.<wbr/>control.<wbr/>ae<wbr/>Target<wbr/>Fps<wbr/>Range</a> when <a href="#controls_android.control.aeMode">android.<wbr/>control.<wbr/>ae<wbr/>Mode</a> is one of the
 ON_<wbr/>* modes) and effective max sensitivity are reached.<wbr/> This scene mode allows the
@@ -4606,7 +4608,7 @@ speed streaming,<wbr/> when this scene mode is set/<wbr/>reset in a sequence of 
 HAL may have to switch between different sensor modes.<wbr/>  This mode is deprecated in legacy
 HAL3.<wbr/>3,<wbr/> to support high speed video recording,<wbr/> please implement
 <a href="#static_android.control.availableHighSpeedVideoConfigurations">android.<wbr/>control.<wbr/>available<wbr/>High<wbr/>Speed<wbr/>Video<wbr/>Configurations</a> and CONSTRAINED_<wbr/>HIGH_<wbr/>SPEED_<wbr/>VIDEO
-capbility defined in <a href="#static_android.request.availableCapabilities">android.<wbr/>request.<wbr/>available<wbr/>Capabilities</a>.<wbr/></p>
+capability defined in <a href="#static_android.request.availableCapabilities">android.<wbr/>request.<wbr/>available<wbr/>Capabilities</a>.<wbr/></p>
             </td>
           </tr>
 
@@ -6428,7 +6430,7 @@ recording requests.<wbr/> Note that for the use case of multiple output streams,
 must select one unique size from this metadata to use (e.<wbr/>g.,<wbr/> preview and recording streams
 must have the same size).<wbr/> Otherwise,<wbr/> the high speed capture session creation will fail.<wbr/></p>
 <p>The min and max fps will be multiple times of 30fps.<wbr/></p>
-<p>High speed video streaming extends significant performance pressue to camera hardware,<wbr/>
+<p>High speed video streaming extends significant performance pressure to camera hardware,<wbr/>
 to achieve efficient high speed streaming,<wbr/> the camera device may have to aggregate
 multiple frames together and send to camera device for processing where the request
 controls are same for all the frames in this batch.<wbr/> Max batch size indicates
@@ -6719,7 +6721,7 @@ by this camera device.<wbr/></p>
           <tr class="entry_cont">
             <td class="entry_details" colspan="6">
               <p>Devices support post RAW sensitivity boost  will advertise
-<a href="#controls_android.control.postRawSensitivityBoost">android.<wbr/>control.<wbr/>post<wbr/>Raw<wbr/>Sensitivity<wbr/>Boost</a> key for controling
+<a href="#controls_android.control.postRawSensitivityBoost">android.<wbr/>control.<wbr/>post<wbr/>Raw<wbr/>Sensitivity<wbr/>Boost</a> key for controlling
 post RAW sensitivity boost.<wbr/></p>
 <p>This key will be <code>null</code> for devices that do not support any RAW format
 outputs.<wbr/> For devices that do support RAW format outputs,<wbr/> this key will always
@@ -8250,7 +8252,7 @@ transient states between two results.<wbr/> See below table for examples:</p>
 <td align="center">Any state (excluding LOCKED)</td>
 <td align="center"><a href="#controls_android.control.aePrecaptureTrigger">android.<wbr/>control.<wbr/>ae<wbr/>Precapture<wbr/>Trigger</a> is CANCEL,<wbr/> converged</td>
 <td align="center">CONVERGED</td>
-<td align="center">Converged after a precapture sequenceis canceled,<wbr/> transient states are skipped by camera device.<wbr/></td>
+<td align="center">Converged after a precapture sequences canceled,<wbr/> transient states are skipped by camera device.<wbr/></td>
 </tr>
 <tr>
 <td align="center">CONVERGED</td>
@@ -9475,7 +9477,7 @@ is.<wbr/></p>
 routine is enabled,<wbr/> overriding the application's selected
 <a href="#controls_android.colorCorrection.transform">android.<wbr/>color<wbr/>Correction.<wbr/>transform</a>,<wbr/> <a href="#controls_android.colorCorrection.gains">android.<wbr/>color<wbr/>Correction.<wbr/>gains</a> and
 <a href="#controls_android.colorCorrection.mode">android.<wbr/>color<wbr/>Correction.<wbr/>mode</a>.<wbr/> Note that when <a href="#controls_android.control.aeMode">android.<wbr/>control.<wbr/>ae<wbr/>Mode</a>
-is OFF,<wbr/> the behavior of AWB is device dependent.<wbr/> It is recommened to
+is OFF,<wbr/> the behavior of AWB is device dependent.<wbr/> It is recommended to
 also set AWB mode to OFF or lock AWB by using <a href="#controls_android.control.awbLock">android.<wbr/>control.<wbr/>awb<wbr/>Lock</a> before
 setting AE mode to OFF.<wbr/></p>
 <p>When set to the OFF mode,<wbr/> the camera device's auto-white balance
@@ -9741,13 +9743,15 @@ strategy.<wbr/></p>
             <td class="entry_details" colspan="6">
               <p>This control (except for MANUAL) is only effective if
 <code><a href="#controls_android.control.mode">android.<wbr/>control.<wbr/>mode</a> != OFF</code> and any 3A routine is active.<wbr/></p>
-<p>All intents are supported by all devices,<wbr/> except that:
-  * ZERO_<wbr/>SHUTTER_<wbr/>LAG will be supported if <a href="#static_android.request.availableCapabilities">android.<wbr/>request.<wbr/>available<wbr/>Capabilities</a> contains
-PRIVATE_<wbr/>REPROCESSING or YUV_<wbr/>REPROCESSING.<wbr/>
-  * MANUAL will be supported if <a href="#static_android.request.availableCapabilities">android.<wbr/>request.<wbr/>available<wbr/>Capabilities</a> contains
-MANUAL_<wbr/>SENSOR.<wbr/>
-  * MOTION_<wbr/>TRACKING will be supported if <a href="#static_android.request.availableCapabilities">android.<wbr/>request.<wbr/>available<wbr/>Capabilities</a> contains
-MOTION_<wbr/>TRACKING.<wbr/></p>
+<p>All intents are supported by all devices,<wbr/> except that:</p>
+<ul>
+<li>ZERO_<wbr/>SHUTTER_<wbr/>LAG will be supported if <a href="#static_android.request.availableCapabilities">android.<wbr/>request.<wbr/>available<wbr/>Capabilities</a> contains
+PRIVATE_<wbr/>REPROCESSING or YUV_<wbr/>REPROCESSING.<wbr/></li>
+<li>MANUAL will be supported if <a href="#static_android.request.availableCapabilities">android.<wbr/>request.<wbr/>available<wbr/>Capabilities</a> contains
+MANUAL_<wbr/>SENSOR.<wbr/></li>
+<li>MOTION_<wbr/>TRACKING will be supported if <a href="#static_android.request.availableCapabilities">android.<wbr/>request.<wbr/>available<wbr/>Capabilities</a> contains
+MOTION_<wbr/>TRACKING.<wbr/></li>
+</ul>
             </td>
           </tr>
 
@@ -10367,10 +10371,10 @@ min(2,<wbr/> <a href="#static_android.request.maxNumOutputStreams">android.<wbr/
 <a href="#static_android.control.availableHighSpeedVideoConfigurations">android.<wbr/>control.<wbr/>available<wbr/>High<wbr/>Speed<wbr/>Video<wbr/>Configurations</a>.<wbr/></li>
 <li>No processed non-stalling or raw streams are configured.<wbr/></li>
 </ul>
-<p>When above conditions are NOT satistied,<wbr/> the controls of this mode and
+<p>When above conditions are NOT satisfied,<wbr/> the controls of this mode and
 <a href="#controls_android.control.aeTargetFpsRange">android.<wbr/>control.<wbr/>ae<wbr/>Target<wbr/>Fps<wbr/>Range</a> will be ignored by the camera device,<wbr/>
 the camera device will fall back to <a href="#controls_android.control.mode">android.<wbr/>control.<wbr/>mode</a> <code>==</code> AUTO,<wbr/>
-and the returned capture result metadata will give the fps range choosen
+and the returned capture result metadata will give the fps range chosen
 by the camera device.<wbr/></p>
 <p>Switching into or out of this mode may trigger some camera ISP/<wbr/>sensor
 reconfigurations,<wbr/> which may introduce extra latency.<wbr/> It is recommended that
@@ -10433,7 +10437,7 @@ sensitivity range to produce the best quality images.<wbr/> For example,<wbr/>
 if the <a href="#static_android.sensor.info.sensitivityRange">android.<wbr/>sensor.<wbr/>info.<wbr/>sensitivity<wbr/>Range</a> gives range of [100,<wbr/> 1600],<wbr/>
 the camera device auto-exposure routine tuning process may limit the actual
 exposure sensitivity range to [100,<wbr/> 1200] to ensure that the noise level isn't
-exessive in order to preserve the image quality.<wbr/> Under this situation,<wbr/> the image under
+excessive in order to preserve the image quality.<wbr/> Under this situation,<wbr/> the image under
 low light may be under-exposed when the sensor max exposure time (bounded by the
 <a href="#controls_android.control.aeTargetFpsRange">android.<wbr/>control.<wbr/>ae<wbr/>Target<wbr/>Fps<wbr/>Range</a> when <a href="#controls_android.control.aeMode">android.<wbr/>control.<wbr/>ae<wbr/>Mode</a> is one of the
 ON_<wbr/>* modes) and effective max sensitivity are reached.<wbr/> This scene mode allows the
@@ -10526,7 +10530,7 @@ speed streaming,<wbr/> when this scene mode is set/<wbr/>reset in a sequence of 
 HAL may have to switch between different sensor modes.<wbr/>  This mode is deprecated in legacy
 HAL3.<wbr/>3,<wbr/> to support high speed video recording,<wbr/> please implement
 <a href="#static_android.control.availableHighSpeedVideoConfigurations">android.<wbr/>control.<wbr/>available<wbr/>High<wbr/>Speed<wbr/>Video<wbr/>Configurations</a> and CONSTRAINED_<wbr/>HIGH_<wbr/>SPEED_<wbr/>VIDEO
-capbility defined in <a href="#static_android.request.availableCapabilities">android.<wbr/>request.<wbr/>available<wbr/>Capabilities</a>.<wbr/></p>
+capability defined in <a href="#static_android.request.availableCapabilities">android.<wbr/>request.<wbr/>available<wbr/>Capabilities</a>.<wbr/></p>
             </td>
           </tr>
 
@@ -12078,7 +12082,7 @@ this be power-dependent?</p>
             <td class="entry_details" colspan="6">
               <p>If this value is greater than 1,<wbr/> then the device supports controlling the
 flashlight brightness level via
-{android.<wbr/>hardware.<wbr/>camera2.<wbr/>Camera<wbr/>Manager#turn<wbr/>On<wbr/>Torch<wbr/>With<wbr/>Strength<wbr/>Level}.<wbr/>
+<a href="https://developer.android.com/reference/android/hardware/camera2/CameraManager.html#turnOnTorchWithStrengthLevel">CameraManager#turnOnTorchWithStrengthLevel</a>.<wbr/>
 If this value is equal to 1,<wbr/> flashlight brightness control is not supported.<wbr/>
 The value for this key will be null for devices with no flash unit.<wbr/></p>
             </td>
@@ -12108,7 +12112,7 @@ The value for this key will be null for devices with no flash unit.<wbr/></p>
 
             <td class="entry_description">
               <p>Default flashlight brightness level to be set via
-{android.<wbr/>hardware.<wbr/>camera2.<wbr/>Camera<wbr/>Manager#turn<wbr/>On<wbr/>Torch<wbr/>With<wbr/>Strength<wbr/>Level}.<wbr/></p>
+<a href="https://developer.android.com/reference/android/hardware/camera2/CameraManager.html#turnOnTorchWithStrengthLevel">CameraManager#turnOnTorchWithStrengthLevel</a>.<wbr/></p>
             </td>
 
             <td class="entry_units">
@@ -13391,7 +13395,7 @@ the camera device will handle thumbnail rotation in one of the following ways:</
   and keep jpeg and thumbnail image data unrotated.<wbr/></li>
 <li>Rotate the jpeg and thumbnail image data and not set
   <a href="https://developer.android.com/reference/android/media/ExifInterface.html#TAG_ORIENTATION">EXIF orientation flag</a>.<wbr/> In this
-  case,<wbr/> LIMITED or FULL hardware level devices will report rotated thumnail size in
+  case,<wbr/> LIMITED or FULL hardware level devices will report rotated thumbnail size in
   capture result,<wbr/> so the width and height will be interchanged if 90 or 270 degree
   orientation is requested.<wbr/> LEGACY device will always report unrotated thumbnail
   size.<wbr/></li>
@@ -13498,7 +13502,7 @@ camera device.<wbr/></p>
             <td class="entry_details" colspan="6">
               <p>This list will include at least one non-zero resolution,<wbr/> plus <code>(0,<wbr/>0)</code> for indicating no
 thumbnail should be generated.<wbr/></p>
-<p>Below condiditions will be satisfied for this size list:</p>
+<p>Below conditions will be satisfied for this size list:</p>
 <ul>
 <li>The sizes will be sorted by increasing pixel area (width x height).<wbr/>
 If several resolutions have the same area,<wbr/> they will be sorted by increasing width.<wbr/></li>
@@ -14151,7 +14155,7 @@ the camera device will handle thumbnail rotation in one of the following ways:</
   and keep jpeg and thumbnail image data unrotated.<wbr/></li>
 <li>Rotate the jpeg and thumbnail image data and not set
   <a href="https://developer.android.com/reference/android/media/ExifInterface.html#TAG_ORIENTATION">EXIF orientation flag</a>.<wbr/> In this
-  case,<wbr/> LIMITED or FULL hardware level devices will report rotated thumnail size in
+  case,<wbr/> LIMITED or FULL hardware level devices will report rotated thumbnail size in
   capture result,<wbr/> so the width and height will be interchanged if 90 or 270 degree
   orientation is requested.<wbr/> LEGACY device will always report unrotated thumbnail
   size.<wbr/></li>
@@ -15632,7 +15636,7 @@ some kind of hinge position sensor would be needed.<wbr/></p>
                   <li>
                     <span class="entry_type_enum_name">AUTOMOTIVE (v3.8)</span>
                     <span class="entry_type_enum_notes"><p>The value of <a href="#static_android.lens.poseTranslation">android.<wbr/>lens.<wbr/>pose<wbr/>Translation</a> is relative to the origin of the
-automotive sensor coodinate system,<wbr/> which is at the center of the rear axle.<wbr/></p></span>
+automotive sensor coordinate system,<wbr/> which is at the center of the rear axle.<wbr/></p></span>
                   </li>
                 </ul>
 
@@ -16399,7 +16403,7 @@ the current status of the lens parameters.<wbr/></p>
 <p>When the state is STATIONARY,<wbr/> the lens parameters are not changing.<wbr/> This could be
 either because the parameters are all fixed,<wbr/> or because the lens has had enough
 time to reach the most recently-requested values.<wbr/>
-If all these lens parameters are not changable for a camera device,<wbr/> as listed below:</p>
+If all these lens parameters are not changeable for a camera device,<wbr/> as listed below:</p>
 <ul>
 <li>Fixed focus (<code><a href="#static_android.lens.info.minimumFocusDistance">android.<wbr/>lens.<wbr/>info.<wbr/>minimum<wbr/>Focus<wbr/>Distance</a> == 0</code>),<wbr/> which means
 <a href="#controls_android.lens.focusDistance">android.<wbr/>lens.<wbr/>focus<wbr/>Distance</a> parameter will always be 0.<wbr/></li>
@@ -18233,7 +18237,7 @@ number is 3,<wbr/> and max JPEG stream number is 2,<wbr/> then this tuple should
 the camera device.<wbr/> Using more streams simultaneously may require more hardware and
 CPU resources that will consume more power.<wbr/> The image format for an output stream can
 be any supported format provided by <a href="#static_android.scaler.availableStreamConfigurations">android.<wbr/>scaler.<wbr/>available<wbr/>Stream<wbr/>Configurations</a>.<wbr/>
-The formats defined in <a href="#static_android.scaler.availableStreamConfigurations">android.<wbr/>scaler.<wbr/>available<wbr/>Stream<wbr/>Configurations</a> can be catergorized
+The formats defined in <a href="#static_android.scaler.availableStreamConfigurations">android.<wbr/>scaler.<wbr/>available<wbr/>Stream<wbr/>Configurations</a> can be categorized
 into the 3 stream types as below:</p>
 <ul>
 <li>Processed (but stalling): any non-RAW format with a stallDurations &gt; 0.<wbr/>
@@ -19084,7 +19088,7 @@ surface(either from <a href="https://developer.android.com/reference/android/med
 <a href="https://developer.android.com/reference/android/hardware/camera2/params/StreamConfigurationMap.html#getHighSpeedVideoSizes">StreamConfigurationMap#getHighSpeedVideoSizes</a>.<wbr/></li>
 <li>The FPS ranges are selected from <a href="https://developer.android.com/reference/android/hardware/camera2/params/StreamConfigurationMap.html#getHighSpeedVideoFpsRanges">StreamConfigurationMap#getHighSpeedVideoFpsRanges</a>.<wbr/></li>
 </ul>
-<p>When above conditions are NOT satistied,<wbr/>
+<p>When above conditions are NOT satisfied,<wbr/>
 <a href="https://developer.android.com/reference/android/hardware/camera2/CameraDevice.html#createConstrainedHighSpeedCaptureSession">CameraDevice#createConstrainedHighSpeedCaptureSession</a>
 will fail.<wbr/></p>
 <p>Switching to a FPS range that has different maximum FPS may trigger some camera device
@@ -19205,7 +19209,7 @@ logical streams.<wbr/> However,<wbr/> the same may not be true for physical stre
 non-active physical cameras.<wbr/> For example,<wbr/> if the logical camera has a wide-ultrawide
 configuration where the wide lens is the default,<wbr/> when the crop region is set to the
 logical camera's active array size,<wbr/> (and the zoom ratio set to 1.<wbr/>0 starting from
-Android 11),<wbr/> a physical stream for the ultrawide camera may prefer outputing images
+Android 11),<wbr/> a physical stream for the ultrawide camera may prefer outputting images
 with larger field-of-view than that of the wide camera for better stereo matching
 margin or more robust motion tracking.<wbr/> At the same time,<wbr/> the physical non-RAW streams'
 field of view must not be smaller than the requested crop region and zoom ratio,<wbr/> as
@@ -19356,21 +19360,23 @@ regular bayer pattern.<wbr/></p>
 when <a href="#controls_android.sensor.pixelMode">android.<wbr/>sensor.<wbr/>pixel<wbr/>Mode</a> is set to
 <a href="https://developer.android.com/reference/android/hardware/camera2/CameraMetadata.html#SENSOR_PIXEL_MODE_MAXIMUM_RESOLUTION">Camera<wbr/>Metadata#SENSOR_<wbr/>PIXEL_<wbr/>MODE_<wbr/>MAXIMUM_<wbr/>RESOLUTION</a>),<wbr/>
 the <code>RAW_<wbr/>SENSOR</code> stream will have a regular bayer pattern.<wbr/></p>
-<p>This capability requires the camera device to support the following :
-* The <a href="https://developer.android.com/reference/android/hardware/camera2/params/StreamConfigurationMap.html">StreamConfigurationMap</a> mentioned below
+<p>This capability requires the camera device to support the following :</p>
+<ul>
+<li>The <a href="https://developer.android.com/reference/android/hardware/camera2/params/StreamConfigurationMap.html">StreamConfigurationMap</a> mentioned below
   refers to the one,<wbr/> described by
-  <code><a href="#static_android.scaler.streamConfigurationMapMaximumResolution">android.<wbr/>scaler.<wbr/>stream<wbr/>Configuration<wbr/>Map<wbr/>Maximum<wbr/>Resolution</a></code>.<wbr/>
-* One input stream is supported,<wbr/> that is,<wbr/> <code><a href="#static_android.request.maxNumInputStreams">android.<wbr/>request.<wbr/>max<wbr/>Num<wbr/>Input<wbr/>Streams</a> == 1</code>.<wbr/>
-* <a href="https://developer.android.com/reference/android/graphics/ImageFormat.html#RAW_SENSOR">ImageFormat#RAW_<wbr/>SENSOR</a> is supported as an output/<wbr/>input
+  <code><a href="#static_android.scaler.streamConfigurationMapMaximumResolution">android.<wbr/>scaler.<wbr/>stream<wbr/>Configuration<wbr/>Map<wbr/>Maximum<wbr/>Resolution</a></code>.<wbr/></li>
+<li>One input stream is supported,<wbr/> that is,<wbr/> <code><a href="#static_android.request.maxNumInputStreams">android.<wbr/>request.<wbr/>max<wbr/>Num<wbr/>Input<wbr/>Streams</a> == 1</code>.<wbr/></li>
+<li><a href="https://developer.android.com/reference/android/graphics/ImageFormat.html#RAW_SENSOR">ImageFormat#RAW_<wbr/>SENSOR</a> is supported as an output/<wbr/>input
   format,<wbr/> that is,<wbr/> <a href="https://developer.android.com/reference/android/graphics/ImageFormat.html#RAW_SENSOR">ImageFormat#RAW_<wbr/>SENSOR</a> is included in the
-  lists of formats returned by <a href="https://developer.android.com/reference/android/hardware/camera2/params/StreamConfigurationMap.html#getInputFormats">StreamConfigurationMap#getInputFormats</a> and <a href="https://developer.android.com/reference/android/hardware/camera2/params/StreamConfigurationMap.html#getOutputFormats">StreamConfigurationMap#getOutputFormats</a>.<wbr/>
-* <a href="https://developer.android.com/reference/android/hardware/camera2/params/StreamConfigurationMap.html#getValidOutputFormatsForInput">StreamConfigurationMap#getValidOutputFormatsForInput</a>
-  returns non-empty int[] for each supported input format returned by <a href="https://developer.android.com/reference/android/hardware/camera2/params/StreamConfigurationMap.html#getInputFormats">StreamConfigurationMap#getInputFormats</a>.<wbr/>
-* Each size returned by <a href="https://developer.android.com/reference/android/hardware/camera2/params/StreamConfigurationMap.html#getInputSizes">getInputSizes(ImageFormat.<wbr/>RAW_<wbr/>SENSOR)</a> is also included in <a href="https://developer.android.com/reference/android/hardware/camera2/params/StreamConfigurationMap.html#getOutputSizes">getOutputSizes(ImageFormat.<wbr/>RAW_<wbr/>SENSOR)</a>
-* Using <a href="https://developer.android.com/reference/android/graphics/ImageFormat.html#RAW_SENSOR">ImageFormat#RAW_<wbr/>SENSOR</a> does not cause a frame rate
-  drop relative to the sensor's maximum capture rate (at that resolution).<wbr/>
-* No CaptureRequest controls will be applicable when a request has an input target
-  with <a href="https://developer.android.com/reference/android/graphics/ImageFormat.html#RAW_SENSOR">ImageFormat#RAW_<wbr/>SENSOR</a> format.<wbr/></p></span>
+  lists of formats returned by <a href="https://developer.android.com/reference/android/hardware/camera2/params/StreamConfigurationMap.html#getInputFormats">StreamConfigurationMap#getInputFormats</a> and <a href="https://developer.android.com/reference/android/hardware/camera2/params/StreamConfigurationMap.html#getOutputFormats">StreamConfigurationMap#getOutputFormats</a>.<wbr/></li>
+<li><a href="https://developer.android.com/reference/android/hardware/camera2/params/StreamConfigurationMap.html#getValidOutputFormatsForInput">StreamConfigurationMap#getValidOutputFormatsForInput</a>
+  returns non-empty int[] for each supported input format returned by <a href="https://developer.android.com/reference/android/hardware/camera2/params/StreamConfigurationMap.html#getInputFormats">StreamConfigurationMap#getInputFormats</a>.<wbr/></li>
+<li>Each size returned by <a href="https://developer.android.com/reference/android/hardware/camera2/params/StreamConfigurationMap.html#getInputSizes">getInputSizes(ImageFormat.<wbr/>RAW_<wbr/>SENSOR)</a> is also included in <a href="https://developer.android.com/reference/android/hardware/camera2/params/StreamConfigurationMap.html#getOutputSizes">getOutputSizes(ImageFormat.<wbr/>RAW_<wbr/>SENSOR)</a></li>
+<li>Using <a href="https://developer.android.com/reference/android/graphics/ImageFormat.html#RAW_SENSOR">ImageFormat#RAW_<wbr/>SENSOR</a> does not cause a frame rate
+  drop relative to the sensor's maximum capture rate (at that resolution).<wbr/></li>
+<li>No CaptureRequest controls will be applicable when a request has an input target
+  with <a href="https://developer.android.com/reference/android/graphics/ImageFormat.html#RAW_SENSOR">ImageFormat#RAW_<wbr/>SENSOR</a> format.<wbr/></li>
+</ul></span>
                   </li>
                   <li>
                     <span class="entry_type_enum_name">DYNAMIC_RANGE_TEN_BIT (v3.8)</span>
@@ -19381,16 +19387,18 @@ profiles specified in
 <a href="https://developer.android.com/reference/android/hardware/camera2/params/DynamicRangeProfiles.html#getSupportedProfiles">DynamicRangeProfiles#getSupportedProfiles</a>.<wbr/>
 They can be configured as part of the capture session initialization via
 <a href="https://developer.android.com/reference/android/hardware/camera2/params/OutputConfiguration.html#setDynamicRangeProfile">OutputConfiguration#setDynamicRangeProfile</a>.<wbr/>
-Cameras that enable this capability must also support the following:
-* Profile <a href="https://developer.android.com/reference/android/hardware/camera2/params/DynamicRangeProfiles.html#HLG10">DynamicRangeProfiles#HLG10</a>
-* All mandatory stream combinations for this specific capability as per
-  documentation <a href="https://developer.android.com/reference/android/hardware/camera2/CameraDevice.html#createCaptureSession">CameraDevice#createCaptureSession</a>
-* In case the device is not able to capture some combination of supported
+Cameras that enable this capability must also support the following:</p>
+<ul>
+<li>Profile <a href="https://developer.android.com/reference/android/hardware/camera2/params/DynamicRangeProfiles.html#HLG10">DynamicRangeProfiles#HLG10</a></li>
+<li>All mandatory stream combinations for this specific capability as per
+  documentation <a href="https://developer.android.com/reference/android/hardware/camera2/CameraDevice.html#createCaptureSession">CameraDevice#createCaptureSession</a></li>
+<li>In case the device is not able to capture some combination of supported
   standard 8-bit and/<wbr/>or 10-bit dynamic range profiles within the same capture request,<wbr/>
   then those constraints must be listed in
-  <a href="https://developer.android.com/reference/android/hardware/camera2/params/DynamicRangeProfiles.html#getProfileCaptureRequestConstraints">DynamicRangeProfiles#getProfileCaptureRequestConstraints</a>
-* Recommended dynamic range profile listed in
-  <a href="https://developer.android.com/reference/android/hardware/camera2/CameraCharacteristics.html#REQUEST_RECOMMENDED_TEN_BIT_DYNAMIC_RANGE_PROFILE">Camera<wbr/>Characteristics#REQUEST_<wbr/>RECOMMENDED_<wbr/>TEN_<wbr/>BIT_<wbr/>DYNAMIC_<wbr/>RANGE_<wbr/>PROFILE</a>.<wbr/></p></span>
+  <a href="https://developer.android.com/reference/android/hardware/camera2/params/DynamicRangeProfiles.html#getProfileCaptureRequestConstraints">DynamicRangeProfiles#getProfileCaptureRequestConstraints</a></li>
+<li>Recommended dynamic range profile listed in
+  <a href="https://developer.android.com/reference/android/hardware/camera2/CameraCharacteristics.html#REQUEST_RECOMMENDED_TEN_BIT_DYNAMIC_RANGE_PROFILE">Camera<wbr/>Characteristics#REQUEST_<wbr/>RECOMMENDED_<wbr/>TEN_<wbr/>BIT_<wbr/>DYNAMIC_<wbr/>RANGE_<wbr/>PROFILE</a>.<wbr/></li>
+</ul></span>
                   </li>
                   <li>
                     <span class="entry_type_enum_name">STREAM_USE_CASE (v3.8)</span>
@@ -19399,22 +19407,26 @@ Cameras that enable this capability must also support the following:
 <a href="https://developer.android.com/reference/android/hardware/camera2/params/OutputConfiguration.html#setStreamUseCase">OutputConfiguration#setStreamUseCase</a>
 so that the device can optimize camera pipeline parameters such as tuning,<wbr/> sensor
 mode,<wbr/> or ISP settings for a specific user scenario.<wbr/>
-Some sample usages of this capability are:
-* Distinguish high quality YUV captures from a regular YUV stream where
-  the image quality may not be as good as the JPEG stream,<wbr/> or
-* Use one stream to serve multiple purposes: viewfinder,<wbr/> video recording and
+Some sample usages of this capability are:</p>
+<ul>
+<li>Distinguish high quality YUV captures from a regular YUV stream where
+  the image quality may not be as good as the JPEG stream,<wbr/> or</li>
+<li>Use one stream to serve multiple purposes: viewfinder,<wbr/> video recording and
   still capture.<wbr/> This is common with applications that wish to apply edits equally
-  to preview,<wbr/> saved images,<wbr/> and saved videos.<wbr/></p>
+  to preview,<wbr/> saved images,<wbr/> and saved videos.<wbr/></li>
+</ul>
 <p>This capability requires the camera device to support the following
-stream use cases:
-* DEFAULT for backward compatibility where the application doesn't set
-  a stream use case
-* PREVIEW for live viewfinder and in-app image analysis
-* STILL_<wbr/>CAPTURE for still photo capture
-* VIDEO_<wbr/>RECORD for recording video clips
-* PREVIEW_<wbr/>VIDEO_<wbr/>STILL for one single stream used for viewfinder,<wbr/> video
-  recording,<wbr/> and still capture.<wbr/>
-* VIDEO_<wbr/>CALL for long running video calls</p>
+stream use cases:</p>
+<ul>
+<li>DEFAULT for backward compatibility where the application doesn't set
+  a stream use case</li>
+<li>PREVIEW for live viewfinder and in-app image analysis</li>
+<li>STILL_<wbr/>CAPTURE for still photo capture</li>
+<li>VIDEO_<wbr/>RECORD for recording video clips</li>
+<li>PREVIEW_<wbr/>VIDEO_<wbr/>STILL for one single stream used for viewfinder,<wbr/> video
+  recording,<wbr/> and still capture.<wbr/></li>
+<li>VIDEO_<wbr/>CALL for long running video calls</li>
+</ul>
 <p><a href="https://developer.android.com/reference/android/hardware/camera2/CameraCharacteristics.html#SCALER_AVAILABLE_STREAM_USE_CASES">Camera<wbr/>Characteristics#SCALER_<wbr/>AVAILABLE_<wbr/>STREAM_<wbr/>USE_<wbr/>CASES</a>
 lists all of the supported stream use cases.<wbr/></p>
 <p>Refer to <a href="https://developer.android.com/reference/android/hardware/camera2/CameraDevice.html#createCaptureSession">CameraDevice#createCaptureSession</a> for the
@@ -19550,7 +19562,7 @@ AUTO,<wbr/> and <a href="#dynamic_android.control.awbState">android.<wbr/>contro
 <p><a href="#controls_android.colorCorrection.mode">android.<wbr/>color<wbr/>Correction.<wbr/>mode</a>,<wbr/> <a href="#controls_android.colorCorrection.transform">android.<wbr/>color<wbr/>Correction.<wbr/>transform</a>,<wbr/> and
 <a href="#controls_android.colorCorrection.gains">android.<wbr/>color<wbr/>Correction.<wbr/>gains</a> must not be in available request and result keys.<wbr/>
 As a result,<wbr/> the camera device cannot be a FULL device.<wbr/> However,<wbr/> the HAL can
-still advertise other individual capabilites.<wbr/></p>
+still advertise other individual capabilities.<wbr/></p>
 </li>
 <li>
 <p>If the device supports tonemap control,<wbr/> only <a href="#controls_android.tonemap.curveRed">android.<wbr/>tonemap.<wbr/>curve<wbr/>Red</a> is used.<wbr/>
@@ -19879,7 +19891,7 @@ Control over session parameters can still be exerted in capture requests
 but clients should be aware and expect delays during their application.<wbr/>
 An example usage scenario could look like this:</p>
 <ul>
-<li>The camera client starts by quering the session parameter key list via
+<li>The camera client starts by querying the session parameter key list via
   <a href="https://developer.android.com/reference/android/hardware/camera2/CameraCharacteristics.html#getAvailableSessionKeys">CameraCharacteristics#getAvailableSessionKeys</a>.<wbr/></li>
 <li>Before triggering the capture session create sequence,<wbr/> a capture request
   must be built via
@@ -20062,7 +20074,7 @@ in case the camera client has camera permission.<wbr/></p>
 <a href="https://developer.android.com/reference/android/hardware/camera2/CameraCharacteristics.html#getKeys">CameraCharacteristics#getKeys</a> that require camera clients
 to acquire the <a href="https://developer.android.com/reference/android/Manifest/permission.html#CAMERA">permission#CAMERA</a> permission before calling
 <a href="https://developer.android.com/reference/android/hardware/camera2/CameraManager.html#getCameraCharacteristics">CameraManager#getCameraCharacteristics</a>.<wbr/> If the
-permission is not held by the camera client,<wbr/> then the values of the repsective properties
+permission is not held by the camera client,<wbr/> then the values of the respective properties
 will not be present in <a href="https://developer.android.com/reference/android/hardware/camera2/CameraCharacteristics.html">CameraCharacteristics</a>.<wbr/></p>
             </td>
           </tr>
@@ -22142,7 +22154,7 @@ describes the minimum required output stream configurations based on the hardwar
 </table>
 <p>For applications targeting SDK version 31 or newer,<wbr/> if the mobile device declares to be
 media performance class 12 or higher by setting
-<a href="https://developer.android.com/reference/android/os/Build/VERSION_CDOES/MEDIA_PERFORMANCE_CLASS.html">MEDIA_<wbr/>PERFORMANCE_<wbr/>CLASS</a> to be 31 or larger,<wbr/>
+<a href="https://developer.android.com/reference/android/os/Build/VERSION_CODES/MEDIA_PERFORMANCE_CLASS.html">MEDIA_<wbr/>PERFORMANCE_<wbr/>CLASS</a> to be 31 or larger,<wbr/>
 the primary camera devices (first rear/<wbr/>front camera in the camera ID list) will not
 support JPEG sizes smaller than 1080p.<wbr/> If the application configures a JPEG stream
 smaller than 1080p,<wbr/> the camera device will round up the JPEG image size to at least
@@ -22216,7 +22228,7 @@ This new minimum required output stream configurations are illustrated by the ta
 </table>
 <p>For applications targeting SDK version 31 or newer,<wbr/> if the mobile device doesn't declare
 to be media performance class 12 or better by setting
-<a href="https://developer.android.com/reference/android/os/Build/VERSION_CDOES/MEDIA_PERFORMANCE_CLASS.html">MEDIA_<wbr/>PERFORMANCE_<wbr/>CLASS</a> to be 31 or larger,<wbr/>
+<a href="https://developer.android.com/reference/android/os/Build/VERSION_CODES/MEDIA_PERFORMANCE_CLASS.html">MEDIA_<wbr/>PERFORMANCE_<wbr/>CLASS</a> to be 31 or larger,<wbr/>
 or if the camera device isn't a primary rear/<wbr/>front camera,<wbr/> the minimum required output
 stream configurations are the same as for applications targeting SDK version older than
 31.<wbr/></p>
@@ -22269,7 +22281,7 @@ formats),<wbr/> as output streams:</p>
 <li>1080p (1920 x 1080)</li>
 </ul>
 <p>Note that for primary cameras (first rear/<wbr/>front facing camera in the camera ID list)
-on a device with <a href="https://developer.android.com/reference/android/os/Build/VERSION_CDOES/MEDIA_PERFORMANCE_CLASS.html">MEDIA_<wbr/>PERFORMANCE_<wbr/>CLASS</a> set to
+on a device with <a href="https://developer.android.com/reference/android/os/Build/VERSION_CODES/MEDIA_PERFORMANCE_CLASS.html">MEDIA_<wbr/>PERFORMANCE_<wbr/>CLASS</a> set to
 31 or larger,<wbr/> camera framework filters out JPEG sizes smaller than 1080p depending on
 applications' targetSdkLevel.<wbr/> The camera HAL must still support the smaller JPEG sizes
 to maintain backward compatibility.<wbr/></p>
@@ -22279,7 +22291,7 @@ the HAL only has to list up to the maximum video size
 supported by the device.<wbr/></p>
 <p>Regardless of hardware level,<wbr/> every output resolution available for
 YUV_<wbr/>420_<wbr/>888 must also be available for IMPLEMENTATION_<wbr/>DEFINED.<wbr/></p>
-<p>This supercedes the following fields,<wbr/> which are now deprecated:</p>
+<p>This supersedes the following fields,<wbr/> which are now deprecated:</p>
 <ul>
 <li>availableFormats</li>
 <li>available[Processed,<wbr/>Raw,<wbr/>Jpeg]Sizes</li>
@@ -22660,7 +22672,7 @@ the HAL only has to list up to the maximum video size
 supported by the device.<wbr/></p>
 <p>Regardless of hardware level,<wbr/> every output resolution available for
 YUV_<wbr/>420_<wbr/>888 must also be available for IMPLEMENTATION_<wbr/>DEFINED.<wbr/></p>
-<p>This supercedes the following fields,<wbr/> which are now deprecated:</p>
+<p>This supersedes the following fields,<wbr/> which are now deprecated:</p>
 <ul>
 <li>availableFormats</li>
 <li>available[Processed,<wbr/>Raw,<wbr/>Jpeg]Sizes</li>
@@ -24096,14 +24108,16 @@ input or output streams.<wbr/> With multi-resolution output streams,<wbr/> the c
 to output different resolution images depending on the current active physical camera or
 pixel mode.<wbr/> With multi-resolution input streams,<wbr/> the camera device can reprocess images
 of different resolutions from different physical cameras or sensor pixel modes.<wbr/></p>
-<p>When set to TRUE:
-* For a logical multi-camera,<wbr/> the camera framework derives
+<p>When set to TRUE:</p>
+<ul>
+<li>For a logical multi-camera,<wbr/> the camera framework derives
 <a href="#static_android.scaler.multiResolutionStreamConfigurationMap">android.<wbr/>scaler.<wbr/>multi<wbr/>Resolution<wbr/>Stream<wbr/>Configuration<wbr/>Map</a> by combining the
 <a href="#static_android.scaler.physicalCameraMultiResolutionStreamConfigurations">android.<wbr/>scaler.<wbr/>physical<wbr/>Camera<wbr/>Multi<wbr/>Resolution<wbr/>Stream<wbr/>Configurations</a> from its physical
-cameras.<wbr/>
-* For an ultra-high resolution sensor camera,<wbr/> the camera framework directly copies
+cameras.<wbr/></li>
+<li>For an ultra-high resolution sensor camera,<wbr/> the camera framework directly copies
 the value of <a href="#static_android.scaler.physicalCameraMultiResolutionStreamConfigurations">android.<wbr/>scaler.<wbr/>physical<wbr/>Camera<wbr/>Multi<wbr/>Resolution<wbr/>Stream<wbr/>Configurations</a> to
-<a href="#static_android.scaler.multiResolutionStreamConfigurationMap">android.<wbr/>scaler.<wbr/>multi<wbr/>Resolution<wbr/>Stream<wbr/>Configuration<wbr/>Map</a>.<wbr/></p>
+<a href="#static_android.scaler.multiResolutionStreamConfigurationMap">android.<wbr/>scaler.<wbr/>multi<wbr/>Resolution<wbr/>Stream<wbr/>Configuration<wbr/>Map</a>.<wbr/></li>
+</ul>
             </td>
           </tr>
 
@@ -24112,22 +24126,24 @@ the value of <a href="#static_android.scaler.physicalCameraMultiResolutionStream
           </tr>
           <tr class="entry_cont">
             <td class="entry_details" colspan="6">
-              <p>For the HAL to claim support for multi-resolution streams:
-* The HAL must support the buffer management API by setting
-supportedBufferManagementVersion to HIDL_<wbr/>DEVICE_<wbr/>3_<wbr/>5.<wbr/>
-* For a logical multi-camera,<wbr/> when combined from all its physical cameras,<wbr/> there must be
+              <p>For the HAL to claim support for multi-resolution streams:</p>
+<ul>
+<li>The HAL must support the buffer management API by setting
+supportedBufferManagementVersion to HIDL_<wbr/>DEVICE_<wbr/>3_<wbr/>5.<wbr/></li>
+<li>For a logical multi-camera,<wbr/> when combined from all its physical cameras,<wbr/> there must be
 at a minimum one input or output stream format with at least two different
-physicalCameraMultiResolutionStreamConfigurations entries for that format.<wbr/>
-* For an ultra high resolution sensor camera,<wbr/> for each supported multi-resolution format,<wbr/>
+physicalCameraMultiResolutionStreamConfigurations entries for that format.<wbr/></li>
+<li>For an ultra high resolution sensor camera,<wbr/> for each supported multi-resolution format,<wbr/>
 the physicalCameraMultiResolutionStreamConfigurations must contain both the largest stream
 configuration within the <a href="#static_android.scaler.streamConfigurationMap">android.<wbr/>scaler.<wbr/>stream<wbr/>Configuration<wbr/>Map</a> and the largest stream
-configuration within the <a href="#static_android.scaler.streamConfigurationMapMaximumResolution">android.<wbr/>scaler.<wbr/>stream<wbr/>Configuration<wbr/>Map<wbr/>Maximum<wbr/>Resolution</a>.<wbr/>
-* If the HAL advertises multi-resolution input stream support for a particular format
+configuration within the <a href="#static_android.scaler.streamConfigurationMapMaximumResolution">android.<wbr/>scaler.<wbr/>stream<wbr/>Configuration<wbr/>Map<wbr/>Maximum<wbr/>Resolution</a>.<wbr/></li>
+<li>If the HAL advertises multi-resolution input stream support for a particular format
 (namely PRIVATE,<wbr/> or YUV),<wbr/> the logical multi-camera or ultra high resolution sensor camera
 must have the corresponding reprocessing capabilities (PRIVATE_<wbr/>REPROCESSING,<wbr/>
 or YUV_<wbr/>REPROCESSING respectively).<wbr/> The camera HAL must support reprocessing the
 multi-resolution input stream to the output formats specified in the camera's
-<a href="#static_android.scaler.availableInputOutputFormatsMap">android.<wbr/>scaler.<wbr/>available<wbr/>Input<wbr/>Output<wbr/>Formats<wbr/>Map</a>.<wbr/></p>
+<a href="#static_android.scaler.availableInputOutputFormatsMap">android.<wbr/>scaler.<wbr/>available<wbr/>Input<wbr/>Output<wbr/>Formats<wbr/>Map</a>.<wbr/></li>
+</ul>
             </td>
           </tr>
 
@@ -24170,10 +24186,10 @@ format,<wbr/> dataSpace,<wbr/> or surface class type,<wbr/> to optimize the imag
                     <span class="entry_type_enum_notes"><p>Live stream shown to the user.<wbr/></p>
 <p>Optimized for performance and usability as a viewfinder,<wbr/> but not necessarily for
 image quality.<wbr/> The output is not meant to be persisted as saved images or video.<wbr/></p>
-<p>No stall if android.<wbr/>control.<wbr/><em> are set to FAST; may have stall if android.<wbr/>control.<wbr/></em>
-are set to HIGH_<wbr/>QUALITY.<wbr/> This use case has the same behavior as the default
-SurfaceView and SurfaceTexture targets.<wbr/> Additionally,<wbr/> this use case can be used for
-in-app image analysis.<wbr/></p></span>
+<p>No stall if android.<wbr/>control.<wbr/>* are set to FAST.<wbr/> There may be stall if
+they are set to HIGH_<wbr/>QUALITY.<wbr/> This use case has the same behavior as the
+default SurfaceView and SurfaceTexture targets.<wbr/> Additionally,<wbr/> this use case can be
+used for in-app image analysis.<wbr/></p></span>
                   </li>
                   <li>
                     <span class="entry_type_enum_name">STILL_CAPTURE (v3.8)</span>
@@ -24220,7 +24236,7 @@ PREVIEW_<wbr/>STABILIZATION mode for video stabilization.<wbr/></p></span>
                     <span class="entry_type_enum_name">VIDEO_CALL (v3.8)</span>
                     <span class="entry_type_enum_optional">[optional]</span>
                     <span class="entry_type_enum_value">0x5</span>
-                    <span class="entry_type_enum_notes"><p>Long-running video call optimized for both power efficienty and video quality.<wbr/></p>
+                    <span class="entry_type_enum_notes"><p>Long-running video call optimized for both power efficiency and video quality.<wbr/></p>
 <p>The camera sensor may run in a lower-resolution mode to reduce power consumption
 at the cost of some image and digital zoom quality.<wbr/> Unlike VIDEO_<wbr/>RECORD,<wbr/> VIDEO_<wbr/>CALL
 outputs are expected to work in dark conditions,<wbr/> so are usually accompanied with
@@ -24266,7 +24282,7 @@ live viewfinder shown to the user,<wbr/> still capture for generating high quali
 capture,<wbr/> video record for encoding the camera output for the purpose of future playback,<wbr/>
 and video call for live realtime video conferencing.<wbr/></p>
 <p>With this flag,<wbr/> the camera device can optimize the image processing pipeline
-parameters,<wbr/> such as tuning,<wbr/> sensor mode,<wbr/> and ISP settings,<wbr/> indepedent of
+parameters,<wbr/> such as tuning,<wbr/> sensor mode,<wbr/> and ISP settings,<wbr/> independent of
 the properties of the immediate camera output surface.<wbr/> For example,<wbr/> if the output
 surface is a SurfaceTexture,<wbr/> the stream use case flag can be used to indicate whether
 the camera frames eventually go to display,<wbr/> video encoder,<wbr/>
@@ -24288,7 +24304,7 @@ capability must support the following stream use cases:</p>
 <a href="https://developer.android.com/reference/android/hardware/camera2/CameraCharacteristics.html#REQUEST_AVAILABLE_CAPABILITIES_STREAM_USE_CASE">Camera<wbr/>Characteristics#REQUEST_<wbr/>AVAILABLE_<wbr/>CAPABILITIES_<wbr/>STREAM_<wbr/>USE_<wbr/>CASE</a>
 capability is documented in the camera device
 <a href="https://developer.android.com/reference/android/hardware/camera2/CameraDevice.html#createCaptureSession">guideline</a>.<wbr/> The
-application is strongly recommended to use one of the guaranteed stream combintations.<wbr/>
+application is strongly recommended to use one of the guaranteed stream combinations.<wbr/>
 If the application creates a session with a stream combination not in the guaranteed
 list,<wbr/> or with mixed DEFAULT and non-DEFAULT use cases within the same session,<wbr/>
 the camera device may ignore some stream use cases due to hardware constraints
@@ -28426,7 +28442,7 @@ the amount of noise present in the image for each CFA channel.<wbr/>  The
 noise model used here is:</p>
 <p>N(x) = sqrt(Sx + O)</p>
 <p>Where x represents the recorded signal of a CFA channel normalized to
-the range [0,<wbr/> 1],<wbr/> and S and O are the noise model coeffiecients for
+the range [0,<wbr/> 1],<wbr/> and S and O are the noise model coefficients for
 that channel.<wbr/></p>
 <p>A more detailed description of the noise model can be found in the
 Adobe DNG specification for the NoiseProfile tag.<wbr/></p>
@@ -28656,7 +28672,7 @@ the green mosaic channels when demosaicing.<wbr/></p>
 <li>1.<wbr/>20 &lt;= R &gt;= 1.<wbr/>03 will require some software
 correction to avoid demosaic errors (3-20% divergence).<wbr/></li>
 <li>R &gt; 1.<wbr/>20 will require strong software correction to produce
-a usuable image (&gt;20% divergence).<wbr/></li>
+a usable image (&gt;20% divergence).<wbr/></li>
 </ul>
 <p>Starting from Android Q,<wbr/> this key will not be present for a MONOCHROME camera,<wbr/> even if
 the camera device has RAW capability.<wbr/></p>
@@ -29309,7 +29325,7 @@ bayer pattern.<wbr/></p></span>
           </tr>
           <tr class="entry_cont">
             <td class="entry_details" colspan="6">
-              <p>This key will only be present in devices advertisting the
+              <p>This key will only be present in devices advertising the
 <a href="https://developer.android.com/reference/android/hardware/camera2/CameraMetadata.html#REQUEST_AVAILABLE_CAPABILITIES_ULTRA_HIGH_RESOLUTION_SENSOR">Camera<wbr/>Metadata#REQUEST_<wbr/>AVAILABLE_<wbr/>CAPABILITIES_<wbr/>ULTRA_<wbr/>HIGH_<wbr/>RESOLUTION_<wbr/>SENSOR</a>
 capability which also advertise <code>REMOSAIC_<wbr/>REPROCESSING</code> capability.<wbr/> On all other devices
 RAW targets will have a regular bayer pattern.<wbr/></p>
@@ -31940,7 +31956,7 @@ bounds given by <a href="#static_android.sensor.info.activeArraySize">android.<w
               <p>A hotpixel map contains the coordinates of pixels on the camera
 sensor that do report valid values (usually due to defects in
 the camera sensor).<wbr/> This includes pixels that are stuck at certain
-values,<wbr/> or have a response that does not accuractly encode the
+values,<wbr/> or have a response that does not accurately encode the
 incoming light from the scene.<wbr/></p>
 <p>To avoid performance issues,<wbr/> there should be significantly fewer hot
 pixels than actual pixels on the camera sensor.<wbr/></p>
@@ -32734,7 +32750,7 @@ the cost of possibly reduced frame rate compared to raw sensor output.<wbr/></p>
                   </li>
                   <li>
                     <span class="entry_type_enum_name">GAMMA_VALUE (v3.2)</span>
-                    <span class="entry_type_enum_notes"><p>Use the gamma value specified in <a href="#controls_android.tonemap.gamma">android.<wbr/>tonemap.<wbr/>gamma</a> to peform
+                    <span class="entry_type_enum_notes"><p>Use the gamma value specified in <a href="#controls_android.tonemap.gamma">android.<wbr/>tonemap.<wbr/>gamma</a> to perform
 tonemapping.<wbr/></p>
 <p>All color enhancement and tonemapping must be disabled,<wbr/> except
 for applying the tonemapping curve specified by <a href="#controls_android.tonemap.gamma">android.<wbr/>tonemap.<wbr/>gamma</a>.<wbr/></p>
@@ -32743,7 +32759,7 @@ for applying the tonemapping curve specified by <a href="#controls_android.tonem
                   <li>
                     <span class="entry_type_enum_name">PRESET_CURVE (v3.2)</span>
                     <span class="entry_type_enum_notes"><p>Use the preset tonemapping curve specified in
-<a href="#controls_android.tonemap.presetCurve">android.<wbr/>tonemap.<wbr/>preset<wbr/>Curve</a> to peform tonemapping.<wbr/></p>
+<a href="#controls_android.tonemap.presetCurve">android.<wbr/>tonemap.<wbr/>preset<wbr/>Curve</a> to perform tonemapping.<wbr/></p>
 <p>All color enhancement and tonemapping must be disabled,<wbr/> except
 for applying the tonemapping curve specified by
 <a href="#controls_android.tonemap.presetCurve">android.<wbr/>tonemap.<wbr/>preset<wbr/>Curve</a>.<wbr/></p>
@@ -32844,9 +32860,11 @@ GAMMA_<wbr/>VALUE</p>
           </tr>
           <tr class="entry_cont">
             <td class="entry_details" colspan="6">
-              <p>The tonemap curve will be defined the following formula:
-* OUT = pow(IN,<wbr/> 1.<wbr/>0 /<wbr/> gamma)
-where IN and OUT is the input pixel value scaled to range [0.<wbr/>0,<wbr/> 1.<wbr/>0],<wbr/>
+              <p>The tonemap curve will be defined the following formula:</p>
+<ul>
+<li>OUT = pow(IN,<wbr/> 1.<wbr/>0 /<wbr/> gamma)</li>
+</ul>
+<p>where IN and OUT is the input pixel value scaled to range [0.<wbr/>0,<wbr/> 1.<wbr/>0],<wbr/>
 pow is the power function and gamma is the gamma value specified by this
 key.<wbr/></p>
 <p>The same curve will be applied to all color channels.<wbr/> The camera device
@@ -33490,7 +33508,7 @@ the cost of possibly reduced frame rate compared to raw sensor output.<wbr/></p>
                   </li>
                   <li>
                     <span class="entry_type_enum_name">GAMMA_VALUE (v3.2)</span>
-                    <span class="entry_type_enum_notes"><p>Use the gamma value specified in <a href="#controls_android.tonemap.gamma">android.<wbr/>tonemap.<wbr/>gamma</a> to peform
+                    <span class="entry_type_enum_notes"><p>Use the gamma value specified in <a href="#controls_android.tonemap.gamma">android.<wbr/>tonemap.<wbr/>gamma</a> to perform
 tonemapping.<wbr/></p>
 <p>All color enhancement and tonemapping must be disabled,<wbr/> except
 for applying the tonemapping curve specified by <a href="#controls_android.tonemap.gamma">android.<wbr/>tonemap.<wbr/>gamma</a>.<wbr/></p>
@@ -33499,7 +33517,7 @@ for applying the tonemapping curve specified by <a href="#controls_android.tonem
                   <li>
                     <span class="entry_type_enum_name">PRESET_CURVE (v3.2)</span>
                     <span class="entry_type_enum_notes"><p>Use the preset tonemapping curve specified in
-<a href="#controls_android.tonemap.presetCurve">android.<wbr/>tonemap.<wbr/>preset<wbr/>Curve</a> to peform tonemapping.<wbr/></p>
+<a href="#controls_android.tonemap.presetCurve">android.<wbr/>tonemap.<wbr/>preset<wbr/>Curve</a> to perform tonemapping.<wbr/></p>
 <p>All color enhancement and tonemapping must be disabled,<wbr/> except
 for applying the tonemapping curve specified by
 <a href="#controls_android.tonemap.presetCurve">android.<wbr/>tonemap.<wbr/>preset<wbr/>Curve</a>.<wbr/></p>
@@ -33600,9 +33618,11 @@ GAMMA_<wbr/>VALUE</p>
           </tr>
           <tr class="entry_cont">
             <td class="entry_details" colspan="6">
-              <p>The tonemap curve will be defined the following formula:
-* OUT = pow(IN,<wbr/> 1.<wbr/>0 /<wbr/> gamma)
-where IN and OUT is the input pixel value scaled to range [0.<wbr/>0,<wbr/> 1.<wbr/>0],<wbr/>
+              <p>The tonemap curve will be defined the following formula:</p>
+<ul>
+<li>OUT = pow(IN,<wbr/> 1.<wbr/>0 /<wbr/> gamma)</li>
+</ul>
+<p>where IN and OUT is the input pixel value scaled to range [0.<wbr/>0,<wbr/> 1.<wbr/>0],<wbr/>
 pow is the power function and gamma is the gamma value specified by this
 key.<wbr/></p>
 <p>The same curve will be applied to all color channels.<wbr/> The camera device
@@ -34185,7 +34205,7 @@ superset of the previous level,<wbr/> and they share the same essential operatio
 <p>Camera HAL3+ must not implement LEGACY mode.<wbr/> It is there for backwards compatibility in
 the <code>android.<wbr/>hardware.<wbr/>camera2</code> user-facing API only on legacy HALv1 devices,<wbr/> and is
 implemented by the camera framework code.<wbr/></p>
-<p>EXTERNAL level devices have lower peformance bar in CTS since the peformance might depend
+<p>EXTERNAL level devices have lower performance bar in CTS since the performance might depend
 on the external camera being used and is not fully controlled by the device manufacturer.<wbr/>
 The ITS test suite is exempted for the same reason.<wbr/></p>
             </td>
@@ -37879,7 +37899,7 @@ contains INTERIOR_<wbr/>OTHER,<wbr/> all other values will be ineffective.<wbr/>
 EXTERIOR_<wbr/>* value.<wbr/></p>
 <p>If a camera has INTERIOR_<wbr/>OTHER or EXTERIOR_<wbr/>OTHER,<wbr/> or more than one camera is at the
 same location and facing the same direction,<wbr/> their static metadata will list the
-following entries,<wbr/> so that applications can determain their lenses' exact facing
+following entries,<wbr/> so that applications can determine their lenses' exact facing
 directions:</p>
 <ul>
 <li><a href="#static_android.lens.poseReference">android.<wbr/>lens.<wbr/>pose<wbr/>Reference</a></li>
