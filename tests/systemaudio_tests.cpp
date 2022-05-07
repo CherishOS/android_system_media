@@ -205,6 +205,9 @@ TEST(SystemAudioTest, AudioDeviceTypeHelperFunction) {
     runAudioDeviceTypeHelperFunction(allDeviceTypes, AUDIO_DEVICE_IN_ALL_BLE_ARRAY,
             std::size(AUDIO_DEVICE_IN_ALL_BLE_ARRAY), "ble in",
             audio_is_ble_in_device);
+    runAudioDeviceTypeHelperFunction(allDeviceTypes, AUDIO_DEVICE_OUT_BLE_UNICAST_ARRAY,
+            std::size(AUDIO_DEVICE_OUT_BLE_UNICAST_ARRAY), "ble unicast",
+            audio_is_ble_unicast_device);
 }
 
 

@@ -1386,6 +1386,13 @@ static inline bool audio_is_ble_out_device(audio_devices_t device)
             AUDIO_DEVICE_OUT_ALL_BLE_ARRAY, 0 /*left*/, AUDIO_DEVICE_OUT_BLE_CNT, device);
 }
 
+static inline bool audio_is_ble_unicast_device(audio_devices_t device)
+{
+    return audio_binary_search_device_array(
+            AUDIO_DEVICE_OUT_BLE_UNICAST_ARRAY, 0 /*left*/,
+            AUDIO_DEVICE_OUT_BLE_UNICAST_CNT, device);
+}
+
 static inline bool audio_is_ble_in_device(audio_devices_t device)
 {
     return audio_binary_search_device_array(
