@@ -847,7 +847,7 @@ def javadoc(metadata, indent = 4):
     # Convert metadata entry "android.x.y.z" to form
     # "{@link CaptureRequest#X_Y_Z android.x.y.z}"
     def javadoc_crossref_filter(node):
-      if node.applied_visibility in ('public', 'java_public'):
+      if node.applied_visibility in ('public', 'java_public', 'fwk_java_public'):
         return '{@link %s#%s %s}' % (kind_mapping[node.kind],
                                      jkey_identifier(node.name),
                                      node.name)
@@ -857,7 +857,8 @@ def javadoc(metadata, indent = 4):
     # For each public tag "android.x.y.z" referenced, add a
     # "@see CaptureRequest#X_Y_Z"
     def javadoc_crossref_see_filter(node_set):
-      node_set = (x for x in node_set if x.applied_visibility in ('public', 'java_public'))
+      node_set = (x for x in node_set if x.applied_visibility in \
+                  ('public', 'java_public', 'fwk_java_public'))
 
       text = '\n'
       for node in node_set:
@@ -1348,9 +1349,10 @@ def filter_visibility(entries, visibilities):
   """
   return (e for e in entries if e.applied_visibility in visibilities)
 
-def remove_synthetic_or_fwk_only(entries):
+def remove_hal_non_visible(entries):
   """
-  Filter the given entries by removing those that are synthetic or fwk_only.
+  Filter the given entries by removing those that are not HAL visible:
+  synthetic, fwk_only, or fwk_java_public.
 
   Args:
     entries: An iterable of Entry nodes
@@ -1358,7 +1360,8 @@ def remove_synthetic_or_fwk_only(entries):
   Yields:
     An iterable of Entry nodes
   """
-  return (e for e in entries if not (e.synthetic or e.visibility == 'fwk_only'))
+  return (e for e in entries if not (e.synthetic or e.visibility == 'fwk_only'
+                                     or e.visibility == 'fwk_java_public'))
 
 def remove_synthetic(entries):
   """
@@ -1413,7 +1416,7 @@ def permission_needed_count(root):
   """
   ret = 0
   for sec in find_all_sections(root):
-      ret += len(list(filter_has_permission_needed(remove_synthetic_or_fwk_only(find_unique_entries(sec)))))
+      ret += len(list(filter_has_permission_needed(remove_hal_non_visible(find_unique_entries(sec)))))
 
   return ret
 
@@ -1532,7 +1535,7 @@ def find_all_sections_added_in_hal(root, hal_major_version, hal_minor_version):
   for section in all_sections:
     min_major_version = None
     min_minor_version = None
-    for entry in remove_synthetic_or_fwk_only(find_unique_entries(section)):
+    for entry in remove_hal_non_visible(find_unique_entries(section)):
       min_major_version = (min_major_version or entry.hal_major_version)
       min_minor_version = (min_minor_version or entry.hal_minor_version)
       if entry.hal_major_version < min_major_version or \
