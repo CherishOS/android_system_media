@@ -1076,8 +1076,7 @@ metadata_vendor_id_t get_camera_metadata_vendor_id(
 }
 
 static void print_data(int fd, const uint8_t *data_ptr, uint32_t tag, int type,
-        int count,
-        int indentation);
+        metadata_vendor_id_t vendor_id, int count, int indentation);
 
 void dump_camera_metadata(const camera_metadata_t *metadata,
         int fd,
@@ -1150,12 +1149,13 @@ void dump_indented_camera_metadata(const camera_metadata_t *metadata,
         int count = entry->count;
         if (verbosity < 2 && count > 16) count = 16;
 
-        print_data(fd, data_ptr, entry->tag, entry->type, count, indentation);
+        print_data(fd, data_ptr, entry->tag, entry->type, get_camera_metadata_vendor_id(metadata),
+                   count, indentation);
     }
 }
 
-static void print_data(int fd, const uint8_t *data_ptr, uint32_t tag,
-        int type, int count, int indentation) {
+static void print_data(int fd, const uint8_t *data_ptr, uint32_t tag, int type,
+        metadata_vendor_id_t vendor_id, int count, int indentation) {
     static int values_per_line[NUM_TYPES] = {
         [TYPE_BYTE]     = 16,
         [TYPE_INT32]    = 4,
@@ -1194,8 +1194,7 @@ static void print_data(int fd, const uint8_t *data_ptr, uint32_t tag,
                     }
                     break;
                 case TYPE_INT32:
-                    value =
-                            *(int32_t*)(data_ptr + index);
+                    value = *(int32_t*)(data_ptr + index);
                     if (camera_metadata_enum_snprint(tag,
                                                      value,
                                                      value_string_tmp,
@@ -1203,8 +1202,24 @@ static void print_data(int fd, const uint8_t *data_ptr, uint32_t tag,
                         == OK) {
                         dprintf(fd, "%s ", value_string_tmp);
                     } else {
-                        dprintf(fd, "%" PRId32 " ",
-                                *(int32_t*)(data_ptr + index));
+                        dprintf(fd, "%" PRId32 " ", value);
+                        if (tag == ANDROID_REQUEST_AVAILABLE_REQUEST_KEYS ||
+                            tag == ANDROID_REQUEST_AVAILABLE_RESULT_KEYS ||
+                            tag == ANDROID_REQUEST_AVAILABLE_SESSION_KEYS ||
+                            tag == ANDROID_REQUEST_AVAILABLE_CHARACTERISTICS_KEYS ||
+                            tag == ANDROID_REQUEST_AVAILABLE_PHYSICAL_CAMERA_REQUEST_KEYS) {
+                            const char *camera_metadata_tag_name =
+                                get_camera_metadata_tag_name(value);
+                            if (camera_metadata_tag_name != NULL) {
+                                dprintf(fd, "(%s) ", camera_metadata_tag_name);
+                            } else {
+                                const char *camera_metadata_tag_vendor_id =
+                                    get_local_camera_metadata_tag_name_vendor_id(value, vendor_id);
+                                if (camera_metadata_tag_vendor_id != NULL) {
+                                    dprintf(fd, "(%s) ", camera_metadata_tag_vendor_id);
+                                }
+                            }
+                        }
                     }
                     break;
                 case TYPE_FLOAT:
