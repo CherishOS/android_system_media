@@ -944,6 +944,10 @@ def ndkdoc(metadata, indent = 4):
       else:
         target = target + '.html'
 
+      # Work around html links with inner classes.
+      target = target.replace('CaptureRequest/Builder', 'CaptureRequest.Builder')
+      target = target.replace('Build/VERSION', 'Build.VERSION')
+
       return '<a href="https://developer.android.com/reference/%s">%s</a>' % (target, shortname)
 
     ndktext = filter_links(ndktext, ndkdoc_link_filter)
