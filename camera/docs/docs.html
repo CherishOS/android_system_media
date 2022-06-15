@@ -19992,10 +19992,11 @@ physical devices backing a logical multi-camera.<wbr/></p>
           <tr class="entry_cont">
             <td class="entry_details" colspan="6">
               <p>This is a subset of <a href="#static_android.request.availableRequestKeys">android.<wbr/>request.<wbr/>available<wbr/>Request<wbr/>Keys</a> which contains a list
-of keys that can be overridden using <a href="https://developer.android.com/reference/CaptureRequest/Builder.html#setPhysicalCameraKey">Builder#setPhysicalCameraKey</a>.<wbr/>
+of keys that can be overridden using
+<a href="https://developer.android.com/reference/android/hardware/camera2/CaptureRequest.Builder.html#setPhysicalCameraKey">Builder#setPhysicalCameraKey</a>.<wbr/>
 The respective value of such request key can be obtained by calling
-<a href="https://developer.android.com/reference/CaptureRequest/Builder.html#getPhysicalCameraKey">Builder#getPhysicalCameraKey</a>.<wbr/> Capture requests that contain
-individual physical device requests must be built via
+<a href="https://developer.android.com/reference/android/hardware/camera2/CaptureRequest.Builder.html#getPhysicalCameraKey">Builder#getPhysicalCameraKey</a>.<wbr/>
+Capture requests that contain individual physical device requests must be built via
 <a href="https://developer.android.com/reference/android/hardware/camera2/CameraDevice.html#createCaptureRequest(int,">Set)</a>.<wbr/></p>
             </td>
           </tr>
@@ -22156,7 +22157,7 @@ describes the minimum required output stream configurations based on the hardwar
 </table>
 <p>For applications targeting SDK version 31 or newer,<wbr/> if the mobile device declares to be
 media performance class 12 or higher by setting
-<a href="https://developer.android.com/reference/android/os/Build/VERSION_CODES/MEDIA_PERFORMANCE_CLASS.html">MEDIA_<wbr/>PERFORMANCE_<wbr/>CLASS</a> to be 31 or larger,<wbr/>
+<a href="https://developer.android.com/reference/android/os/Build.VERSION.html#MEDIA_PERFORMANCE_CLASS">VERSION#MEDIA_<wbr/>PERFORMANCE_<wbr/>CLASS</a> to be 31 or larger,<wbr/>
 the primary camera devices (first rear/<wbr/>front camera in the camera ID list) will not
 support JPEG sizes smaller than 1080p.<wbr/> If the application configures a JPEG stream
 smaller than 1080p,<wbr/> the camera device will round up the JPEG image size to at least
@@ -22230,7 +22231,7 @@ This new minimum required output stream configurations are illustrated by the ta
 </table>
 <p>For applications targeting SDK version 31 or newer,<wbr/> if the mobile device doesn't declare
 to be media performance class 12 or better by setting
-<a href="https://developer.android.com/reference/android/os/Build/VERSION_CODES/MEDIA_PERFORMANCE_CLASS.html">MEDIA_<wbr/>PERFORMANCE_<wbr/>CLASS</a> to be 31 or larger,<wbr/>
+<a href="https://developer.android.com/reference/android/os/Build.VERSION.html#MEDIA_PERFORMANCE_CLASS">VERSION#MEDIA_<wbr/>PERFORMANCE_<wbr/>CLASS</a> to be 31 or larger,<wbr/>
 or if the camera device isn't a primary rear/<wbr/>front camera,<wbr/> the minimum required output
 stream configurations are the same as for applications targeting SDK version older than
 31.<wbr/></p>
@@ -22283,7 +22284,7 @@ formats),<wbr/> as output streams:</p>
 <li>1080p (1920 x 1080)</li>
 </ul>
 <p>Note that for primary cameras (first rear/<wbr/>front facing camera in the camera ID list)
-on a device with <a href="https://developer.android.com/reference/android/os/Build/VERSION_CODES/MEDIA_PERFORMANCE_CLASS.html">MEDIA_<wbr/>PERFORMANCE_<wbr/>CLASS</a> set to
+on a device with <a href="https://developer.android.com/reference/android/os/Build.VERSION.html#MEDIA_PERFORMANCE_CLASS">VERSION#MEDIA_<wbr/>PERFORMANCE_<wbr/>CLASS</a> set to
 31 or larger,<wbr/> camera framework filters out JPEG sizes smaller than 1080p depending on
 applications' targetSdkLevel.<wbr/> The camera HAL must still support the smaller JPEG sizes
 to maintain backward compatibility.<wbr/></p>
@@ -22549,9 +22550,27 @@ smaller than what the camera (e.<wbr/>g.<wbr/> maximum resolution is 3264x2448)
 can provide.<wbr/></p>
 <p>Please reference the documentation for the image data destination to
 check if it limits the maximum size for image data.<wbr/></p>
-<p>The following table describes the minimum required output stream
-configurations based on the hardware level
-(<a href="#static_android.info.supportedHardwareLevel">android.<wbr/>info.<wbr/>supported<wbr/>Hardware<wbr/>Level</a>):</p>
+<p>For applications targeting SDK version older than 31,<wbr/> the following table
+describes the minimum required output stream configurations based on the
+hardware level (<a href="#static_android.info.supportedHardwareLevel">android.<wbr/>info.<wbr/>supported<wbr/>Hardware<wbr/>Level</a>):
+Format                                             |<wbr/> Size                                         |<wbr/> Hardware Level |<wbr/> Notes
+:-------------------------------------------------:|<wbr/>:--------------------------------------------:|<wbr/>:--------------:|<wbr/>:--------------:
+<a href="https://developer.android.com/reference/android/graphics/ImageFormat.html#JPEG">ImageFormat#JPEG</a>          |<wbr/> <a href="#static_android.sensor.info.activeArraySize">android.<wbr/>sensor.<wbr/>info.<wbr/>active<wbr/>Array<wbr/>Size</a> (*1)     |<wbr/> Any            |<wbr/>
+<a href="https://developer.android.com/reference/android/graphics/ImageFormat.html#JPEG">ImageFormat#JPEG</a>          |<wbr/> 1920x1080 (1080p)                            |<wbr/> Any            |<wbr/> if 1080p &lt;= activeArraySize
+<a href="https://developer.android.com/reference/android/graphics/ImageFormat.html#JPEG">ImageFormat#JPEG</a>          |<wbr/> 1280x720 (720p)                               |<wbr/> Any            |<wbr/> if 720p &lt;= activeArraySize
+<a href="https://developer.android.com/reference/android/graphics/ImageFormat.html#JPEG">ImageFormat#JPEG</a>          |<wbr/> 640x480 (480p)                               |<wbr/> Any            |<wbr/> if 480p &lt;= activeArraySize
+<a href="https://developer.android.com/reference/android/graphics/ImageFormat.html#JPEG">ImageFormat#JPEG</a>          |<wbr/> 320x240 (240p)                               |<wbr/> Any            |<wbr/> if 240p &lt;= activeArraySize
+<a href="https://developer.android.com/reference/android/graphics/ImageFormat.html#YUV_420_888">Image<wbr/>Format#YUV_<wbr/>420_<wbr/>888</a>   |<wbr/> all output sizes available for JPEG          |<wbr/> FULL           |<wbr/>
+<a href="https://developer.android.com/reference/android/graphics/ImageFormat.html#YUV_420_888">Image<wbr/>Format#YUV_<wbr/>420_<wbr/>888</a>   |<wbr/> all output sizes available for JPEG,<wbr/> up to the maximum video size |<wbr/> LIMITED        |<wbr/>
+<a href="https://developer.android.com/reference/android/graphics/ImageFormat.html#PRIVATE">ImageFormat#PRIVATE</a>       |<wbr/> same as YUV_<wbr/>420_<wbr/>888                          |<wbr/> Any            |<wbr/></p>
+<p>For applications targeting SDK version 31 or newer,<wbr/> if the mobile device declares to be
+media performance class 12 or higher by setting
+<a href="https://developer.android.com/reference/android/os/Build.VERSION.html#MEDIA_PERFORMANCE_CLASS">VERSION#MEDIA_<wbr/>PERFORMANCE_<wbr/>CLASS</a> to be 31 or larger,<wbr/>
+the primary camera devices (first rear/<wbr/>front camera in the camera ID list) will not
+support JPEG sizes smaller than 1080p.<wbr/> If the application configures a JPEG stream
+smaller than 1080p,<wbr/> the camera device will round up the JPEG image size to at least
+1080p.<wbr/> The requirements for IMPLEMENTATION_<wbr/>DEFINED and YUV_<wbr/>420_<wbr/>888 stay the same.<wbr/>
+This new minimum required output stream configurations are illustrated by the table below:</p>
 <table>
 <thead>
 <tr>
@@ -22575,32 +22594,38 @@ configurations based on the hardware level
 <td align="center">if 1080p &lt;= activeArraySize</td>
 </tr>
 <tr>
-<td align="center"><a href="https://developer.android.com/reference/android/graphics/ImageFormat.html#JPEG">ImageFormat#JPEG</a></td>
-<td align="center">1280x720 (720p)</td>
-<td align="center">Any</td>
-<td align="center">if 720p &lt;= activeArraySize</td>
-</tr>
-<tr>
-<td align="center"><a href="https://developer.android.com/reference/android/graphics/ImageFormat.html#JPEG">ImageFormat#JPEG</a></td>
-<td align="center">640x480 (480p)</td>
-<td align="center">Any</td>
-<td align="center">if 480p &lt;= activeArraySize</td>
-</tr>
-<tr>
-<td align="center"><a href="https://developer.android.com/reference/android/graphics/ImageFormat.html#JPEG">ImageFormat#JPEG</a></td>
-<td align="center">320x240 (240p)</td>
-<td align="center">Any</td>
-<td align="center">if 240p &lt;= activeArraySize</td>
-</tr>
-<tr>
 <td align="center"><a href="https://developer.android.com/reference/android/graphics/ImageFormat.html#YUV_420_888">Image<wbr/>Format#YUV_<wbr/>420_<wbr/>888</a></td>
-<td align="center">all output sizes available for JPEG</td>
+<td align="center"><a href="#static_android.sensor.info.activeArraySize">android.<wbr/>sensor.<wbr/>info.<wbr/>active<wbr/>Array<wbr/>Size</a></td>
 <td align="center">FULL</td>
 <td align="center"></td>
 </tr>
 <tr>
 <td align="center"><a href="https://developer.android.com/reference/android/graphics/ImageFormat.html#YUV_420_888">Image<wbr/>Format#YUV_<wbr/>420_<wbr/>888</a></td>
-<td align="center">all output sizes available for JPEG,<wbr/> up to the maximum video size</td>
+<td align="center">1920x1080 (1080p)</td>
+<td align="center">FULL</td>
+<td align="center">if 1080p &lt;= activeArraySize</td>
+</tr>
+<tr>
+<td align="center"><a href="https://developer.android.com/reference/android/graphics/ImageFormat.html#YUV_420_888">Image<wbr/>Format#YUV_<wbr/>420_<wbr/>888</a></td>
+<td align="center">1280x720 (720)</td>
+<td align="center">FULL</td>
+<td align="center">if 720p &lt;= activeArraySize</td>
+</tr>
+<tr>
+<td align="center"><a href="https://developer.android.com/reference/android/graphics/ImageFormat.html#YUV_420_888">Image<wbr/>Format#YUV_<wbr/>420_<wbr/>888</a></td>
+<td align="center">640x480 (480p)</td>
+<td align="center">FULL</td>
+<td align="center">if 480p &lt;= activeArraySize</td>
+</tr>
+<tr>
+<td align="center"><a href="https://developer.android.com/reference/android/graphics/ImageFormat.html#YUV_420_888">Image<wbr/>Format#YUV_<wbr/>420_<wbr/>888</a></td>
+<td align="center">320x240 (240p)</td>
+<td align="center">FULL</td>
+<td align="center">if 240p &lt;= activeArraySize</td>
+</tr>
+<tr>
+<td align="center"><a href="https://developer.android.com/reference/android/graphics/ImageFormat.html#YUV_420_888">Image<wbr/>Format#YUV_<wbr/>420_<wbr/>888</a></td>
+<td align="center">all output sizes available for FULL hardware level,<wbr/> up to the maximum video size</td>
 <td align="center">LIMITED</td>
 <td align="center"></td>
 </tr>
@@ -22612,6 +22637,12 @@ configurations based on the hardware level
 </tr>
 </tbody>
 </table>
+<p>For applications targeting SDK version 31 or newer,<wbr/> if the mobile device doesn't declare
+to be media performance class 12 or better by setting
+<a href="https://developer.android.com/reference/android/os/Build.VERSION.html#MEDIA_PERFORMANCE_CLASS">VERSION#MEDIA_<wbr/>PERFORMANCE_<wbr/>CLASS</a> to be 31 or larger,<wbr/>
+or if the camera device isn't a primary rear/<wbr/>front camera,<wbr/> the minimum required output
+stream configurations are the same as for applications targeting SDK version older than
+31.<wbr/></p>
 <p>Refer to <a href="#static_android.request.availableCapabilities">android.<wbr/>request.<wbr/>available<wbr/>Capabilities</a> and <a href="https://developer.android.com/reference/android/hardware/camera2/CameraDevice.html#createCaptureSession">CameraDevice#createCaptureSession</a> for additional mandatory
 stream configurations on a per-capability basis.<wbr/></p>
 <p>*1: For JPEG format,<wbr/> the sizes may be restricted by below conditions:</p>
@@ -22668,6 +22699,10 @@ formats),<wbr/> as output streams:</p>
 <li>720p (1280 x 720)</li>
 <li>1080p (1920 x 1080)</li>
 </ul>
+<p>Note that for Performance Class 12 or higher primary cameras (first rear/<wbr/>front facing
+camera in the camera ID list),<wbr/> camera framework filters out JPEG sizes smaller than
+1080p depending on applications' targetSdkLevel.<wbr/> The camera HAL must still support the
+smaller JPEG sizes to maintain backward comopatibility.<wbr/></p>
 <p>For LIMITED capability devices
 (<code><a href="#static_android.info.supportedHardwareLevel">android.<wbr/>info.<wbr/>supported<wbr/>Hardware<wbr/>Level</a> == LIMITED</code>),<wbr/>
 the HAL only has to list up to the maximum video size
@@ -34153,7 +34188,7 @@ as triggering a still capture,<wbr/> internally executing a precapture trigger.<
 fire the flash for flash power metering during precapture,<wbr/> and then fire the flash
 for the final capture,<wbr/> if a flash is available on the device and the AE mode is set to
 enable the flash.<wbr/></p>
-<p>Devices that initially shipped with Android version <a href="https://developer.android.com/reference/android/os/Build/VERSION_CODES.html#Q">Q</a> or newer will not include any LEGACY-level devices.<wbr/></p></span>
+<p>Devices that initially shipped with Android version <a href="https://developer.android.com/reference/android/os/Build.VERSION_CODES.html#Q">Q</a> or newer will not include any LEGACY-level devices.<wbr/></p></span>
                   </li>
                   <li>
                     <span class="entry_type_enum_name">3 (v3.2)</span>
