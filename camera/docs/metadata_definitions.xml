@@ -3769,6 +3769,7 @@ xsi:schemaLocation="http://schemas.android.com/service/camera/metadata/ metadata
               {@link android.hardware.camera2.CameraManager#turnOnTorchWithStrengthLevel}.
               If this value is equal to 1, flashlight brightness control is not supported.
               The value for this key will be null for devices with no flash unit.
+              This level must be set to a safe value to prevent any burn out issues.
             </details>
           </entry>
           <entry name="strengthDefaultLevel" type="int32" visibility="public" hal_version="3.8">
