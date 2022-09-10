@@ -59,6 +59,7 @@ cc_library {
         "primitives.c",
         "roundup.c",
         "sample.c",
+        "hal_smoothness.c",
     ],
 
     header_libs: [

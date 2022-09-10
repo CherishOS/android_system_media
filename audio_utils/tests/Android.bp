@@ -109,6 +109,26 @@ cc_test {
 }
 
 cc_test {
+    name: "hal_smoothness_tests",
+    host_supported: true,
+
+    srcs: [
+        "hal_smoothness_tests.cpp",
+    ],
+
+    static_libs: [
+        "libaudioutils",
+        "liblog",
+    ],
+
+    cflags: [
+        "-Wall",
+        "-Werror",
+        "-Wextra",
+    ],
+}
+
+cc_test {
     name: "intrinsic_tests",
     host_supported: true,
 
