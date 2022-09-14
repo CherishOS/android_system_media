@@ -734,7 +734,7 @@ struct audio_port {
     } ext;
 };
 
-typedef enum {
+typedef enum : int32_t {
     AUDIO_STANDARD_NONE = 0,
     AUDIO_STANDARD_EDID = 1,
 } audio_standard_t;

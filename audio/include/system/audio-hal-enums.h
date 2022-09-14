@@ -229,7 +229,7 @@ enum {
 
 // The "channel mask" enum is comprised of discrete channels,
 // their combinations (masks), and special values.
-typedef enum {
+typedef enum : uint32_t {
     AUDIO_CHANNEL_OUT_DISCRETE_CHANNEL_LIST_DEF(AUDIO_DEFINE_ENUM_SYMBOL_V)
     AUDIO_CHANNEL_IN_DISCRETE_CHANNEL_LIST_DEF(AUDIO_DEFINE_ENUM_SYMBOL_V)
     AUDIO_CHANNEL_IN_OUT_MASK_LIST_DEF(AUDIO_DEFINE_ENUM_SYMBOL_V)
@@ -302,7 +302,7 @@ inline bool audio_channel_mask_from_string(const char* s, audio_channel_mask_t* 
     V(AUDIO_CONTENT_TYPE_SONIFICATION, 4) \
     V(AUDIO_CONTENT_TYPE_ULTRASOUND, 1997)
 
-typedef enum {
+typedef enum : int32_t {
     AUDIO_CONTENT_TYPE_LIST_DEF(AUDIO_DEFINE_ENUM_SYMBOL_V)
 } audio_content_type_t;
 
@@ -402,7 +402,7 @@ enum {
     V(AUDIO_DEVICE_IN_AUX_DIGITAL, AUDIO_DEVICE_IN_HDMI) \
     V(AUDIO_DEVICE_IN_STUB, AUDIO_DEVICE_IN_DEFAULT)
 
-typedef enum {
+typedef enum : uint32_t {
     AUDIO_DEVICE_LIST_DEF(AUDIO_DEFINE_ENUM_SYMBOL_V)
 } audio_devices_t;
 
@@ -443,7 +443,7 @@ inline bool audio_device_from_string(const char* s, audio_devices_t* t) {
     V(AUDIO_OUTPUT_FLAG_SPATIALIZER, 0x40000) \
     V(AUDIO_OUTPUT_FLAG_ULTRASOUND, 0x80000)
 
-typedef enum {
+typedef enum : uint32_t {
     AUDIO_OUTPUT_FLAG_LIST_DEF(AUDIO_DEFINE_ENUM_SYMBOL_V)
 } audio_output_flags_t;
 
@@ -474,7 +474,7 @@ inline bool audio_output_flag_from_string(const char* s, audio_output_flags_t* t
     V(AUDIO_INPUT_FLAG_DIRECT, 0x80) \
     V(AUDIO_INPUT_FLAG_ULTRASOUND, 0x100)
 
-typedef enum {
+typedef enum : uint32_t {
     AUDIO_INPUT_FLAG_LIST_DEF(AUDIO_DEFINE_ENUM_SYMBOL_V)
 } audio_input_flags_t;
 
@@ -624,7 +624,7 @@ enum {
     AUDIO_FORMAT_LIST_UNIQUE_DEF(V) \
     V(VX_AUDIO_FORMAT_LC3, AUDIO_FORMAT_LC3)
 
-typedef enum {
+typedef enum : uint32_t {
     AUDIO_FORMAT_LIST_DEF(AUDIO_DEFINE_ENUM_SYMBOL_V)
     // These values must be part of the enum, but they are not valid formats,
     // and thus don't participate in to/from string conversions.
@@ -653,7 +653,7 @@ inline bool audio_format_from_string(const char* s, audio_format_t* t) {
     V(AUDIO_GAIN_MODE_CHANNELS, 2) \
     V(AUDIO_GAIN_MODE_RAMP, 4)
 
-typedef enum {
+typedef enum : uint32_t {
     AUDIO_GAIN_MODE_LIST_DEF(AUDIO_DEFINE_ENUM_SYMBOL_V)
 } audio_gain_mode_t;
 
@@ -696,7 +696,7 @@ inline bool audio_gain_mode_from_string(const char* s, audio_gain_mode_t* t) {
     V(AUDIO_SOURCE_INVALID, -1)
 #endif  // AUDIO_NO_SYSTEM_DECLARATIONS
 
-typedef enum {
+typedef enum : int32_t {
     AUDIO_SOURCE_LIST_DEF(AUDIO_DEFINE_ENUM_SYMBOL_V)
 } audio_source_t;
 
@@ -739,7 +739,7 @@ inline bool audio_source_from_string(const char* s, audio_source_t* t) {
     V(AUDIO_STREAM_DEFAULT, -1)
 #endif  // AUDIO_NO_SYSTEM_DECLARATIONS
 
-typedef enum {
+typedef enum : int32_t {
     AUDIO_STREAM_LIST_DEF(AUDIO_DEFINE_ENUM_SYMBOL_V)
 } audio_stream_type_t;
 
@@ -789,7 +789,7 @@ inline bool audio_stream_type_from_string(const char* s, audio_stream_type_t* t)
     V(AUDIO_USAGE_NOTIFICATION_COMMUNICATION_DELAYED, 9)
 #endif  // AUDIO_NO_SYSTEM_DECLARATIONS
 
-typedef enum {
+typedef enum : int32_t {
     AUDIO_USAGE_LIST_DEF(AUDIO_DEFINE_ENUM_SYMBOL_V)
 } audio_usage_t;
 
@@ -812,7 +812,7 @@ inline bool audio_usage_from_string(const char* s, audio_usage_t* t) {
     V(AUDIO_ENCAPSULATION_TYPE_NONE, 0) \
     V(AUDIO_ENCAPSULATION_TYPE_IEC61937, 1)
 
-typedef enum {
+typedef enum : int32_t {
     AUDIO_ENCAPSULATION_TYPE_LIST_DEF(AUDIO_DEFINE_ENUM_SYMBOL_V)
 } audio_encapsulation_type_t;
 
