@@ -801,7 +801,7 @@ inline const char* audio_usage_to_string(audio_usage_t t) {
 }
 
 inline bool audio_usage_from_string(const char* s, audio_usage_t* t) {
-    AUDIO_USAGE_LIST_NO_SYS_DEF(AUDIO_DEFINE_PARSE_CASE_V)
+    AUDIO_USAGE_LIST_DEF(AUDIO_DEFINE_PARSE_CASE_V)
     return false;
 }
 
