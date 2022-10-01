@@ -34,10 +34,6 @@
 
 #define HAL_SMOOTHNESS_VERSION_1 1
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 __BEGIN_DECLS
 
 // Audio HAL smoothness metrics that can be read by the client. These metrics,
@@ -93,12 +89,15 @@ struct hal_smoothness {
 
   // Increments “total_writes” and "total_frames_written". Once “total_writes >=
   // num_writes_to_logs”, “client_flush_cb” will be triggered and all the ints
-  // in "hall_smoothness_metrics" will be reset to 0.
+  // in "hal_smoothness_metrics" will be reset to 0.
   //
   // returns 0 if successful and non-zero on failure.
   int (*increment_total_writes)(struct hal_smoothness *smoothness,
                                 unsigned int frames_written,
                                 unsigned long timestamp);
+
+  // Manual flush. Will call "client_flush_cb" and reset "hal_smoothness_metrics".
+  int (*flush)(struct hal_smoothness *smoothness);
 };
 
 // version: hal_smoothness library version.
@@ -121,7 +120,3 @@ int hal_smoothness_initialize(
 void hal_smoothness_free(struct hal_smoothness **smoothness);
 
 __END_DECLS
-
-#ifdef __cplusplus
-}  // extern "C"
-#endif

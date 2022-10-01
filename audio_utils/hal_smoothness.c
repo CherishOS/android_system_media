@@ -123,6 +123,24 @@ static double calc_smoothness_value(unsigned int total_frames_lost,
   return -log(lost_frames_ratio);
 }
 
+static int flush(struct hal_smoothness *smoothness) {
+  if (smoothness == NULL) {
+    return -EINVAL;
+  }
+
+  hal_smoothness_internal *smoothness_meta =
+      (hal_smoothness_internal *)smoothness;
+
+  smoothness_meta->metrics.smoothness_value =
+      calc_smoothness_value(smoothness_meta->metrics.total_frames_lost,
+                            smoothness_meta->metrics.total_frames_written);
+  smoothness_meta->client_flush_cb(&smoothness_meta->metrics,
+                                   smoothness_meta->private_data);
+  reset_metrics(&smoothness_meta->metrics);
+
+  return 0;
+}
+
 static int increment_total_writes(struct hal_smoothness *smoothness,
                                   unsigned int frames_written,
                                   unsigned long timestamp) {
@@ -141,18 +159,13 @@ static int increment_total_writes(struct hal_smoothness *smoothness,
                          frames_written)) {
     return -EOVERFLOW;
   }
+  smoothness_meta->metrics.timestamp = timestamp;
 
   // "total_writes" count has met a value where the client's callback function
   // should be called
   if (smoothness_meta->metrics.total_writes >=
       smoothness_meta->num_writes_to_log) {
-    smoothness_meta->metrics.timestamp = timestamp;
-    smoothness_meta->metrics.smoothness_value =
-        calc_smoothness_value(smoothness_meta->metrics.total_frames_lost,
-                              smoothness_meta->metrics.total_frames_written);
-    smoothness_meta->client_flush_cb(&smoothness_meta->metrics,
-                                     smoothness_meta->private_data);
-    reset_metrics(&smoothness_meta->metrics);
+    flush(smoothness);
   }
 
   return 0;
@@ -189,6 +202,7 @@ int hal_smoothness_initialize(
   smoothness_meta->itfe.increment_underrun = increment_underrun;
   smoothness_meta->itfe.increment_overrun = increment_overrun;
   smoothness_meta->itfe.increment_total_writes = increment_total_writes;
+  smoothness_meta->itfe.flush = flush;
 
   smoothness_meta->num_writes_to_log = num_writes_to_log;
   smoothness_meta->client_flush_cb = client_flush_cb;
