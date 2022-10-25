@@ -711,6 +711,10 @@
             ><a href="#static_android.request.availableDynamicRangeProfilesMap">android.request.availableDynamicRangeProfilesMap</a></li>
             <li
             ><a href="#static_android.request.recommendedTenBitDynamicRangeProfile">android.request.recommendedTenBitDynamicRangeProfile</a></li>
+            <li
+            ><a href="#static_android.request.availableColorSpaceProfiles">android.request.availableColorSpaceProfiles</a></li>
+            <li
+            ><a href="#static_android.request.availableColorSpaceProfilesMap">android.request.availableColorSpaceProfilesMap</a></li>
           </ul>
         </li>
         <li>
@@ -19439,6 +19443,24 @@ lists all of the supported stream use cases.<wbr/></p>
 mandatory stream combinations involving stream use cases,<wbr/> which can also be queried
 via <a href="https://developer.android.com/reference/android/hardware/camera2/params/MandatoryStreamCombination.html">MandatoryStreamCombination</a>.<wbr/></p></span>
                   </li>
+                  <li>
+                    <span class="entry_type_enum_name">COLOR_SPACE_PROFILES (v3.9)</span>
+                    <span class="entry_type_enum_optional">[optional]</span>
+                    <span class="entry_type_enum_hidden">[java_public]</span>
+                    <span class="entry_type_enum_notes"><p>The device supports querying the possible combinations of color spaces,<wbr/> image
+formats,<wbr/> and dynamic range profiles supported by the camera and requesting a
+particular color space for a session via
+<a href="https://developer.android.com/reference/android/hardware/camera2/params/SessionConfiguration.html#setColorSpace">SessionConfiguration#setColorSpace</a>.<wbr/></p>
+<p>Cameras that enable this capability may or may not also implement dynamic range
+profiles.<wbr/> If they don't,<wbr/>
+<a href="https://developer.android.com/reference/android/hardware/camera2/params/ColorSpaceProfiles.html#getSupportedDynamicRangeProfiles">ColorSpaceProfiles#getSupportedDynamicRangeProfiles</a>
+will return only
+<a href="https://developer.android.com/reference/android/hardware/camera2/params/DynamicRangeProfiles.html#STANDARD">DynamicRangeProfiles#STANDARD</a> and
+<a href="https://developer.android.com/reference/android/hardware/camera2/params/ColorSpaceProfiles.html#getSupportedColorSpacesForDynamicRange">ColorSpaceProfiles#getSupportedColorSpacesForDynamicRange</a>
+will assume support of the
+<a href="https://developer.android.com/reference/android/hardware/camera2/params/DynamicRangeProfiles.html#STANDARD">DynamicRangeProfiles#STANDARD</a>
+profile in all combinations of color spaces and image formats.<wbr/></p></span>
+                  </li>
                 </ul>
 
             </td> <!-- entry_type -->
@@ -20395,6 +20417,263 @@ range profile when calling
             </td>
           </tr>
 
+
+          <tr class="entry_spacer"><td class="entry_spacer" colspan="7"></td></tr>
+           <!-- end of entry -->
+        
+                
+          <tr class="entry" id="static_android.request.availableColorSpaceProfiles">
+            <td class="entry_name
+             " rowspan="3">
+              android.<wbr/>request.<wbr/>available<wbr/>Color<wbr/>Space<wbr/>Profiles
+            </td>
+            <td class="entry_type">
+                <span class="entry_type_name">int32</span>
+
+              <span class="entry_type_visibility"> [java_public as colorSpaceProfiles]</span>
+
+              <span class="entry_type_synthetic">[synthetic] </span>
+
+
+
+
+
+            </td> <!-- entry_type -->
+
+            <td class="entry_description">
+              <p>An interface for querying the color space profiles supported by a camera device.<wbr/></p>
+            </td>
+
+            <td class="entry_units">
+            </td>
+
+            <td class="entry_range">
+            </td>
+
+            <td class="entry_hal_version">
+              <p>3.<wbr/>9</p>
+            </td>
+
+            <td class="entry_tags">
+            </td>
+
+          </tr>
+          <tr class="entries_header">
+            <th class="th_details" colspan="6">Details</th>
+          </tr>
+          <tr class="entry_cont">
+            <td class="entry_details" colspan="6">
+              <p>A color space profile is a combination of a color space,<wbr/> an image format,<wbr/> and a dynamic
+range profile.<wbr/> Camera clients can retrieve the list of supported color spaces by calling
+<a href="https://developer.android.com/reference/android/hardware/camera2/params/ColorSpaceProfiles.html#getSupportedColorSpaces">ColorSpaceProfiles#getSupportedColorSpaces</a> or
+<a href="https://developer.android.com/reference/android/hardware/camera2/params/ColorSpaceProfiles.html#getSupportedColorSpacesForDynamicRange">ColorSpaceProfiles#getSupportedColorSpacesForDynamicRange</a>.<wbr/>
+If a camera does not support the
+<a href="https://developer.android.com/reference/android/hardware/camera2/CameraCharacteristics.html#REQUEST_AVAILABLE_CAPABILITIES_DYNAMIC_RANGE_TEN_BIT">Camera<wbr/>Characteristics#REQUEST_<wbr/>AVAILABLE_<wbr/>CAPABILITIES_<wbr/>DYNAMIC_<wbr/>RANGE_<wbr/>TEN_<wbr/>BIT</a>
+capability,<wbr/> the dynamic range profile will always be
+<a href="https://developer.android.com/reference/android/hardware/camera2/params/DynamicRangeProfiles.html#STANDARD">DynamicRangeProfiles#STANDARD</a>.<wbr/> Color space
+capabilities are queried in combination with an <a href="https://developer.android.com/reference/android/graphics/ImageFormat.html">ImageFormat</a>.<wbr/>
+If a camera client wants to know the general color space capabilities of a camera device
+regardless of image format,<wbr/> it can specify <a href="https://developer.android.com/reference/android/graphics/ImageFormat.html#UNKNOWN">ImageFormat#UNKNOWN</a>.<wbr/>
+The color space for a session can be configured by setting the SessionConfiguration
+color space via <a href="https://developer.android.com/reference/android/hardware/camera2/params/SessionConfiguration.html#setColorSpace">SessionConfiguration#setColorSpace</a>.<wbr/></p>
+            </td>
+          </tr>
+
+
+          <tr class="entry_spacer"><td class="entry_spacer" colspan="7"></td></tr>
+           <!-- end of entry -->
+        
+                
+          <tr class="entry" id="static_android.request.availableColorSpaceProfilesMap">
+            <td class="entry_name
+             " rowspan="5">
+              android.<wbr/>request.<wbr/>available<wbr/>Color<wbr/>Space<wbr/>Profiles<wbr/>Map
+            </td>
+            <td class="entry_type">
+                <span class="entry_type_name entry_type_name_enum">int64</span>
+                <span class="entry_type_container">x</span>
+
+                <span class="entry_type_array">
+                  n x 3
+                </span>
+              <span class="entry_type_visibility"> [ndk_public]</span>
+
+
+
+
+
+                <ul class="entry_type_enum">
+                  <li>
+                    <span class="entry_type_enum_name">UNSPECIFIED (v3.9)</span>
+                    <span class="entry_type_enum_value">-1</span>
+                    <span class="entry_type_enum_notes"><p>Default value,<wbr/> when not explicitly specified.<wbr/> The Camera device will choose the color
+space to employ.<wbr/></p></span>
+                  </li>
+                  <li>
+                    <span class="entry_type_enum_name">SRGB (v3.9)</span>
+                    <span class="entry_type_enum_hidden">[system]</span>
+                    <span class="entry_type_enum_value">0</span>
+                    <span class="entry_type_enum_notes"><p>RGB color space sRGB standardized as IEC 61966-2.<wbr/>1:1999.<wbr/></p></span>
+                  </li>
+                  <li>
+                    <span class="entry_type_enum_name">LINEAR_SRGB (v3.9)</span>
+                    <span class="entry_type_enum_hidden">[system]</span>
+                    <span class="entry_type_enum_value">1</span>
+                    <span class="entry_type_enum_notes"><p>RGB color space sRGB standardized as IEC 61966-2.<wbr/>1:1999.<wbr/></p></span>
+                  </li>
+                  <li>
+                    <span class="entry_type_enum_name">EXTENDED_SRGB (v3.9)</span>
+                    <span class="entry_type_enum_hidden">[system]</span>
+                    <span class="entry_type_enum_value">2</span>
+                    <span class="entry_type_enum_notes"><p>RGB color space scRGB-nl standardized as IEC 61966-2-2:2003.<wbr/></p></span>
+                  </li>
+                  <li>
+                    <span class="entry_type_enum_name">LINEAR_EXTENDED_SRGB (v3.9)</span>
+                    <span class="entry_type_enum_hidden">[system]</span>
+                    <span class="entry_type_enum_value">3</span>
+                    <span class="entry_type_enum_notes"><p>RGB color space scRGB standardized as IEC 61966-2-2:2003.<wbr/></p></span>
+                  </li>
+                  <li>
+                    <span class="entry_type_enum_name">BT709 (v3.9)</span>
+                    <span class="entry_type_enum_hidden">[system]</span>
+                    <span class="entry_type_enum_value">4</span>
+                    <span class="entry_type_enum_notes"><p>RGB color space BT.<wbr/>709 standardized as Rec.<wbr/> ITU-R BT.<wbr/>709-5.<wbr/></p></span>
+                  </li>
+                  <li>
+                    <span class="entry_type_enum_name">BT2020 (v3.9)</span>
+                    <span class="entry_type_enum_hidden">[system]</span>
+                    <span class="entry_type_enum_value">5</span>
+                    <span class="entry_type_enum_notes"><p>RGB color space BT.<wbr/>2020 standardized as Rec.<wbr/> ITU-R BT.<wbr/>2020-1.<wbr/></p></span>
+                  </li>
+                  <li>
+                    <span class="entry_type_enum_name">DCI_P3 (v3.9)</span>
+                    <span class="entry_type_enum_hidden">[system]</span>
+                    <span class="entry_type_enum_value">6</span>
+                    <span class="entry_type_enum_notes"><p>RGB color space DCI-P3 standardized as SMPTE RP 431-2-2007.<wbr/></p></span>
+                  </li>
+                  <li>
+                    <span class="entry_type_enum_name">DISPLAY_P3 (v3.9)</span>
+                    <span class="entry_type_enum_hidden">[system]</span>
+                    <span class="entry_type_enum_value">7</span>
+                    <span class="entry_type_enum_notes"><p>RGB color space Display P3 based on SMPTE RP 431-2-2007 and IEC 61966-2.<wbr/>1:1999.<wbr/></p></span>
+                  </li>
+                  <li>
+                    <span class="entry_type_enum_name">NTSC_1953 (v3.9)</span>
+                    <span class="entry_type_enum_hidden">[system]</span>
+                    <span class="entry_type_enum_value">8</span>
+                    <span class="entry_type_enum_notes"><p>RGB color space NTSC,<wbr/> 1953 standard.<wbr/></p></span>
+                  </li>
+                  <li>
+                    <span class="entry_type_enum_name">SMPTE_C (v3.9)</span>
+                    <span class="entry_type_enum_hidden">[system]</span>
+                    <span class="entry_type_enum_value">9</span>
+                    <span class="entry_type_enum_notes"><p>RGB color space SMPTE C.<wbr/></p></span>
+                  </li>
+                  <li>
+                    <span class="entry_type_enum_name">ADOBE_RGB (v3.9)</span>
+                    <span class="entry_type_enum_hidden">[system]</span>
+                    <span class="entry_type_enum_value">10</span>
+                    <span class="entry_type_enum_notes"><p>RGB color space Adobe RGB (1998).<wbr/></p></span>
+                  </li>
+                  <li>
+                    <span class="entry_type_enum_name">PRO_PHOTO_RGB (v3.9)</span>
+                    <span class="entry_type_enum_hidden">[system]</span>
+                    <span class="entry_type_enum_value">11</span>
+                    <span class="entry_type_enum_notes"><p>RGB color space ProPhoto RGB standardized as ROMM RGB ISO 22028-2:2013.<wbr/></p></span>
+                  </li>
+                  <li>
+                    <span class="entry_type_enum_name">ACES (v3.9)</span>
+                    <span class="entry_type_enum_hidden">[system]</span>
+                    <span class="entry_type_enum_value">12</span>
+                    <span class="entry_type_enum_notes"><p>RGB color space ACES standardized as SMPTE ST 2065-1:2012.<wbr/></p></span>
+                  </li>
+                  <li>
+                    <span class="entry_type_enum_name">ACESCG (v3.9)</span>
+                    <span class="entry_type_enum_hidden">[system]</span>
+                    <span class="entry_type_enum_value">13</span>
+                    <span class="entry_type_enum_notes"><p>RGB color space ACEScg standardized as Academy S-2014-004.<wbr/></p></span>
+                  </li>
+                  <li>
+                    <span class="entry_type_enum_name">CIE_XYZ (v3.9)</span>
+                    <span class="entry_type_enum_hidden">[system]</span>
+                    <span class="entry_type_enum_value">14</span>
+                    <span class="entry_type_enum_notes"><p>XYZ color space CIE XYZ.<wbr/> This color space assumes standard illuminant D50 as its white
+point.<wbr/></p></span>
+                  </li>
+                  <li>
+                    <span class="entry_type_enum_name">CIE_LAB (v3.9)</span>
+                    <span class="entry_type_enum_hidden">[system]</span>
+                    <span class="entry_type_enum_value">15</span>
+                    <span class="entry_type_enum_notes"><p>Lab color space CIE L<em>a</em>b*.<wbr/> This color space uses CIE XYZ D50 as a profile conversion
+space.<wbr/></p></span>
+                  </li>
+                </ul>
+
+            </td> <!-- entry_type -->
+
+            <td class="entry_description">
+              <p>A list of all possible color space profiles supported by a camera device.<wbr/></p>
+            </td>
+
+            <td class="entry_units">
+            </td>
+
+            <td class="entry_range">
+            </td>
+
+            <td class="entry_hal_version">
+              <p>3.<wbr/>9</p>
+            </td>
+
+            <td class="entry_tags">
+            </td>
+
+          </tr>
+          <tr class="entries_header">
+            <th class="th_details" colspan="6">Details</th>
+          </tr>
+          <tr class="entry_cont">
+            <td class="entry_details" colspan="6">
+              <p>A color space profile is a combination of a color space,<wbr/> an image format,<wbr/> and a dynamic range
+profile.<wbr/> If a camera does not support the
+<a href="https://developer.android.com/reference/android/hardware/camera2/CameraCharacteristics.html#REQUEST_AVAILABLE_CAPABILITIES_DYNAMIC_RANGE_TEN_BIT">Camera<wbr/>Characteristics#REQUEST_<wbr/>AVAILABLE_<wbr/>CAPABILITIES_<wbr/>DYNAMIC_<wbr/>RANGE_<wbr/>TEN_<wbr/>BIT</a>
+capability,<wbr/> the dynamic range profile will always be
+<a href="https://developer.android.com/reference/android/hardware/camera2/params/DynamicRangeProfiles.html#STANDARD">DynamicRangeProfiles#STANDARD</a>.<wbr/> Camera clients can
+use <a href="https://developer.android.com/reference/android/hardware/camera2/params/SessionConfiguration.html#setColorSpace">SessionConfiguration#setColorSpace</a> to select
+a color space.<wbr/></p>
+            </td>
+          </tr>
+
+          <tr class="entries_header">
+            <th class="th_details" colspan="6">HAL Implementation Details</th>
+          </tr>
+          <tr class="entry_cont">
+            <td class="entry_details" colspan="6">
+              <p>The array contains three entries per supported profile:</p>
+<p>1) The supported color space.<wbr/>
+2) An image format which can be used with this color space.<wbr/>
+3) A bitmap of all compatible dynamic range profiles,<wbr/> if the device is HDR-capable.<wbr/></p>
+<p>The possible values for #1 are the positive values of the
+ANDROID_<wbr/>REQUEST_<wbr/>AVAILABLE_<wbr/>COLOR_<wbr/>SPACE_<wbr/>PROFILES_<wbr/>MAP_<wbr/>* enum,<wbr/> which is equivalent to
+<a href="https://developer.android.com/reference/android/graphics/ColorSpace/Named.html">Named</a> and its ordinals.<wbr/> UNSPECIFIED should not be
+used here.<wbr/></p>
+<p>The possible values for #2 consist of the public-facing image/<wbr/>pixel formats,<wbr/> found at
+<a href="https://developer.android.com/reference/android/graphics/ImageFormat.html">ImageFormat</a> and <a href="https://developer.android.com/reference/android/graphics/PixelFormat.html">PixelFormat</a>.<wbr/> Each map
+to a HAL pixel format except for <a href="https://developer.android.com/reference/android/graphics/ImageFormat/JPEG.html">JPEG</a>,<wbr/>
+<a href="https://developer.android.com/reference/android/graphics/ImageFormat/HEIC.html">HEIC</a>,<wbr/> and
+<a href="https://developer.android.com/reference/android/graphics/ImageFormat/DEPTH_JPEG.html">DEPTH_<wbr/>JPEG</a>.<wbr/> Depth formats besides DEPTH_<wbr/>JPEG are
+not applicable and should not be specified.<wbr/> If there are no constraints on the type of
+image format a color space is compatible with,<wbr/> this can be
+<a href="https://developer.android.com/reference/android/graphics/ImageFormat/UNKNOWN.html">UNKNOWN</a>.<wbr/></p>
+<p>If the device is not HDR-capable,<wbr/> #3 should always be
+ANDROID_<wbr/>REQUEST_<wbr/>AVAILABLE_<wbr/>DYNAMIC_<wbr/>RANGE_<wbr/>PROFILES_<wbr/>STANDARD.<wbr/> Otherwise,<wbr/> #3 should be a
+bitmap of the compatible ANDROID_<wbr/>REQUEST_<wbr/>AVAILABLE_<wbr/>DYNAMIC_<wbr/>RANGE_<wbr/>PROFILES_<wbr/>* values.<wbr/></p>
+<p>For devices that support P3 color,<wbr/> it is highly recommended to advertise
+<a href="https://developer.android.com/reference/android/graphics/ColorSpace/Named/DISPLAY_P3.html">DISPLAY_<wbr/>P3</a>
+unless the profile is specifically designed for playback in a theater environment
+(<a href="https://developer.android.com/reference/android/graphics/ColorSpace/Named/DCI_P3.html">DCI_<wbr/>P3</a>).<wbr/></p>
+            </td>
+          </tr>
 
           <tr class="entry_spacer"><td class="entry_spacer" colspan="7"></td></tr>
            <!-- end of entry -->

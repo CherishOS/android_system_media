@@ -308,6 +308,8 @@ typedef enum camera_metadata_tag {
                                                       // enum[]       | ndk_public   | HIDL v3.8
     ANDROID_REQUEST_RECOMMENDED_TEN_BIT_DYNAMIC_RANGE_PROFILE,
                                                       // int64        | java_public  | HIDL v3.8
+    ANDROID_REQUEST_AVAILABLE_COLOR_SPACE_PROFILES_MAP,
+                                                      // enum[]       | ndk_public   | HIDL v3.9
     ANDROID_REQUEST_END,
 
     ANDROID_SCALER_CROP_REGION =                      // int32[]      | public       | HIDL v3.2
@@ -928,6 +930,7 @@ typedef enum camera_metadata_enum_android_request_available_capabilities {
     ANDROID_REQUEST_AVAILABLE_CAPABILITIES_REMOSAIC_REPROCESSING    , // HIDL v3.6
     ANDROID_REQUEST_AVAILABLE_CAPABILITIES_DYNAMIC_RANGE_TEN_BIT    , // HIDL v3.8
     ANDROID_REQUEST_AVAILABLE_CAPABILITIES_STREAM_USE_CASE          , // HIDL v3.8
+    ANDROID_REQUEST_AVAILABLE_CAPABILITIES_COLOR_SPACE_PROFILES     , // HIDL v3.9
 } camera_metadata_enum_android_request_available_capabilities_t;
 
 // ANDROID_REQUEST_AVAILABLE_DYNAMIC_RANGE_PROFILES_MAP
@@ -954,6 +957,28 @@ typedef enum camera_metadata_enum_android_request_available_dynamic_range_profil
                                                                       = 0x800, // HIDL v3.8
     ANDROID_REQUEST_AVAILABLE_DYNAMIC_RANGE_PROFILES_MAP_MAX         = 0x1000, // HIDL v3.8
 } camera_metadata_enum_android_request_available_dynamic_range_profiles_map_t;
+
+// ANDROID_REQUEST_AVAILABLE_COLOR_SPACE_PROFILES_MAP
+typedef enum camera_metadata_enum_android_request_available_color_space_profiles_map {
+    ANDROID_REQUEST_AVAILABLE_COLOR_SPACE_PROFILES_MAP_UNSPECIFIED   = -1, // HIDL v3.9
+    ANDROID_REQUEST_AVAILABLE_COLOR_SPACE_PROFILES_MAP_SRGB          = 0, // HIDL v3.9
+    ANDROID_REQUEST_AVAILABLE_COLOR_SPACE_PROFILES_MAP_LINEAR_SRGB   = 1, // HIDL v3.9
+    ANDROID_REQUEST_AVAILABLE_COLOR_SPACE_PROFILES_MAP_EXTENDED_SRGB = 2, // HIDL v3.9
+    ANDROID_REQUEST_AVAILABLE_COLOR_SPACE_PROFILES_MAP_LINEAR_EXTENDED_SRGB
+                                                                      = 3, // HIDL v3.9
+    ANDROID_REQUEST_AVAILABLE_COLOR_SPACE_PROFILES_MAP_BT709         = 4, // HIDL v3.9
+    ANDROID_REQUEST_AVAILABLE_COLOR_SPACE_PROFILES_MAP_BT2020        = 5, // HIDL v3.9
+    ANDROID_REQUEST_AVAILABLE_COLOR_SPACE_PROFILES_MAP_DCI_P3        = 6, // HIDL v3.9
+    ANDROID_REQUEST_AVAILABLE_COLOR_SPACE_PROFILES_MAP_DISPLAY_P3    = 7, // HIDL v3.9
+    ANDROID_REQUEST_AVAILABLE_COLOR_SPACE_PROFILES_MAP_NTSC_1953     = 8, // HIDL v3.9
+    ANDROID_REQUEST_AVAILABLE_COLOR_SPACE_PROFILES_MAP_SMPTE_C       = 9, // HIDL v3.9
+    ANDROID_REQUEST_AVAILABLE_COLOR_SPACE_PROFILES_MAP_ADOBE_RGB     = 10, // HIDL v3.9
+    ANDROID_REQUEST_AVAILABLE_COLOR_SPACE_PROFILES_MAP_PRO_PHOTO_RGB = 11, // HIDL v3.9
+    ANDROID_REQUEST_AVAILABLE_COLOR_SPACE_PROFILES_MAP_ACES          = 12, // HIDL v3.9
+    ANDROID_REQUEST_AVAILABLE_COLOR_SPACE_PROFILES_MAP_ACESCG        = 13, // HIDL v3.9
+    ANDROID_REQUEST_AVAILABLE_COLOR_SPACE_PROFILES_MAP_CIE_XYZ       = 14, // HIDL v3.9
+    ANDROID_REQUEST_AVAILABLE_COLOR_SPACE_PROFILES_MAP_CIE_LAB       = 15, // HIDL v3.9
+} camera_metadata_enum_android_request_available_color_space_profiles_map_t;
 
 
 // ANDROID_SCALER_AVAILABLE_FORMATS

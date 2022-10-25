@@ -152,6 +152,9 @@ xsi:schemaLocation="http://schemas.android.com/service/camera/metadata/ metadata
     <typedef name="dynamicRangeProfiles">
         <language name="java">android.hardware.camera2.params.DynamicRangeProfiles</language>
     </typedef>
+    <typedef name="colorSpaceProfiles">
+        <language name="java">android.hardware.camera2.params.ColorSpaceProfiles</language>
+    </typedef>
   </types>
 
   <namespace name="android">
@@ -6339,6 +6342,24 @@ xsi:schemaLocation="http://schemas.android.com/service/camera/metadata/ metadata
               via {@link android.hardware.camera2.params.MandatoryStreamCombination}.
               </notes>
             </value>
+            <value optional="true" visibility="java_public" hal_version="3.9">COLOR_SPACE_PROFILES
+              <notes>
+                The device supports querying the possible combinations of color spaces, image
+                formats, and dynamic range profiles supported by the camera and requesting a
+                particular color space for a session via
+                {@link android.hardware.camera2.params.SessionConfiguration#setColorSpace}.
+
+                Cameras that enable this capability may or may not also implement dynamic range
+                profiles. If they don't,
+                {@link android.hardware.camera2.params.ColorSpaceProfiles#getSupportedDynamicRangeProfiles}
+                will return only
+                {@link android.hardware.camera2.params.DynamicRangeProfiles#STANDARD} and
+                {@link android.hardware.camera2.params.ColorSpaceProfiles#getSupportedColorSpacesForDynamicRange}
+                will assume support of the
+                {@link android.hardware.camera2.params.DynamicRangeProfiles#STANDARD}
+                profile in all combinations of color spaces and image formats.
+              </notes>
+            </value>
           </enum>
           <description>List of capabilities that this camera device
           advertises as fully supporting.</description>
@@ -6873,6 +6894,166 @@ xsi:schemaLocation="http://schemas.android.com/service/camera/metadata/ metadata
           range profile when calling
           {@link android.hardware.camera2.params.OutputConfiguration#setDynamicRangeProfile}.
           </details>
+        </entry>
+        <entry name="availableColorSpaceProfiles" type="int32" visibility="java_public"
+            synthetic="true" optional="true" typedef="colorSpaceProfiles" hal_version="3.9">
+          <description>
+            An interface for querying the color space profiles supported by a camera device.
+          </description>
+          <details>
+            A color space profile is a combination of a color space, an image format, and a dynamic
+            range profile. Camera clients can retrieve the list of supported color spaces by calling
+            {@link android.hardware.camera2.params.ColorSpaceProfiles#getSupportedColorSpaces} or
+            {@link android.hardware.camera2.params.ColorSpaceProfiles#getSupportedColorSpacesForDynamicRange}.
+            If a camera does not support the
+            {@link android.hardware.camera2.CameraCharacteristics#REQUEST_AVAILABLE_CAPABILITIES_DYNAMIC_RANGE_TEN_BIT}
+            capability, the dynamic range profile will always be
+            {@link android.hardware.camera2.params.DynamicRangeProfiles#STANDARD}. Color space
+            capabilities are queried in combination with an {@link android.graphics.ImageFormat}.
+            If a camera client wants to know the general color space capabilities of a camera device
+            regardless of image format, it can specify {@link android.graphics.ImageFormat#UNKNOWN}.
+            The color space for a session can be configured by setting the SessionConfiguration
+            color space via {@link android.hardware.camera2.params.SessionConfiguration#setColorSpace}.
+          </details>
+        </entry>
+        <entry name="availableColorSpaceProfilesMap" type="int64" visibility="ndk_public"
+            optional="true" enum="true" container="array" hal_version="3.9">
+          <array>
+            <size>n</size>
+            <size>3</size>
+          </array>
+          <enum>
+            <value id="-1">UNSPECIFIED
+            <notes>
+              Default value, when not explicitly specified. The Camera device will choose the color
+              space to employ.
+            </notes>
+            </value>
+            <value visibility="system" id="0">SRGB
+            <notes>
+              RGB color space sRGB standardized as IEC 61966-2.1:1999.
+            </notes>
+            </value>
+            <value visibility="system" id="1">LINEAR_SRGB
+            <notes>
+              RGB color space sRGB standardized as IEC 61966-2.1:1999.
+            </notes>
+            </value>
+            <value visibility="system" id="2">EXTENDED_SRGB
+            <notes>
+              RGB color space scRGB-nl standardized as IEC 61966-2-2:2003.
+            </notes>
+            </value>
+            <value visibility="system" id="3">LINEAR_EXTENDED_SRGB
+            <notes>
+              RGB color space scRGB standardized as IEC 61966-2-2:2003.
+            </notes>
+            </value>
+            <value visibility="system" id="4">BT709
+            <notes>
+              RGB color space BT.709 standardized as Rec. ITU-R BT.709-5.
+            </notes>
+            </value>
+            <value visibility="system" id="5">BT2020
+            <notes>
+              RGB color space BT.2020 standardized as Rec. ITU-R BT.2020-1.
+            </notes>
+            </value>
+            <value visibility="system" id="6">DCI_P3
+            <notes>
+              RGB color space DCI-P3 standardized as SMPTE RP 431-2-2007.
+            </notes>
+            </value>
+            <value visibility="system" id="7">DISPLAY_P3
+            <notes>
+              RGB color space Display P3 based on SMPTE RP 431-2-2007 and IEC 61966-2.1:1999.
+            </notes>
+            </value>
+            <value visibility="system" id="8">NTSC_1953
+            <notes>
+              RGB color space NTSC, 1953 standard.
+            </notes>
+            </value>
+            <value visibility="system" id="9">SMPTE_C
+            <notes>
+              RGB color space SMPTE C.
+            </notes>
+            </value>
+            <value visibility="system" id="10">ADOBE_RGB
+            <notes>
+              RGB color space Adobe RGB (1998).
+            </notes>
+            </value>
+            <value visibility="system" id="11">PRO_PHOTO_RGB
+            <notes>
+              RGB color space ProPhoto RGB standardized as ROMM RGB ISO 22028-2:2013.
+            </notes>
+            </value>
+            <value visibility="system" id="12">ACES
+            <notes>
+              RGB color space ACES standardized as SMPTE ST 2065-1:2012.
+            </notes>
+            </value>
+            <value visibility="system" id="13">ACESCG
+            <notes>
+              RGB color space ACEScg standardized as Academy S-2014-004.
+            </notes>
+            </value>
+            <value visibility="system" id="14">CIE_XYZ
+            <notes>
+              XYZ color space CIE XYZ. This color space assumes standard illuminant D50 as its white
+              point.
+            </notes>
+            </value>
+            <value visibility="system" id="15">CIE_LAB
+            <notes>
+              Lab color space CIE L*a*b*. This color space uses CIE XYZ D50 as a profile conversion
+              space.
+            </notes>
+            </value>
+          </enum>
+          <description>
+            A list of all possible color space profiles supported by a camera device.
+          </description>
+          <details>
+            A color space profile is a combination of a color space, an image format, and a dynamic range
+            profile. If a camera does not support the
+            {@link android.hardware.camera2.CameraCharacteristics#REQUEST_AVAILABLE_CAPABILITIES_DYNAMIC_RANGE_TEN_BIT}
+            capability, the dynamic range profile will always be
+            {@link android.hardware.camera2.params.DynamicRangeProfiles#STANDARD}. Camera clients can
+            use {@link android.hardware.camera2.params.SessionConfiguration#setColorSpace} to select
+            a color space.
+          </details>
+          <hal_details>
+            The array contains three entries per supported profile:
+
+            1) The supported color space.
+            2) An image format which can be used with this color space.
+            3) A bitmap of all compatible dynamic range profiles, if the device is HDR-capable.
+
+            The possible values for #1 are the positive values of the
+            ANDROID_REQUEST_AVAILABLE_COLOR_SPACE_PROFILES_MAP_* enum, which is equivalent to
+            {@link android.graphics.ColorSpace.Named} and its ordinals. UNSPECIFIED should not be
+            used here.
+
+            The possible values for #2 consist of the public-facing image/pixel formats, found at
+            {@link android.graphics.ImageFormat} and {@link android.graphics.PixelFormat}. Each map
+            to a HAL pixel format except for {@link android.graphics.ImageFormat.JPEG},
+            {@link android.graphics.ImageFormat.HEIC}, and
+            {@link android.graphics.ImageFormat.DEPTH_JPEG}. Depth formats besides DEPTH_JPEG are
+            not applicable and should not be specified. If there are no constraints on the type of
+            image format a color space is compatible with, this can be
+            {@link android.graphics.ImageFormat.UNKNOWN}.
+
+            If the device is not HDR-capable, #3 should always be
+            ANDROID_REQUEST_AVAILABLE_DYNAMIC_RANGE_PROFILES_STANDARD. Otherwise, #3 should be a
+            bitmap of the compatible ANDROID_REQUEST_AVAILABLE_DYNAMIC_RANGE_PROFILES_* values.
+
+            For devices that support P3 color, it is highly recommended to advertise
+            {@link android.graphics.ColorSpace.Named.DISPLAY_P3}
+            unless the profile is specifically designed for playback in a theater environment
+            ({@link android.graphics.ColorSpace.Named.DCI_P3}).
+          </hal_details>
         </entry>
       </static>
     </section>
