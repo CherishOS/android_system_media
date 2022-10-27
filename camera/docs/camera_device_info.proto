@@ -111,6 +111,7 @@ message CameraDeviceInfo {
     optional RangeInt android_control_postRawSensitivityBoostRange = 131088;
     repeated Capability android_control_availableExtendedSceneModeCapabilities = 131089;
     optional RangeFloat android_control_zoomRatioRange = 131090;
+    repeated int32 android_control_availableSettingsOverrides = 131091;
     repeated int32 android_edge_availableEdgeModes = 262144;
     optional bool android_flash_info_available = 393216;
     optional int32 android_flash_info_strengthMaximumLevel = 393217;

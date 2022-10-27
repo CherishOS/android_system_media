@@ -46,6 +46,7 @@
 #include <aidl/android/hardware/camera/metadata/ControlEnableZsl.h>
 #include <aidl/android/hardware/camera/metadata/ControlAfSceneChange.h>
 #include <aidl/android/hardware/camera/metadata/ControlExtendedSceneMode.h>
+#include <aidl/android/hardware/camera/metadata/ControlSettingsOverride.h>
 #include <aidl/android/hardware/camera/metadata/DemosaicMode.h>
 #include <aidl/android/hardware/camera/metadata/EdgeMode.h>
 #include <aidl/android/hardware/camera/metadata/FlashMode.h>
@@ -354,6 +355,10 @@ static_assert(static_cast<int>(ANDROID_CONTROL_ZOOM_RATIO)
         == static_cast<int>(::aidl::android::hardware::camera::metadata::CameraMetadataTag::ANDROID_CONTROL_ZOOM_RATIO));
 static_assert(static_cast<int>(ANDROID_CONTROL_AVAILABLE_HIGH_SPEED_VIDEO_CONFIGURATIONS_MAXIMUM_RESOLUTION)
         == static_cast<int>(::aidl::android::hardware::camera::metadata::CameraMetadataTag::ANDROID_CONTROL_AVAILABLE_HIGH_SPEED_VIDEO_CONFIGURATIONS_MAXIMUM_RESOLUTION));
+static_assert(static_cast<int>(ANDROID_CONTROL_SETTINGS_OVERRIDE)
+        == static_cast<int>(::aidl::android::hardware::camera::metadata::CameraMetadataTag::ANDROID_CONTROL_SETTINGS_OVERRIDE));
+static_assert(static_cast<int>(ANDROID_CONTROL_AVAILABLE_SETTINGS_OVERRIDES)
+        == static_cast<int>(::aidl::android::hardware::camera::metadata::CameraMetadataTag::ANDROID_CONTROL_AVAILABLE_SETTINGS_OVERRIDES));
 static_assert(static_cast<int>(ANDROID_DEMOSAIC_MODE)
         == static_cast<int>(::aidl::android::hardware::camera::metadata::CameraMetadataTag::ANDROID_DEMOSAIC_MODE));
 static_assert(static_cast<int>(ANDROID_EDGE_MODE)
@@ -1085,6 +1090,13 @@ static_assert(static_cast<int32_t>(ANDROID_CONTROL_EXTENDED_SCENE_MODE_BOKEH_CON
         == static_cast<int32_t>(::aidl::android::hardware::camera::metadata::ControlExtendedSceneMode::ANDROID_CONTROL_EXTENDED_SCENE_MODE_BOKEH_CONTINUOUS));
 static_assert(static_cast<int32_t>(ANDROID_CONTROL_EXTENDED_SCENE_MODE_VENDOR_START)
         == static_cast<int32_t>(::aidl::android::hardware::camera::metadata::ControlExtendedSceneMode::ANDROID_CONTROL_EXTENDED_SCENE_MODE_VENDOR_START));
+
+static_assert(static_cast<int32_t>(ANDROID_CONTROL_SETTINGS_OVERRIDE_OFF)
+        == static_cast<int32_t>(::aidl::android::hardware::camera::metadata::ControlSettingsOverride::ANDROID_CONTROL_SETTINGS_OVERRIDE_OFF));
+static_assert(static_cast<int32_t>(ANDROID_CONTROL_SETTINGS_OVERRIDE_ZOOM)
+        == static_cast<int32_t>(::aidl::android::hardware::camera::metadata::ControlSettingsOverride::ANDROID_CONTROL_SETTINGS_OVERRIDE_ZOOM));
+static_assert(static_cast<int32_t>(ANDROID_CONTROL_SETTINGS_OVERRIDE_VENDOR_START)
+        == static_cast<int32_t>(::aidl::android::hardware::camera::metadata::ControlSettingsOverride::ANDROID_CONTROL_SETTINGS_OVERRIDE_VENDOR_START));
 
 static_assert(static_cast<int32_t>(ANDROID_DEMOSAIC_MODE_FAST)
         == static_cast<int32_t>(::aidl::android::hardware::camera::metadata::DemosaicMode::ANDROID_DEMOSAIC_MODE_FAST));

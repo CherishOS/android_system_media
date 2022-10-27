@@ -261,6 +261,10 @@ static tag_info_t android_control[ANDROID_CONTROL_END -
     { "aeRegionsSet",                  TYPE_BYTE   },
     [ ANDROID_CONTROL_AWB_REGIONS_SET - ANDROID_CONTROL_START ] =
     { "awbRegionsSet",                 TYPE_BYTE   },
+    [ ANDROID_CONTROL_SETTINGS_OVERRIDE - ANDROID_CONTROL_START ] =
+    { "settingsOverride",              TYPE_INT32  },
+    [ ANDROID_CONTROL_AVAILABLE_SETTINGS_OVERRIDES - ANDROID_CONTROL_START ] =
+    { "availableSettingsOverrides",    TYPE_INT32  },
 };
 
 static tag_info_t android_demosaic[ANDROID_DEMOSAIC_END -
@@ -1739,6 +1743,28 @@ int camera_metadata_enum_snprint(uint32_t tag,
                 default:
                     msg = "error: enum value out of range";
             }
+            break;
+        }
+        case ANDROID_CONTROL_SETTINGS_OVERRIDE: {
+            switch (value) {
+                case ANDROID_CONTROL_SETTINGS_OVERRIDE_OFF:
+                    msg = "OFF";
+                    ret = 0;
+                    break;
+                case ANDROID_CONTROL_SETTINGS_OVERRIDE_ZOOM:
+                    msg = "ZOOM";
+                    ret = 0;
+                    break;
+                case ANDROID_CONTROL_SETTINGS_OVERRIDE_VENDOR_START:
+                    msg = "VENDOR_START";
+                    ret = 0;
+                    break;
+                default:
+                    msg = "error: enum value out of range";
+            }
+            break;
+        }
+        case ANDROID_CONTROL_AVAILABLE_SETTINGS_OVERRIDES: {
             break;
         }
 
@@ -4761,6 +4787,30 @@ int camera_metadata_enum_value(uint32_t tag,
                     ret = 0;
                     break;
                 }
+            break;
+        }
+        case ANDROID_CONTROL_SETTINGS_OVERRIDE: {
+                enumName = "OFF";
+                if (strncmp(name, enumName, size) == 0) {
+                    *value = ANDROID_CONTROL_SETTINGS_OVERRIDE_OFF;
+                    ret = 0;
+                    break;
+                }
+                enumName = "ZOOM";
+                if (strncmp(name, enumName, size) == 0) {
+                    *value = ANDROID_CONTROL_SETTINGS_OVERRIDE_ZOOM;
+                    ret = 0;
+                    break;
+                }
+                enumName = "VENDOR_START";
+                if (strncmp(name, enumName, size) == 0) {
+                    *value = ANDROID_CONTROL_SETTINGS_OVERRIDE_VENDOR_START;
+                    ret = 0;
+                    break;
+                }
+            break;
+        }
+        case ANDROID_CONTROL_AVAILABLE_SETTINGS_OVERRIDES: {
             break;
         }
 

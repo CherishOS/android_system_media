@@ -190,6 +190,8 @@ typedef enum camera_metadata_tag {
     ANDROID_CONTROL_AF_REGIONS_SET,                   // enum         | fwk_only
     ANDROID_CONTROL_AE_REGIONS_SET,                   // enum         | fwk_only
     ANDROID_CONTROL_AWB_REGIONS_SET,                  // enum         | fwk_only
+    ANDROID_CONTROL_SETTINGS_OVERRIDE,                // enum         | public       | HIDL v3.9
+    ANDROID_CONTROL_AVAILABLE_SETTINGS_OVERRIDES,     // int32[]      | public       | HIDL v3.9
     ANDROID_CONTROL_END,
 
     ANDROID_DEMOSAIC_MODE =                           // enum         | system       | HIDL v3.2
@@ -790,6 +792,13 @@ typedef enum camera_metadata_enum_android_control_awb_regions_set {
     ANDROID_CONTROL_AWB_REGIONS_SET_FALSE                           ,
     ANDROID_CONTROL_AWB_REGIONS_SET_TRUE                            ,
 } camera_metadata_enum_android_control_awb_regions_set_t;
+
+// ANDROID_CONTROL_SETTINGS_OVERRIDE
+typedef enum camera_metadata_enum_android_control_settings_override {
+    ANDROID_CONTROL_SETTINGS_OVERRIDE_OFF                           , // HIDL v3.9
+    ANDROID_CONTROL_SETTINGS_OVERRIDE_ZOOM                          , // HIDL v3.9
+    ANDROID_CONTROL_SETTINGS_OVERRIDE_VENDOR_START                   = 0x4000, // HIDL v3.9
+} camera_metadata_enum_android_control_settings_override_t;
 
 
 // ANDROID_DEMOSAIC_MODE

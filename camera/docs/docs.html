@@ -203,6 +203,8 @@
             ><a href="#controls_android.control.aeRegionsSet">android.control.aeRegionsSet</a></li>
             <li
             ><a href="#controls_android.control.awbRegionsSet">android.control.awbRegionsSet</a></li>
+            <li
+            ><a href="#controls_android.control.settingsOverride">android.control.settingsOverride</a></li>
           </ul>
         </li>
         <li>
@@ -258,6 +260,8 @@
             ><a href="#static_android.control.zoomRatioRange">android.control.zoomRatioRange</a></li>
             <li
             ><a href="#static_android.control.availableHighSpeedVideoConfigurationsMaximumResolution">android.control.availableHighSpeedVideoConfigurationsMaximumResolution</a></li>
+            <li
+            ><a href="#static_android.control.availableSettingsOverrides">android.control.availableSettingsOverrides</a></li>
           </ul>
         </li>
         <li>
@@ -321,6 +325,8 @@
             ><a href="#dynamic_android.control.extendedSceneMode">android.control.extendedSceneMode</a></li>
             <li
             ><a href="#dynamic_android.control.zoomRatio">android.control.zoomRatio</a></li>
+            <li
+            ><a href="#dynamic_android.control.settingsOverride">android.control.settingsOverride</a></li>
           </ul>
         </li>
       </ul> <!-- toc_section -->
@@ -5324,6 +5330,160 @@ set to MAXIMUM_<wbr/>RESOLUTION.<wbr/></p>
           <tr class="entry_spacer"><td class="entry_spacer" colspan="7"></td></tr>
            <!-- end of entry -->
         
+                
+          <tr class="entry" id="controls_android.control.settingsOverride">
+            <td class="entry_name
+             " rowspan="5">
+              android.<wbr/>control.<wbr/>settings<wbr/>Override
+            </td>
+            <td class="entry_type">
+                <span class="entry_type_name entry_type_name_enum">int32</span>
+
+              <span class="entry_type_visibility"> [public]</span>
+
+
+              <span class="entry_type_hwlevel">[limited] </span>
+
+
+
+                <ul class="entry_type_enum">
+                  <li>
+                    <span class="entry_type_enum_name">OFF (v3.9)</span>
+                    <span class="entry_type_enum_notes"><p>No keys are applied sooner than the other keys when applying CaptureRequest
+settings to the camera device.<wbr/> This is the default value.<wbr/></p></span>
+                  </li>
+                  <li>
+                    <span class="entry_type_enum_name">ZOOM (v3.9)</span>
+                    <span class="entry_type_enum_notes"><p>Zoom related keys are applied sooner than the other keys in the CaptureRequest.<wbr/> The
+zoom related keys are:</p>
+<ul>
+<li><a href="#controls_android.control.zoomRatio">android.<wbr/>control.<wbr/>zoom<wbr/>Ratio</a></li>
+<li><a href="#controls_android.scaler.cropRegion">android.<wbr/>scaler.<wbr/>crop<wbr/>Region</a></li>
+<li><a href="#controls_android.control.aeRegions">android.<wbr/>control.<wbr/>ae<wbr/>Regions</a></li>
+<li><a href="#controls_android.control.awbRegions">android.<wbr/>control.<wbr/>awb<wbr/>Regions</a></li>
+<li><a href="#controls_android.control.afRegions">android.<wbr/>control.<wbr/>af<wbr/>Regions</a></li>
+</ul>
+<p>Even though <a href="#controls_android.control.aeRegions">android.<wbr/>control.<wbr/>ae<wbr/>Regions</a>,<wbr/> <a href="#controls_android.control.awbRegions">android.<wbr/>control.<wbr/>awb<wbr/>Regions</a>,<wbr/>
+and <a href="#controls_android.control.afRegions">android.<wbr/>control.<wbr/>af<wbr/>Regions</a> are not directly zoom related,<wbr/> applications
+typically scale these regions together with <a href="#controls_android.scaler.cropRegion">android.<wbr/>scaler.<wbr/>crop<wbr/>Region</a> to have a
+consistent mapping within the current field of view.<wbr/> In this aspect,<wbr/> they are
+related to <a href="#controls_android.scaler.cropRegion">android.<wbr/>scaler.<wbr/>crop<wbr/>Region</a> and <a href="#controls_android.control.zoomRatio">android.<wbr/>control.<wbr/>zoom<wbr/>Ratio</a>.<wbr/></p></span>
+                  </li>
+                  <li>
+                    <span class="entry_type_enum_name">VENDOR_START (v3.9)</span>
+                    <span class="entry_type_enum_hidden">[hidden]</span>
+                    <span class="entry_type_enum_value">0x4000</span>
+                    <span class="entry_type_enum_notes"><p>Vendor defined settingsOverride.<wbr/> These depend on vendor implementation.<wbr/></p></span>
+                  </li>
+                </ul>
+
+            </td> <!-- entry_type -->
+
+            <td class="entry_description">
+              <p>The desired CaptureRequest settings override with which certain keys are
+applied earlier so that they can take effect sooner.<wbr/></p>
+            </td>
+
+            <td class="entry_units">
+            </td>
+
+            <td class="entry_range">
+              <p><a href="#static_android.control.availableSettingsOverrides">android.<wbr/>control.<wbr/>available<wbr/>Settings<wbr/>Overrides</a></p>
+            </td>
+
+            <td class="entry_hal_version">
+              <p>3.<wbr/>9</p>
+            </td>
+
+            <td class="entry_tags">
+            </td>
+
+          </tr>
+          <tr class="entries_header">
+            <th class="th_details" colspan="6">Details</th>
+          </tr>
+          <tr class="entry_cont">
+            <td class="entry_details" colspan="6">
+              <p>There are some CaptureRequest keys which can be applied earlier than others
+when controls within a CaptureRequest aren't required to take effect at the same time.<wbr/>
+One such example is zoom.<wbr/> Zoom can be applied at a later stage of the camera pipeline.<wbr/>
+As soon as the camera device receives the CaptureRequest,<wbr/> it can apply the requested
+zoom value onto an earlier request that's already in the pipeline,<wbr/> thus improves zoom
+latency.<wbr/></p>
+<p>This key's value in the capture result reflects whether the controls for this capture
+are overridden "by" a newer request.<wbr/> This means that if a capture request turns on
+settings override,<wbr/> the capture result of an earlier request will contain the key value
+of ZOOM.<wbr/> On the other hand,<wbr/> if a capture request has settings override turned on,<wbr/>
+but all newer requests have it turned off,<wbr/> the key's value in the capture result will
+be OFF because this capture isn't overridden by a newer capture.<wbr/> In the two examples
+below,<wbr/> the capture results columns illustrate the settingsOverride values in different
+scenarios.<wbr/></p>
+<p>Assuming the zoom settings override can speed up by 1 frame,<wbr/> below example illustrates
+the speed-up at the start of capture session:</p>
+<pre><code>Camera session created
+Request 1 (zoom=1.<wbr/>0x,<wbr/> override=ZOOM) -&gt;
+Request 2 (zoom=1.<wbr/>2x,<wbr/> override=ZOOM) -&gt;
+Request 3 (zoom=1.<wbr/>4x,<wbr/> override=ZOOM) -&gt;  Result 1 (zoom=1.<wbr/>2x,<wbr/> override=ZOOM)
+Request 4 (zoom=1.<wbr/>6x,<wbr/> override=ZOOM) -&gt;  Result 2 (zoom=1.<wbr/>4x,<wbr/> override=ZOOM)
+Request 5 (zoom=1.<wbr/>8x,<wbr/> override=ZOOM) -&gt;  Result 3 (zoom=1.<wbr/>6x,<wbr/> override=ZOOM)
+                                     -&gt;  Result 4 (zoom=1.<wbr/>8x,<wbr/> override=ZOOM)
+                                     -&gt;  Result 5 (zoom=1.<wbr/>8x,<wbr/> override=OFF)
+</code></pre>
+<p>The application can turn on settings override and use zoom as normal.<wbr/> The example
+shows that the later zoom values (1.<wbr/>2x,<wbr/> 1.<wbr/>4x,<wbr/> 1.<wbr/>6x,<wbr/> and 1.<wbr/>8x) overwrite the zoom
+values (1.<wbr/>0x,<wbr/> 1.<wbr/>2x,<wbr/> 1.<wbr/>4x,<wbr/> and 1.<wbr/>8x) of earlier requests (#1,<wbr/> #2,<wbr/> #3,<wbr/> and #4).<wbr/></p>
+<p>The application must make sure the settings override doesn't interfere with user
+journeys requiring simultaneous application of all controls in CaptureRequest on the
+requested output targets.<wbr/> For example,<wbr/> if the application takes a still capture using
+CameraCaptureSession#capture,<wbr/> and the repeating request immediately sets a different
+zoom value using override,<wbr/> the inflight still capture could have its zoom value
+overwritten unexpectedly.<wbr/></p>
+<p>So the application is strongly recommended to turn off settingsOverride when taking
+still/<wbr/>burst captures,<wbr/> and turn it back on when there is only repeating viewfinder
+request and no inflight still/<wbr/>burst captures.<wbr/></p>
+<p>Below is the example demonstrating the transitions in and out of the
+settings override:</p>
+<pre><code>Request 1 (zoom=1.<wbr/>0x,<wbr/> override=OFF)
+Request 2 (zoom=1.<wbr/>2x,<wbr/> override=OFF)
+Request 3 (zoom=1.<wbr/>4x,<wbr/> override=ZOOM)  -&gt; Result 1 (zoom=1.<wbr/>0x,<wbr/> override=OFF)
+Request 4 (zoom=1.<wbr/>6x,<wbr/> override=ZOOM)  -&gt; Result 2 (zoom=1.<wbr/>4x,<wbr/> override=ZOOM)
+Request 5 (zoom=1.<wbr/>8x,<wbr/> override=OFF)   -&gt; Result 3 (zoom=1.<wbr/>6x,<wbr/> override=ZOOM)
+                                      -&gt; Result 4 (zoom=1.<wbr/>6x,<wbr/> override=OFF)
+                                      -&gt; Result 5 (zoom=1.<wbr/>8x,<wbr/> override=OFF)
+</code></pre>
+<p>This example shows that:</p>
+<ul>
+<li>The application "ramps in" settings override by setting the control to ZOOM.<wbr/>
+In the example,<wbr/> request #3 enables zoom settings override.<wbr/> Because the camera device
+can speed up applying zoom by 1 frame,<wbr/> the outputs of request #2 has 1.<wbr/>4x zoom,<wbr/> the
+value specified in request #3.<wbr/></li>
+<li>The application "ramps out" of settings override by setting the control to OFF.<wbr/> In
+the example,<wbr/> request #5 changes the override to OFF.<wbr/> Because request #4's zoom
+takes effect in result #3,<wbr/> result #4's zoom remains the same until new value takes
+effect in result #5.<wbr/></li>
+</ul>
+            </td>
+          </tr>
+
+          <tr class="entries_header">
+            <th class="th_details" colspan="6">HAL Implementation Details</th>
+          </tr>
+          <tr class="entry_cont">
+            <td class="entry_details" colspan="6">
+              <p>The HAL must set this value to OFF in all of the Capture templates.<wbr/></p>
+<p>Typically the HAL unblocks processCaptureRequest at the same rate as the sensor capture,<wbr/>
+and the HAL queues the capture settings in its pipeline when processCaptureRequest
+returns.<wbr/> However,<wbr/> when the settings override is enabled,<wbr/> the HAL can optimize the
+overridden controls' latency by applying them as soon as processCaptureRequest is
+called,<wbr/> rather than when it's unblocked.<wbr/></p>
+<p>If zoom settings override is on,<wbr/> when zooming in,<wbr/> the HAL must be able to apply the
+zoom related settings at least 2 frames ahead.<wbr/></p>
+            </td>
+          </tr>
+
+          <tr class="entry_spacer"><td class="entry_spacer" colspan="7"></td></tr>
+           <!-- end of entry -->
+        
         
 
       <!-- end of kind -->
@@ -7110,6 +7270,71 @@ which are applicable when <a href="#controls_android.sensor.pixelMode">android.<
               <p>Refer to hal details for <a href="#static_android.control.availableHighSpeedVideoConfigurations">android.<wbr/>control.<wbr/>available<wbr/>High<wbr/>Speed<wbr/>Video<wbr/>Configurations</a>.<wbr/></p>
             </td>
           </tr>
+
+          <tr class="entry_spacer"><td class="entry_spacer" colspan="7"></td></tr>
+           <!-- end of entry -->
+        
+                
+          <tr class="entry" id="static_android.control.availableSettingsOverrides">
+            <td class="entry_name
+             " rowspan="3">
+              android.<wbr/>control.<wbr/>available<wbr/>Settings<wbr/>Overrides
+            </td>
+            <td class="entry_type">
+                <span class="entry_type_name">int32</span>
+                <span class="entry_type_container">x</span>
+
+                <span class="entry_type_array">
+                  n
+                </span>
+              <span class="entry_type_visibility"> [public as enumList]</span>
+
+
+
+
+                <div class="entry_type_notes">list of enums</div>
+
+
+            </td> <!-- entry_type -->
+
+            <td class="entry_description">
+              <p>List of available settings overrides supported by the camera device that can
+be used to speed up certain controls.<wbr/></p>
+            </td>
+
+            <td class="entry_units">
+            </td>
+
+            <td class="entry_range">
+              <p>Any value listed in <a href="#controls_android.control.settingsOverride">android.<wbr/>control.<wbr/>settings<wbr/>Override</a></p>
+            </td>
+
+            <td class="entry_hal_version">
+              <p>3.<wbr/>9</p>
+            </td>
+
+            <td class="entry_tags">
+            </td>
+
+          </tr>
+          <tr class="entries_header">
+            <th class="th_details" colspan="6">Details</th>
+          </tr>
+          <tr class="entry_cont">
+            <td class="entry_details" colspan="6">
+              <p>When not all controls within a CaptureRequest are required to take effect
+at the same time on the outputs,<wbr/> the camera device may apply certain request keys sooner
+to improve latency.<wbr/> This list contains such supported settings overrides.<wbr/> Each settings
+override corresponds to a set of CaptureRequest keys that can be sped up when applying.<wbr/></p>
+<p>A supported settings override can be passed in via
+<a href="https://developer.android.com/reference/android/hardware/camera2/CaptureRequest.html#CONTROL_SETTINGS_OVERRIDE">Capture<wbr/>Request#CONTROL_<wbr/>SETTINGS_<wbr/>OVERRIDE</a>,<wbr/> and the
+CaptureRequest keys corresponding to the override are applied as soon as possible,<wbr/> not
+bound by per-frame synchronization.<wbr/> See <a href="#controls_android.control.settingsOverride">android.<wbr/>control.<wbr/>settings<wbr/>Override</a> for the
+CaptureRequest keys for each override.<wbr/></p>
+<p>OFF is always included in this list.<wbr/></p>
+            </td>
+          </tr>
+
 
           <tr class="entry_spacer"><td class="entry_spacer" colspan="7"></td></tr>
            <!-- end of entry -->
@@ -11119,6 +11344,160 @@ physical camera device.<wbr/></p>
             <td class="entry_details" colspan="6">
               <p>For all capture request templates,<wbr/> this field must be set to 1.<wbr/>0 in order to have
 consistent field of views between different modes.<wbr/></p>
+            </td>
+          </tr>
+
+          <tr class="entry_spacer"><td class="entry_spacer" colspan="7"></td></tr>
+           <!-- end of entry -->
+        
+                
+          <tr class="entry" id="dynamic_android.control.settingsOverride">
+            <td class="entry_name
+             " rowspan="5">
+              android.<wbr/>control.<wbr/>settings<wbr/>Override
+            </td>
+            <td class="entry_type">
+                <span class="entry_type_name entry_type_name_enum">int32</span>
+
+              <span class="entry_type_visibility"> [public]</span>
+
+
+              <span class="entry_type_hwlevel">[limited] </span>
+
+
+
+                <ul class="entry_type_enum">
+                  <li>
+                    <span class="entry_type_enum_name">OFF (v3.9)</span>
+                    <span class="entry_type_enum_notes"><p>No keys are applied sooner than the other keys when applying CaptureRequest
+settings to the camera device.<wbr/> This is the default value.<wbr/></p></span>
+                  </li>
+                  <li>
+                    <span class="entry_type_enum_name">ZOOM (v3.9)</span>
+                    <span class="entry_type_enum_notes"><p>Zoom related keys are applied sooner than the other keys in the CaptureRequest.<wbr/> The
+zoom related keys are:</p>
+<ul>
+<li><a href="#controls_android.control.zoomRatio">android.<wbr/>control.<wbr/>zoom<wbr/>Ratio</a></li>
+<li><a href="#controls_android.scaler.cropRegion">android.<wbr/>scaler.<wbr/>crop<wbr/>Region</a></li>
+<li><a href="#controls_android.control.aeRegions">android.<wbr/>control.<wbr/>ae<wbr/>Regions</a></li>
+<li><a href="#controls_android.control.awbRegions">android.<wbr/>control.<wbr/>awb<wbr/>Regions</a></li>
+<li><a href="#controls_android.control.afRegions">android.<wbr/>control.<wbr/>af<wbr/>Regions</a></li>
+</ul>
+<p>Even though <a href="#controls_android.control.aeRegions">android.<wbr/>control.<wbr/>ae<wbr/>Regions</a>,<wbr/> <a href="#controls_android.control.awbRegions">android.<wbr/>control.<wbr/>awb<wbr/>Regions</a>,<wbr/>
+and <a href="#controls_android.control.afRegions">android.<wbr/>control.<wbr/>af<wbr/>Regions</a> are not directly zoom related,<wbr/> applications
+typically scale these regions together with <a href="#controls_android.scaler.cropRegion">android.<wbr/>scaler.<wbr/>crop<wbr/>Region</a> to have a
+consistent mapping within the current field of view.<wbr/> In this aspect,<wbr/> they are
+related to <a href="#controls_android.scaler.cropRegion">android.<wbr/>scaler.<wbr/>crop<wbr/>Region</a> and <a href="#controls_android.control.zoomRatio">android.<wbr/>control.<wbr/>zoom<wbr/>Ratio</a>.<wbr/></p></span>
+                  </li>
+                  <li>
+                    <span class="entry_type_enum_name">VENDOR_START (v3.9)</span>
+                    <span class="entry_type_enum_hidden">[hidden]</span>
+                    <span class="entry_type_enum_value">0x4000</span>
+                    <span class="entry_type_enum_notes"><p>Vendor defined settingsOverride.<wbr/> These depend on vendor implementation.<wbr/></p></span>
+                  </li>
+                </ul>
+
+            </td> <!-- entry_type -->
+
+            <td class="entry_description">
+              <p>The desired CaptureRequest settings override with which certain keys are
+applied earlier so that they can take effect sooner.<wbr/></p>
+            </td>
+
+            <td class="entry_units">
+            </td>
+
+            <td class="entry_range">
+              <p><a href="#static_android.control.availableSettingsOverrides">android.<wbr/>control.<wbr/>available<wbr/>Settings<wbr/>Overrides</a></p>
+            </td>
+
+            <td class="entry_hal_version">
+              <p>3.<wbr/>9</p>
+            </td>
+
+            <td class="entry_tags">
+            </td>
+
+          </tr>
+          <tr class="entries_header">
+            <th class="th_details" colspan="6">Details</th>
+          </tr>
+          <tr class="entry_cont">
+            <td class="entry_details" colspan="6">
+              <p>There are some CaptureRequest keys which can be applied earlier than others
+when controls within a CaptureRequest aren't required to take effect at the same time.<wbr/>
+One such example is zoom.<wbr/> Zoom can be applied at a later stage of the camera pipeline.<wbr/>
+As soon as the camera device receives the CaptureRequest,<wbr/> it can apply the requested
+zoom value onto an earlier request that's already in the pipeline,<wbr/> thus improves zoom
+latency.<wbr/></p>
+<p>This key's value in the capture result reflects whether the controls for this capture
+are overridden "by" a newer request.<wbr/> This means that if a capture request turns on
+settings override,<wbr/> the capture result of an earlier request will contain the key value
+of ZOOM.<wbr/> On the other hand,<wbr/> if a capture request has settings override turned on,<wbr/>
+but all newer requests have it turned off,<wbr/> the key's value in the capture result will
+be OFF because this capture isn't overridden by a newer capture.<wbr/> In the two examples
+below,<wbr/> the capture results columns illustrate the settingsOverride values in different
+scenarios.<wbr/></p>
+<p>Assuming the zoom settings override can speed up by 1 frame,<wbr/> below example illustrates
+the speed-up at the start of capture session:</p>
+<pre><code>Camera session created
+Request 1 (zoom=1.<wbr/>0x,<wbr/> override=ZOOM) -&gt;
+Request 2 (zoom=1.<wbr/>2x,<wbr/> override=ZOOM) -&gt;
+Request 3 (zoom=1.<wbr/>4x,<wbr/> override=ZOOM) -&gt;  Result 1 (zoom=1.<wbr/>2x,<wbr/> override=ZOOM)
+Request 4 (zoom=1.<wbr/>6x,<wbr/> override=ZOOM) -&gt;  Result 2 (zoom=1.<wbr/>4x,<wbr/> override=ZOOM)
+Request 5 (zoom=1.<wbr/>8x,<wbr/> override=ZOOM) -&gt;  Result 3 (zoom=1.<wbr/>6x,<wbr/> override=ZOOM)
+                                     -&gt;  Result 4 (zoom=1.<wbr/>8x,<wbr/> override=ZOOM)
+                                     -&gt;  Result 5 (zoom=1.<wbr/>8x,<wbr/> override=OFF)
+</code></pre>
+<p>The application can turn on settings override and use zoom as normal.<wbr/> The example
+shows that the later zoom values (1.<wbr/>2x,<wbr/> 1.<wbr/>4x,<wbr/> 1.<wbr/>6x,<wbr/> and 1.<wbr/>8x) overwrite the zoom
+values (1.<wbr/>0x,<wbr/> 1.<wbr/>2x,<wbr/> 1.<wbr/>4x,<wbr/> and 1.<wbr/>8x) of earlier requests (#1,<wbr/> #2,<wbr/> #3,<wbr/> and #4).<wbr/></p>
+<p>The application must make sure the settings override doesn't interfere with user
+journeys requiring simultaneous application of all controls in CaptureRequest on the
+requested output targets.<wbr/> For example,<wbr/> if the application takes a still capture using
+CameraCaptureSession#capture,<wbr/> and the repeating request immediately sets a different
+zoom value using override,<wbr/> the inflight still capture could have its zoom value
+overwritten unexpectedly.<wbr/></p>
+<p>So the application is strongly recommended to turn off settingsOverride when taking
+still/<wbr/>burst captures,<wbr/> and turn it back on when there is only repeating viewfinder
+request and no inflight still/<wbr/>burst captures.<wbr/></p>
+<p>Below is the example demonstrating the transitions in and out of the
+settings override:</p>
+<pre><code>Request 1 (zoom=1.<wbr/>0x,<wbr/> override=OFF)
+Request 2 (zoom=1.<wbr/>2x,<wbr/> override=OFF)
+Request 3 (zoom=1.<wbr/>4x,<wbr/> override=ZOOM)  -&gt; Result 1 (zoom=1.<wbr/>0x,<wbr/> override=OFF)
+Request 4 (zoom=1.<wbr/>6x,<wbr/> override=ZOOM)  -&gt; Result 2 (zoom=1.<wbr/>4x,<wbr/> override=ZOOM)
+Request 5 (zoom=1.<wbr/>8x,<wbr/> override=OFF)   -&gt; Result 3 (zoom=1.<wbr/>6x,<wbr/> override=ZOOM)
+                                      -&gt; Result 4 (zoom=1.<wbr/>6x,<wbr/> override=OFF)
+                                      -&gt; Result 5 (zoom=1.<wbr/>8x,<wbr/> override=OFF)
+</code></pre>
+<p>This example shows that:</p>
+<ul>
+<li>The application "ramps in" settings override by setting the control to ZOOM.<wbr/>
+In the example,<wbr/> request #3 enables zoom settings override.<wbr/> Because the camera device
+can speed up applying zoom by 1 frame,<wbr/> the outputs of request #2 has 1.<wbr/>4x zoom,<wbr/> the
+value specified in request #3.<wbr/></li>
+<li>The application "ramps out" of settings override by setting the control to OFF.<wbr/> In
+the example,<wbr/> request #5 changes the override to OFF.<wbr/> Because request #4's zoom
+takes effect in result #3,<wbr/> result #4's zoom remains the same until new value takes
+effect in result #5.<wbr/></li>
+</ul>
+            </td>
+          </tr>
+
+          <tr class="entries_header">
+            <th class="th_details" colspan="6">HAL Implementation Details</th>
+          </tr>
+          <tr class="entry_cont">
+            <td class="entry_details" colspan="6">
+              <p>The HAL must set this value to OFF in all of the Capture templates.<wbr/></p>
+<p>Typically the HAL unblocks processCaptureRequest at the same rate as the sensor capture,<wbr/>
+and the HAL queues the capture settings in its pipeline when processCaptureRequest
+returns.<wbr/> However,<wbr/> when the settings override is enabled,<wbr/> the HAL can optimize the
+overridden controls' latency by applying them as soon as processCaptureRequest is
+called,<wbr/> rather than when it's unblocked.<wbr/></p>
+<p>If zoom settings override is on,<wbr/> when zooming in,<wbr/> the HAL must be able to apply the
+zoom related settings at least 2 frames ahead.<wbr/></p>
             </td>
           </tr>
 
