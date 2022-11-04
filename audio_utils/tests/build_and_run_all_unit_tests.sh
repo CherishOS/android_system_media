@@ -71,3 +71,7 @@ adb shell /system/bin/statistics_benchmark
 echo "benchmarking primitives"
 adb push $OUT/system/bin/primitives_benchmark /system/bin
 adb shell /system/bin/primitives_benchmark
+
+echo "melprocessor tests"
+adb push $OUT/data/nativetest/mel_processor_tests/mel_processor_tests /system/bin
+adb shell /system/bin/mel_processor_tests

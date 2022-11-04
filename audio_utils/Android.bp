@@ -51,6 +51,7 @@ cc_library {
         "fifo_writer_T.cpp",
         "format.c",
         "limiter.c",
+        "MelProcessor.cpp",
         "Metadata.cpp",
         "minifloat.c",
         "mono_blend.cpp",
@@ -75,6 +76,7 @@ cc_library {
     shared_libs: [
         "libcutils",
         "liblog",
+        "libutils",
     ],
 
     target: {
