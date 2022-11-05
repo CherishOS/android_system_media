@@ -47,6 +47,31 @@ cc_binary {
 }
 
 cc_test {
+    name: "mel_aggregator_tests",
+    host_supported: true,
+
+    srcs: [
+        "mel_aggregator_tests.cpp"
+    ],
+
+    shared_libs: [
+        "libaudioutils",
+        "liblog",
+        "libutils",
+    ],
+
+    static_libs: [
+        "libgmock",
+    ],
+
+    cflags: [
+        "-Wall",
+        "-Werror",
+        "-Wextra",
+    ],
+}
+
+cc_test {
     name: "mel_processor_tests",
     host_supported: true,
 

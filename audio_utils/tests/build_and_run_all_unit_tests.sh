@@ -72,6 +72,10 @@ echo "benchmarking primitives"
 adb push $OUT/system/bin/primitives_benchmark /system/bin
 adb shell /system/bin/primitives_benchmark
 
+echo "melaggregator tests"
+adb push $OUT/data/nativetest/mel_aggregator_tests/mel_aggregator_tests /system/bin
+adb shell /system/bin/mel_aggregator_tests
+
 echo "melprocessor tests"
 adb push $OUT/data/nativetest/mel_processor_tests/mel_processor_tests /system/bin
 adb shell /system/bin/mel_processor_tests

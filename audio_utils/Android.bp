@@ -51,6 +51,7 @@ cc_library {
         "fifo_writer_T.cpp",
         "format.c",
         "limiter.c",
+        "MelAggregator.cpp",
         "MelProcessor.cpp",
         "Metadata.cpp",
         "minifloat.c",
