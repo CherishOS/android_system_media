@@ -82,12 +82,15 @@ public:
      *
      * \param buffer            pointer to the audio data buffer.
      * \param bytes            buffer size in bytes.
+     *
+     * \return the number of bytes that were processed. Note: the method will
+     *   output 0 for sample rates that are not supported.
      */
-    void process(const void* buffer, size_t bytes);
+    int32_t process(const void* buffer, size_t bytes);
 
 private:
-    /** Returns true if biquads were created successfully. */
-    bool createBiquads();
+    bool isSampleRateSupported();
+    void createBiquads();
     void applyAWeight(const void* buffer, size_t frames);
     float getCombinedChannelEnergy();
     void addMelValue(float mel);

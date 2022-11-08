@@ -63,14 +63,21 @@ MelProcessor::MelProcessor(uint32_t sampleRate,
       mMelValues(maxMelsCallback),
       mCurrentIndex(0)
 {
-    LOG_ALWAYS_FATAL_IF(!createBiquads(),
-            "Unsupported sample rate: %u", mSampleRate);
+    createBiquads();
 }
 
-bool MelProcessor::createBiquads() {
+bool MelProcessor::isSampleRateSupported() {
     // For now only support 44.1 and 48kHz for Mel calculation
     if (mSampleRate != 44100 && mSampleRate != 48000) {
         return false;
+    }
+
+    return true;
+}
+
+void MelProcessor::createBiquads() {
+    if (!isSampleRateSupported()) {
+        return;
     }
 
     int coefsIndex = mSampleRate == 44100 ? 0 : 1;
@@ -78,8 +85,6 @@ bool MelProcessor::createBiquads() {
               {std::make_unique<DefaultBiquadFilter>(mChannelCount, kBiquadCoefs1.at(coefsIndex)),
                std::make_unique<DefaultBiquadFilter>(mChannelCount, kBiquadCoefs2.at(coefsIndex)),
                std::make_unique<DefaultBiquadFilter>(mChannelCount, kBiquadCoefs3.at(coefsIndex))};
-
-    return true;
 }
 
 void MelProcessor::applyAWeight(const void* buffer, size_t samples)
@@ -130,7 +135,11 @@ void MelProcessor::addMelValue(float mel) {
     }
 }
 
-void MelProcessor::process(const void* buffer, size_t bytes) {
+int32_t MelProcessor::process(const void* buffer, size_t bytes) {
+    if (!isSampleRateSupported()) {
+        return 0;
+    }
+
     std::lock_guard<std::mutex> guard(mLock);
 
     const size_t bytes_per_sample = audio_bytes_per_sample(mFormat);
@@ -152,7 +161,7 @@ void MelProcessor::process(const void* buffer, size_t bytes) {
         ALOGV("required:%zu, process:%zu, mCurrentChannelEnergy[0]:%f, mCurrentSamples:%zu",
                   requiredSamples, processSamples, mCurrentChannelEnergy[0], mCurrentSamples);
         if (processSamples < requiredSamples) {
-            return;
+            return bytes;
         }
 
         addMelValue(fmaxf(audio_utils_power_from_energy(getCombinedChannelEnergy())
@@ -163,6 +172,8 @@ void MelProcessor::process(const void* buffer, size_t bytes) {
         buffer = (const uint8_t *)buffer + mCurrentSamples * bytes_per_sample;
         mCurrentSamples = 0;
     }
+
+    return bytes;
 }
 
 }   // namespace android

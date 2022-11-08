@@ -83,9 +83,10 @@ protected:
 
 
 TEST(MelProcessorTest, UnsupportedSamplerateCheck) {
-    EXPECT_DEATH({
-        MelProcessor(1000, 1, AUDIO_FORMAT_PCM_FLOAT, nullptr, 1);
-    }, "Unsupported sample rate: 1000");
+    auto processor = MelProcessor(1000, 1, AUDIO_FORMAT_PCM_FLOAT, nullptr, 1);
+    std::vector<float> buffer(1000);
+
+    EXPECT_EQ(processor.process(buffer.data(), 1000), 0);
 }
 
 TEST_P(MelProcessorFixtureTest, CheckNumberOfCallbacks) {
@@ -99,7 +100,7 @@ TEST_P(MelProcessorFixtureTest, CheckNumberOfCallbacks) {
 
     EXPECT_CALL(*mMelCallback.get(), onNewMelValues(_, _, Le(size_t{2}))).Times(1);
 
-    mProcessor.process(&mBuffer[0], mBuffer.size() * sizeof(float));
+    EXPECT_GT(mProcessor.process(mBuffer.data(), mBuffer.size() * sizeof(float)), 0);
 }
 
 TEST_P(MelProcessorFixtureTest, CheckAWeightingFrequency) {
@@ -116,7 +117,7 @@ TEST_P(MelProcessorFixtureTest, CheckAWeightingFrequency) {
             EXPECT_TRUE(abs(deltaValue - kAWeightDelta1000.at(mFrequency)) <= 1);
         });
 
-    mProcessor.process(&mBuffer[0], mBuffer.size() * sizeof(float));
+    EXPECT_GT(mProcessor.process(mBuffer.data(), mBuffer.size() * sizeof(float)), 0);
 }
 
 INSTANTIATE_TEST_SUITE_P(MelProcessorTestSuite,
