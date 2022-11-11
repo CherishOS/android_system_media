@@ -1872,7 +1872,8 @@ static inline bool audio_is_valid_format(audio_format_t format)
     case AUDIO_FORMAT_LHDC_LL:
     case AUDIO_FORMAT_APTX_TWSP:
     case AUDIO_FORMAT_LC3:
-//    case AUDIO_FORMAT_APTX_ADAPTIVE_QLEA:
+    case AUDIO_FORMAT_APTX_ADAPTIVE_QLEA:
+    case AUDIO_FORMAT_APTX_ADAPTIVE_R4:
         return true;
     case AUDIO_FORMAT_MPEGH:
         switch (format) {
