@@ -265,6 +265,12 @@ static tag_info_t android_control[ANDROID_CONTROL_END -
     { "settingsOverride",              TYPE_INT32  },
     [ ANDROID_CONTROL_AVAILABLE_SETTINGS_OVERRIDES - ANDROID_CONTROL_START ] =
     { "availableSettingsOverrides",    TYPE_INT32  },
+    [ ANDROID_CONTROL_AUTOFRAMING - ANDROID_CONTROL_START ] =
+    { "autoframing",                   TYPE_BYTE   },
+    [ ANDROID_CONTROL_AUTOFRAMING_AVAILABLE - ANDROID_CONTROL_START ] =
+    { "autoframingAvailable",          TYPE_BYTE   },
+    [ ANDROID_CONTROL_AUTOFRAMING_STATE - ANDROID_CONTROL_START ] =
+    { "autoframingState",              TYPE_BYTE   },
 };
 
 static tag_info_t android_demosaic[ANDROID_DEMOSAIC_END -
@@ -1765,6 +1771,59 @@ int camera_metadata_enum_snprint(uint32_t tag,
             break;
         }
         case ANDROID_CONTROL_AVAILABLE_SETTINGS_OVERRIDES: {
+            break;
+        }
+        case ANDROID_CONTROL_AUTOFRAMING: {
+            switch (value) {
+                case ANDROID_CONTROL_AUTOFRAMING_OFF:
+                    msg = "OFF";
+                    ret = 0;
+                    break;
+                case ANDROID_CONTROL_AUTOFRAMING_ON:
+                    msg = "ON";
+                    ret = 0;
+                    break;
+                case ANDROID_CONTROL_AUTOFRAMING_AUTO:
+                    msg = "AUTO";
+                    ret = 0;
+                    break;
+                default:
+                    msg = "error: enum value out of range";
+            }
+            break;
+        }
+        case ANDROID_CONTROL_AUTOFRAMING_AVAILABLE: {
+            switch (value) {
+                case ANDROID_CONTROL_AUTOFRAMING_AVAILABLE_FALSE:
+                    msg = "FALSE";
+                    ret = 0;
+                    break;
+                case ANDROID_CONTROL_AUTOFRAMING_AVAILABLE_TRUE:
+                    msg = "TRUE";
+                    ret = 0;
+                    break;
+                default:
+                    msg = "error: enum value out of range";
+            }
+            break;
+        }
+        case ANDROID_CONTROL_AUTOFRAMING_STATE: {
+            switch (value) {
+                case ANDROID_CONTROL_AUTOFRAMING_STATE_INACTIVE:
+                    msg = "INACTIVE";
+                    ret = 0;
+                    break;
+                case ANDROID_CONTROL_AUTOFRAMING_STATE_FRAMING:
+                    msg = "FRAMING";
+                    ret = 0;
+                    break;
+                case ANDROID_CONTROL_AUTOFRAMING_STATE_CONVERGED:
+                    msg = "CONVERGED";
+                    ret = 0;
+                    break;
+                default:
+                    msg = "error: enum value out of range";
+            }
             break;
         }
 
@@ -4811,6 +4870,63 @@ int camera_metadata_enum_value(uint32_t tag,
             break;
         }
         case ANDROID_CONTROL_AVAILABLE_SETTINGS_OVERRIDES: {
+            break;
+        }
+        case ANDROID_CONTROL_AUTOFRAMING: {
+                enumName = "OFF";
+                if (strncmp(name, enumName, size) == 0) {
+                    *value = ANDROID_CONTROL_AUTOFRAMING_OFF;
+                    ret = 0;
+                    break;
+                }
+                enumName = "ON";
+                if (strncmp(name, enumName, size) == 0) {
+                    *value = ANDROID_CONTROL_AUTOFRAMING_ON;
+                    ret = 0;
+                    break;
+                }
+                enumName = "AUTO";
+                if (strncmp(name, enumName, size) == 0) {
+                    *value = ANDROID_CONTROL_AUTOFRAMING_AUTO;
+                    ret = 0;
+                    break;
+                }
+            break;
+        }
+        case ANDROID_CONTROL_AUTOFRAMING_AVAILABLE: {
+                enumName = "FALSE";
+                if (strncmp(name, enumName, size) == 0) {
+                    *value = ANDROID_CONTROL_AUTOFRAMING_AVAILABLE_FALSE;
+                    ret = 0;
+                    break;
+                }
+                enumName = "TRUE";
+                if (strncmp(name, enumName, size) == 0) {
+                    *value = ANDROID_CONTROL_AUTOFRAMING_AVAILABLE_TRUE;
+                    ret = 0;
+                    break;
+                }
+            break;
+        }
+        case ANDROID_CONTROL_AUTOFRAMING_STATE: {
+                enumName = "INACTIVE";
+                if (strncmp(name, enumName, size) == 0) {
+                    *value = ANDROID_CONTROL_AUTOFRAMING_STATE_INACTIVE;
+                    ret = 0;
+                    break;
+                }
+                enumName = "FRAMING";
+                if (strncmp(name, enumName, size) == 0) {
+                    *value = ANDROID_CONTROL_AUTOFRAMING_STATE_FRAMING;
+                    ret = 0;
+                    break;
+                }
+                enumName = "CONVERGED";
+                if (strncmp(name, enumName, size) == 0) {
+                    *value = ANDROID_CONTROL_AUTOFRAMING_STATE_CONVERGED;
+                    ret = 0;
+                    break;
+                }
             break;
         }
 

@@ -192,6 +192,9 @@ typedef enum camera_metadata_tag {
     ANDROID_CONTROL_AWB_REGIONS_SET,                  // enum         | fwk_only
     ANDROID_CONTROL_SETTINGS_OVERRIDE,                // enum         | public       | HIDL v3.9
     ANDROID_CONTROL_AVAILABLE_SETTINGS_OVERRIDES,     // int32[]      | public       | HIDL v3.9
+    ANDROID_CONTROL_AUTOFRAMING,                      // enum         | public       | HIDL v3.9
+    ANDROID_CONTROL_AUTOFRAMING_AVAILABLE,            // enum         | public       | HIDL v3.9
+    ANDROID_CONTROL_AUTOFRAMING_STATE,                // enum         | public       | HIDL v3.9
     ANDROID_CONTROL_END,
 
     ANDROID_DEMOSAIC_MODE =                           // enum         | system       | HIDL v3.2
@@ -799,6 +802,26 @@ typedef enum camera_metadata_enum_android_control_settings_override {
     ANDROID_CONTROL_SETTINGS_OVERRIDE_ZOOM                          , // HIDL v3.9
     ANDROID_CONTROL_SETTINGS_OVERRIDE_VENDOR_START                   = 0x4000, // HIDL v3.9
 } camera_metadata_enum_android_control_settings_override_t;
+
+// ANDROID_CONTROL_AUTOFRAMING
+typedef enum camera_metadata_enum_android_control_autoframing {
+    ANDROID_CONTROL_AUTOFRAMING_OFF                                 , // HIDL v3.9
+    ANDROID_CONTROL_AUTOFRAMING_ON                                  , // HIDL v3.9
+    ANDROID_CONTROL_AUTOFRAMING_AUTO                                , // HIDL v3.9
+} camera_metadata_enum_android_control_autoframing_t;
+
+// ANDROID_CONTROL_AUTOFRAMING_AVAILABLE
+typedef enum camera_metadata_enum_android_control_autoframing_available {
+    ANDROID_CONTROL_AUTOFRAMING_AVAILABLE_FALSE                     , // HIDL v3.9
+    ANDROID_CONTROL_AUTOFRAMING_AVAILABLE_TRUE                      , // HIDL v3.9
+} camera_metadata_enum_android_control_autoframing_available_t;
+
+// ANDROID_CONTROL_AUTOFRAMING_STATE
+typedef enum camera_metadata_enum_android_control_autoframing_state {
+    ANDROID_CONTROL_AUTOFRAMING_STATE_INACTIVE                      , // HIDL v3.9
+    ANDROID_CONTROL_AUTOFRAMING_STATE_FRAMING                       , // HIDL v3.9
+    ANDROID_CONTROL_AUTOFRAMING_STATE_CONVERGED                     , // HIDL v3.9
+} camera_metadata_enum_android_control_autoframing_state_t;
 
 
 // ANDROID_DEMOSAIC_MODE

@@ -47,6 +47,9 @@
 #include <aidl/android/hardware/camera/metadata/ControlAfSceneChange.h>
 #include <aidl/android/hardware/camera/metadata/ControlExtendedSceneMode.h>
 #include <aidl/android/hardware/camera/metadata/ControlSettingsOverride.h>
+#include <aidl/android/hardware/camera/metadata/ControlAutoframing.h>
+#include <aidl/android/hardware/camera/metadata/ControlAutoframingAvailable.h>
+#include <aidl/android/hardware/camera/metadata/ControlAutoframingState.h>
 #include <aidl/android/hardware/camera/metadata/DemosaicMode.h>
 #include <aidl/android/hardware/camera/metadata/EdgeMode.h>
 #include <aidl/android/hardware/camera/metadata/FlashMode.h>
@@ -359,6 +362,12 @@ static_assert(static_cast<int>(ANDROID_CONTROL_SETTINGS_OVERRIDE)
         == static_cast<int>(::aidl::android::hardware::camera::metadata::CameraMetadataTag::ANDROID_CONTROL_SETTINGS_OVERRIDE));
 static_assert(static_cast<int>(ANDROID_CONTROL_AVAILABLE_SETTINGS_OVERRIDES)
         == static_cast<int>(::aidl::android::hardware::camera::metadata::CameraMetadataTag::ANDROID_CONTROL_AVAILABLE_SETTINGS_OVERRIDES));
+static_assert(static_cast<int>(ANDROID_CONTROL_AUTOFRAMING)
+        == static_cast<int>(::aidl::android::hardware::camera::metadata::CameraMetadataTag::ANDROID_CONTROL_AUTOFRAMING));
+static_assert(static_cast<int>(ANDROID_CONTROL_AUTOFRAMING_AVAILABLE)
+        == static_cast<int>(::aidl::android::hardware::camera::metadata::CameraMetadataTag::ANDROID_CONTROL_AUTOFRAMING_AVAILABLE));
+static_assert(static_cast<int>(ANDROID_CONTROL_AUTOFRAMING_STATE)
+        == static_cast<int>(::aidl::android::hardware::camera::metadata::CameraMetadataTag::ANDROID_CONTROL_AUTOFRAMING_STATE));
 static_assert(static_cast<int>(ANDROID_DEMOSAIC_MODE)
         == static_cast<int>(::aidl::android::hardware::camera::metadata::CameraMetadataTag::ANDROID_DEMOSAIC_MODE));
 static_assert(static_cast<int>(ANDROID_EDGE_MODE)
@@ -1097,6 +1106,25 @@ static_assert(static_cast<int32_t>(ANDROID_CONTROL_SETTINGS_OVERRIDE_ZOOM)
         == static_cast<int32_t>(::aidl::android::hardware::camera::metadata::ControlSettingsOverride::ANDROID_CONTROL_SETTINGS_OVERRIDE_ZOOM));
 static_assert(static_cast<int32_t>(ANDROID_CONTROL_SETTINGS_OVERRIDE_VENDOR_START)
         == static_cast<int32_t>(::aidl::android::hardware::camera::metadata::ControlSettingsOverride::ANDROID_CONTROL_SETTINGS_OVERRIDE_VENDOR_START));
+
+static_assert(static_cast<int32_t>(ANDROID_CONTROL_AUTOFRAMING_OFF)
+        == static_cast<int32_t>(::aidl::android::hardware::camera::metadata::ControlAutoframing::ANDROID_CONTROL_AUTOFRAMING_OFF));
+static_assert(static_cast<int32_t>(ANDROID_CONTROL_AUTOFRAMING_ON)
+        == static_cast<int32_t>(::aidl::android::hardware::camera::metadata::ControlAutoframing::ANDROID_CONTROL_AUTOFRAMING_ON));
+static_assert(static_cast<int32_t>(ANDROID_CONTROL_AUTOFRAMING_AUTO)
+        == static_cast<int32_t>(::aidl::android::hardware::camera::metadata::ControlAutoframing::ANDROID_CONTROL_AUTOFRAMING_AUTO));
+
+static_assert(static_cast<int32_t>(ANDROID_CONTROL_AUTOFRAMING_AVAILABLE_FALSE)
+        == static_cast<int32_t>(::aidl::android::hardware::camera::metadata::ControlAutoframingAvailable::ANDROID_CONTROL_AUTOFRAMING_AVAILABLE_FALSE));
+static_assert(static_cast<int32_t>(ANDROID_CONTROL_AUTOFRAMING_AVAILABLE_TRUE)
+        == static_cast<int32_t>(::aidl::android::hardware::camera::metadata::ControlAutoframingAvailable::ANDROID_CONTROL_AUTOFRAMING_AVAILABLE_TRUE));
+
+static_assert(static_cast<int32_t>(ANDROID_CONTROL_AUTOFRAMING_STATE_INACTIVE)
+        == static_cast<int32_t>(::aidl::android::hardware::camera::metadata::ControlAutoframingState::ANDROID_CONTROL_AUTOFRAMING_STATE_INACTIVE));
+static_assert(static_cast<int32_t>(ANDROID_CONTROL_AUTOFRAMING_STATE_FRAMING)
+        == static_cast<int32_t>(::aidl::android::hardware::camera::metadata::ControlAutoframingState::ANDROID_CONTROL_AUTOFRAMING_STATE_FRAMING));
+static_assert(static_cast<int32_t>(ANDROID_CONTROL_AUTOFRAMING_STATE_CONVERGED)
+        == static_cast<int32_t>(::aidl::android::hardware::camera::metadata::ControlAutoframingState::ANDROID_CONTROL_AUTOFRAMING_STATE_CONVERGED));
 
 static_assert(static_cast<int32_t>(ANDROID_DEMOSAIC_MODE_FAST)
         == static_cast<int32_t>(::aidl::android::hardware::camera::metadata::DemosaicMode::ANDROID_DEMOSAIC_MODE_FAST));

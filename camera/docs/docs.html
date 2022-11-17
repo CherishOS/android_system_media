@@ -205,6 +205,8 @@
             ><a href="#controls_android.control.awbRegionsSet">android.control.awbRegionsSet</a></li>
             <li
             ><a href="#controls_android.control.settingsOverride">android.control.settingsOverride</a></li>
+            <li
+            ><a href="#controls_android.control.autoframing">android.control.autoframing</a></li>
           </ul>
         </li>
         <li>
@@ -262,6 +264,8 @@
             ><a href="#static_android.control.availableHighSpeedVideoConfigurationsMaximumResolution">android.control.availableHighSpeedVideoConfigurationsMaximumResolution</a></li>
             <li
             ><a href="#static_android.control.availableSettingsOverrides">android.control.availableSettingsOverrides</a></li>
+            <li
+            ><a href="#static_android.control.autoframingAvailable">android.control.autoframingAvailable</a></li>
           </ul>
         </li>
         <li>
@@ -327,6 +331,10 @@
             ><a href="#dynamic_android.control.zoomRatio">android.control.zoomRatio</a></li>
             <li
             ><a href="#dynamic_android.control.settingsOverride">android.control.settingsOverride</a></li>
+            <li
+            ><a href="#dynamic_android.control.autoframing">android.control.autoframing</a></li>
+            <li
+            ><a href="#dynamic_android.control.autoframingState">android.control.autoframingState</a></li>
           </ul>
         </li>
       </ul> <!-- toc_section -->
@@ -5484,6 +5492,97 @@ zoom related settings at least 2 frames ahead.<wbr/></p>
           <tr class="entry_spacer"><td class="entry_spacer" colspan="7"></td></tr>
            <!-- end of entry -->
         
+                
+          <tr class="entry" id="controls_android.control.autoframing">
+            <td class="entry_name
+             " rowspan="5">
+              android.<wbr/>control.<wbr/>autoframing
+            </td>
+            <td class="entry_type">
+                <span class="entry_type_name entry_type_name_enum">byte</span>
+
+              <span class="entry_type_visibility"> [public]</span>
+
+
+              <span class="entry_type_hwlevel">[limited] </span>
+
+
+
+                <ul class="entry_type_enum">
+                  <li>
+                    <span class="entry_type_enum_name">OFF (v3.9)</span>
+                    <span class="entry_type_enum_notes"><p>Disable autoframing.<wbr/></p></span>
+                  </li>
+                  <li>
+                    <span class="entry_type_enum_name">ON (v3.9)</span>
+                    <span class="entry_type_enum_notes"><p>Enable autoframing to keep people in the frame's field of view.<wbr/></p></span>
+                  </li>
+                  <li>
+                    <span class="entry_type_enum_name">AUTO (v3.9)</span>
+                    <span class="entry_type_enum_notes"><p>Automatically select ON or OFF based on the system level preferences.<wbr/></p></span>
+                  </li>
+                </ul>
+
+            </td> <!-- entry_type -->
+
+            <td class="entry_description">
+              <p>Automatic crop,<wbr/> pan and zoom to keep objects in the center of the frame.<wbr/></p>
+            </td>
+
+            <td class="entry_units">
+            </td>
+
+            <td class="entry_range">
+            </td>
+
+            <td class="entry_hal_version">
+              <p>3.<wbr/>9</p>
+            </td>
+
+            <td class="entry_tags">
+            </td>
+
+          </tr>
+          <tr class="entries_header">
+            <th class="th_details" colspan="6">Details</th>
+          </tr>
+          <tr class="entry_cont">
+            <td class="entry_details" colspan="6">
+              <p>Auto-framing is a special mode provided by the camera device to dynamically crop,<wbr/> zoom
+or pan the camera feed to try to ensure that the people in a scene occupy a reasonable
+portion of the viewport.<wbr/> It is primarily designed to support video calling in
+situations where the user isn't directly in front of the device,<wbr/> especially for
+wide-angle cameras.<wbr/>
+<a href="#controls_android.scaler.cropRegion">android.<wbr/>scaler.<wbr/>crop<wbr/>Region</a> and <a href="#controls_android.control.zoomRatio">android.<wbr/>control.<wbr/>zoom<wbr/>Ratio</a> in CaptureResult will be used
+to denote the coordinates of the auto-framed region.<wbr/>
+Zoom and video stabilization controls are disabled when auto-framing is enabled.<wbr/> The 3A
+regions must map the screen coordinates into the scaler crop returned from the capture
+result instead of using the active array sensor.<wbr/></p>
+            </td>
+          </tr>
+
+          <tr class="entries_header">
+            <th class="th_details" colspan="6">HAL Implementation Details</th>
+          </tr>
+          <tr class="entry_cont">
+            <td class="entry_details" colspan="6">
+              <p>While auto-framing is ON,<wbr/> the aspect ratio of the auto-framed region must match the
+aspect ratio of the configured output stream.<wbr/>
+When reporting CaptureResult,<wbr/> SCALER_<wbr/>CROP_<wbr/>REGION might not adequately describe the
+actual sensor pixels.<wbr/> In this case,<wbr/> it is acceptable for the returned parameters to only
+be an approximation of the image sensor region that is actually used.<wbr/>
+When auto-framing is turned off,<wbr/> the transition should be immediate,<wbr/> with no panning or
+zooming to transition to the settings requested by the app.<wbr/> When it is turned on,<wbr/> the
+transition can be immediate or smooth.<wbr/>
+AUTOFRAMING_<wbr/>AUTO will never be sent to the HAL,<wbr/> though it must be set as the default
+value in all the capture request templates by the HAL.<wbr/> The camera service will translate
+AUTO to either ON or OFF based on the system wide preferences.<wbr/></p>
+            </td>
+          </tr>
+
+          <tr class="entry_spacer"><td class="entry_spacer" colspan="7"></td></tr>
+           <!-- end of entry -->
+        
         
 
       <!-- end of kind -->
@@ -7332,6 +7431,64 @@ CaptureRequest keys corresponding to the override are applied as soon as possibl
 bound by per-frame synchronization.<wbr/> See <a href="#controls_android.control.settingsOverride">android.<wbr/>control.<wbr/>settings<wbr/>Override</a> for the
 CaptureRequest keys for each override.<wbr/></p>
 <p>OFF is always included in this list.<wbr/></p>
+            </td>
+          </tr>
+
+
+          <tr class="entry_spacer"><td class="entry_spacer" colspan="7"></td></tr>
+           <!-- end of entry -->
+        
+                
+          <tr class="entry" id="static_android.control.autoframingAvailable">
+            <td class="entry_name
+             " rowspan="3">
+              android.<wbr/>control.<wbr/>autoframing<wbr/>Available
+            </td>
+            <td class="entry_type">
+                <span class="entry_type_name entry_type_name_enum">byte</span>
+
+              <span class="entry_type_visibility"> [public as boolean]</span>
+
+
+              <span class="entry_type_hwlevel">[limited] </span>
+
+
+
+                <ul class="entry_type_enum">
+                  <li>
+                    <span class="entry_type_enum_name">FALSE (v3.9)</span>
+                  </li>
+                  <li>
+                    <span class="entry_type_enum_name">TRUE (v3.9)</span>
+                  </li>
+                </ul>
+
+            </td> <!-- entry_type -->
+
+            <td class="entry_description">
+              <p>Whether the camera device supports <a href="#controls_android.control.autoframing">android.<wbr/>control.<wbr/>autoframing</a>.<wbr/></p>
+            </td>
+
+            <td class="entry_units">
+            </td>
+
+            <td class="entry_range">
+            </td>
+
+            <td class="entry_hal_version">
+              <p>3.<wbr/>9</p>
+            </td>
+
+            <td class="entry_tags">
+            </td>
+
+          </tr>
+          <tr class="entries_header">
+            <th class="th_details" colspan="6">Details</th>
+          </tr>
+          <tr class="entry_cont">
+            <td class="entry_details" colspan="6">
+              <p>Will be <code>false</code> if auto-framing is not available.<wbr/></p>
             </td>
           </tr>
 
@@ -11500,6 +11657,172 @@ called,<wbr/> rather than when it's unblocked.<wbr/></p>
 zoom related settings at least 2 frames ahead.<wbr/></p>
             </td>
           </tr>
+
+          <tr class="entry_spacer"><td class="entry_spacer" colspan="7"></td></tr>
+           <!-- end of entry -->
+        
+                
+          <tr class="entry" id="dynamic_android.control.autoframing">
+            <td class="entry_name
+             " rowspan="5">
+              android.<wbr/>control.<wbr/>autoframing
+            </td>
+            <td class="entry_type">
+                <span class="entry_type_name entry_type_name_enum">byte</span>
+
+              <span class="entry_type_visibility"> [public]</span>
+
+
+              <span class="entry_type_hwlevel">[limited] </span>
+
+
+
+                <ul class="entry_type_enum">
+                  <li>
+                    <span class="entry_type_enum_name">OFF (v3.9)</span>
+                    <span class="entry_type_enum_notes"><p>Disable autoframing.<wbr/></p></span>
+                  </li>
+                  <li>
+                    <span class="entry_type_enum_name">ON (v3.9)</span>
+                    <span class="entry_type_enum_notes"><p>Enable autoframing to keep people in the frame's field of view.<wbr/></p></span>
+                  </li>
+                  <li>
+                    <span class="entry_type_enum_name">AUTO (v3.9)</span>
+                    <span class="entry_type_enum_notes"><p>Automatically select ON or OFF based on the system level preferences.<wbr/></p></span>
+                  </li>
+                </ul>
+
+            </td> <!-- entry_type -->
+
+            <td class="entry_description">
+              <p>Automatic crop,<wbr/> pan and zoom to keep objects in the center of the frame.<wbr/></p>
+            </td>
+
+            <td class="entry_units">
+            </td>
+
+            <td class="entry_range">
+            </td>
+
+            <td class="entry_hal_version">
+              <p>3.<wbr/>9</p>
+            </td>
+
+            <td class="entry_tags">
+            </td>
+
+          </tr>
+          <tr class="entries_header">
+            <th class="th_details" colspan="6">Details</th>
+          </tr>
+          <tr class="entry_cont">
+            <td class="entry_details" colspan="6">
+              <p>Auto-framing is a special mode provided by the camera device to dynamically crop,<wbr/> zoom
+or pan the camera feed to try to ensure that the people in a scene occupy a reasonable
+portion of the viewport.<wbr/> It is primarily designed to support video calling in
+situations where the user isn't directly in front of the device,<wbr/> especially for
+wide-angle cameras.<wbr/>
+<a href="#controls_android.scaler.cropRegion">android.<wbr/>scaler.<wbr/>crop<wbr/>Region</a> and <a href="#controls_android.control.zoomRatio">android.<wbr/>control.<wbr/>zoom<wbr/>Ratio</a> in CaptureResult will be used
+to denote the coordinates of the auto-framed region.<wbr/>
+Zoom and video stabilization controls are disabled when auto-framing is enabled.<wbr/> The 3A
+regions must map the screen coordinates into the scaler crop returned from the capture
+result instead of using the active array sensor.<wbr/></p>
+            </td>
+          </tr>
+
+          <tr class="entries_header">
+            <th class="th_details" colspan="6">HAL Implementation Details</th>
+          </tr>
+          <tr class="entry_cont">
+            <td class="entry_details" colspan="6">
+              <p>While auto-framing is ON,<wbr/> the aspect ratio of the auto-framed region must match the
+aspect ratio of the configured output stream.<wbr/>
+When reporting CaptureResult,<wbr/> SCALER_<wbr/>CROP_<wbr/>REGION might not adequately describe the
+actual sensor pixels.<wbr/> In this case,<wbr/> it is acceptable for the returned parameters to only
+be an approximation of the image sensor region that is actually used.<wbr/>
+When auto-framing is turned off,<wbr/> the transition should be immediate,<wbr/> with no panning or
+zooming to transition to the settings requested by the app.<wbr/> When it is turned on,<wbr/> the
+transition can be immediate or smooth.<wbr/>
+AUTOFRAMING_<wbr/>AUTO will never be sent to the HAL,<wbr/> though it must be set as the default
+value in all the capture request templates by the HAL.<wbr/> The camera service will translate
+AUTO to either ON or OFF based on the system wide preferences.<wbr/></p>
+            </td>
+          </tr>
+
+          <tr class="entry_spacer"><td class="entry_spacer" colspan="7"></td></tr>
+           <!-- end of entry -->
+        
+                
+          <tr class="entry" id="dynamic_android.control.autoframingState">
+            <td class="entry_name
+             " rowspan="3">
+              android.<wbr/>control.<wbr/>autoframing<wbr/>State
+            </td>
+            <td class="entry_type">
+                <span class="entry_type_name entry_type_name_enum">byte</span>
+
+              <span class="entry_type_visibility"> [public]</span>
+
+
+              <span class="entry_type_hwlevel">[limited] </span>
+
+
+
+                <ul class="entry_type_enum">
+                  <li>
+                    <span class="entry_type_enum_name">INACTIVE (v3.9)</span>
+                    <span class="entry_type_enum_notes"><p>Auto-framing is inactive.<wbr/></p></span>
+                  </li>
+                  <li>
+                    <span class="entry_type_enum_name">FRAMING (v3.9)</span>
+                    <span class="entry_type_enum_notes"><p>Auto-framing is in process - either zooming in,<wbr/> zooming out or pan is taking place.<wbr/></p></span>
+                  </li>
+                  <li>
+                    <span class="entry_type_enum_name">CONVERGED (v3.9)</span>
+                    <span class="entry_type_enum_notes"><p>Auto-framing has reached a stable state (frame/<wbr/>fov is not being adjusted).<wbr/> The state
+may transition back to FRAMING if the scene changes.<wbr/></p></span>
+                  </li>
+                </ul>
+
+            </td> <!-- entry_type -->
+
+            <td class="entry_description">
+              <p>Current state of auto-framing.<wbr/></p>
+            </td>
+
+            <td class="entry_units">
+            </td>
+
+            <td class="entry_range">
+            </td>
+
+            <td class="entry_hal_version">
+              <p>3.<wbr/>9</p>
+            </td>
+
+            <td class="entry_tags">
+            </td>
+
+          </tr>
+          <tr class="entries_header">
+            <th class="th_details" colspan="6">Details</th>
+          </tr>
+          <tr class="entry_cont">
+            <td class="entry_details" colspan="6">
+              <p>When the camera doesn't have auto-framing available (i.<wbr/>e
+<code><a href="#static_android.control.autoframingAvailable">android.<wbr/>control.<wbr/>autoframing<wbr/>Available</a></code> == false) or it is not enabled (i.<wbr/>e
+<code><a href="#controls_android.control.autoframing">android.<wbr/>control.<wbr/>autoframing</a></code> == OFF),<wbr/> the state will always be INACTIVE.<wbr/>
+Other states indicate the current auto-framing state:</p>
+<ul>
+<li>When <code><a href="#controls_android.control.autoframing">android.<wbr/>control.<wbr/>autoframing</a></code> is set to ON,<wbr/> auto-framing will take
+place.<wbr/> While the frame is aligning itself to center the object (doing things like
+zooming in,<wbr/> zooming out or pan),<wbr/> the state will be FRAMING.<wbr/></li>
+<li>When field of view is not being adjusted anymore and has reached a stable state,<wbr/> the
+state will be CONVERGED.<wbr/></li>
+</ul>
+            </td>
+          </tr>
+
 
           <tr class="entry_spacer"><td class="entry_spacer" colspan="7"></td></tr>
            <!-- end of entry -->

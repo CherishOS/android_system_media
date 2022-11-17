@@ -3691,6 +3691,109 @@ xsi:schemaLocation="http://schemas.android.com/service/camera/metadata/ metadata
       <clone entry="android.control.settingsOverride" kind="controls">
       </clone>
     </dynamic>
+    <controls>
+      <entry name="autoframing" type="byte" visibility="public"
+          enum="true" hwlevel="limited" hal_version="3.9">
+        <enum>
+          <value>OFF
+            <notes>
+              Disable autoframing.
+            </notes>
+          </value>
+          <value>ON
+            <notes>
+              Enable autoframing to keep people in the frame's field of view.
+            </notes>
+          </value>
+          <value>AUTO
+            <notes>
+              Automatically select ON or OFF based on the system level preferences.
+            </notes>
+          </value>
+        </enum>
+        <description>
+          Automatic crop, pan and zoom to keep objects in the center of the frame.
+        </description>
+        <details>
+          Auto-framing is a special mode provided by the camera device to dynamically crop, zoom
+          or pan the camera feed to try to ensure that the people in a scene occupy a reasonable
+          portion of the viewport. It is primarily designed to support video calling in
+          situations where the user isn't directly in front of the device, especially for
+          wide-angle cameras.
+          android.scaler.cropRegion and android.control.zoomRatio in CaptureResult will be used
+          to denote the coordinates of the auto-framed region.
+          Zoom and video stabilization controls are disabled when auto-framing is enabled. The 3A
+          regions must map the screen coordinates into the scaler crop returned from the capture
+          result instead of using the active array sensor.
+        </details>
+        <hal_details>
+          While auto-framing is ON, the aspect ratio of the auto-framed region must match the
+          aspect ratio of the configured output stream.
+          When reporting CaptureResult, SCALER_CROP_REGION might not adequately describe the
+          actual sensor pixels. In this case, it is acceptable for the returned parameters to only
+          be an approximation of the image sensor region that is actually used.
+          When auto-framing is turned off, the transition should be immediate, with no panning or
+          zooming to transition to the settings requested by the app. When it is turned on, the
+          transition can be immediate or smooth.
+          AUTOFRAMING_AUTO will never be sent to the HAL, though it must be set as the default
+          value in all the capture request templates by the HAL. The camera service will translate
+          AUTO to either ON or OFF based on the system wide preferences.
+        </hal_details>
+      </entry>
+    </controls>
+    <static>
+      <entry name="autoframingAvailable" type="byte" visibility="public" enum="true"
+          typedef="boolean" hwlevel="limited" hal_version="3.9">
+        <enum>
+          <value>FALSE</value>
+          <value>TRUE</value>
+        </enum>
+        <description>Whether the camera device supports android.control.autoframing.
+        </description>
+        <details>
+          Will be `false` if auto-framing is not available.
+        </details>
+      </entry>
+    </static>
+    <dynamic>
+      <clone entry="android.control.autoframing" kind="controls">
+      </clone>
+      <entry name="autoframingState" type="byte" visibility="public"
+          enum="true" hwlevel="limited" hal_version="3.9">
+        <enum>
+          <value>INACTIVE
+            <notes>
+              Auto-framing is inactive.
+            </notes>
+          </value>
+          <value>FRAMING
+            <notes>
+              Auto-framing is in process - either zooming in, zooming out or pan is taking place.
+            </notes>
+          </value>
+          <value>CONVERGED
+            <notes>
+              Auto-framing has reached a stable state (frame/fov is not being adjusted). The state
+              may transition back to FRAMING if the scene changes.
+            </notes>
+          </value>
+        </enum>
+        <description>Current state of auto-framing.
+        </description>
+        <details>
+          When the camera doesn't have auto-framing available (i.e
+          `android.control.autoframingAvailable` == false) or it is not enabled (i.e
+          `android.control.autoframing` == OFF), the state will always be INACTIVE.
+          Other states indicate the current auto-framing state:
+
+          * When `android.control.autoframing` is set to ON, auto-framing will take
+          place. While the frame is aligning itself to center the object (doing things like
+          zooming in, zooming out or pan), the state will be FRAMING.
+          * When field of view is not being adjusted anymore and has reached a stable state, the
+          state will be CONVERGED.
+        </details>
+      </entry>
+    </dynamic>
     </section>
     <section name="demosaic">
       <controls>
