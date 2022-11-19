@@ -332,6 +332,8 @@
             <li
             ><a href="#dynamic_android.control.settingsOverride">android.control.settingsOverride</a></li>
             <li
+            ><a href="#dynamic_android.control.settingsOverridingFrameNumber">android.control.settingsOverridingFrameNumber</a></li>
+            <li
             ><a href="#dynamic_android.control.autoframing">android.control.autoframing</a></li>
             <li
             ><a href="#dynamic_android.control.autoframingState">android.control.autoframingState</a></li>
@@ -5350,7 +5352,6 @@ set to MAXIMUM_<wbr/>RESOLUTION.<wbr/></p>
               <span class="entry_type_visibility"> [public]</span>
 
 
-              <span class="entry_type_hwlevel">[limited] </span>
 
 
 
@@ -11519,7 +11520,6 @@ consistent field of views between different modes.<wbr/></p>
               <span class="entry_type_visibility"> [public]</span>
 
 
-              <span class="entry_type_hwlevel">[limited] </span>
 
 
 
@@ -11657,6 +11657,59 @@ called,<wbr/> rather than when it's unblocked.<wbr/></p>
 zoom related settings at least 2 frames ahead.<wbr/></p>
             </td>
           </tr>
+
+          <tr class="entry_spacer"><td class="entry_spacer" colspan="7"></td></tr>
+           <!-- end of entry -->
+        
+                
+          <tr class="entry" id="dynamic_android.control.settingsOverridingFrameNumber">
+            <td class="entry_name
+             " rowspan="3">
+              android.<wbr/>control.<wbr/>settings<wbr/>Overriding<wbr/>Frame<wbr/>Number
+            </td>
+            <td class="entry_type">
+                <span class="entry_type_name">int32</span>
+
+              <span class="entry_type_visibility"> [system]</span>
+
+
+
+
+
+
+            </td> <!-- entry_type -->
+
+            <td class="entry_description">
+              <p>The frame number of the newer request overriding this capture.<wbr/></p>
+            </td>
+
+            <td class="entry_units">
+            </td>
+
+            <td class="entry_range">
+            </td>
+
+            <td class="entry_hal_version">
+              <p>3.<wbr/>9</p>
+            </td>
+
+            <td class="entry_tags">
+            </td>
+
+          </tr>
+          <tr class="entries_header">
+            <th class="th_details" colspan="6">Details</th>
+          </tr>
+          <tr class="entry_cont">
+            <td class="entry_details" colspan="6">
+              <p>Must be equal to the frame number of the result if this capture isn't
+overridden by a newer request,<wbr/> i.<wbr/>e.<wbr/> if <a href="#controls_android.control.settingsOverride">android.<wbr/>control.<wbr/>settings<wbr/>Override</a> is OFF
+in the capture result.<wbr/> On the other hand,<wbr/> if the capture is overridden by a newer
+request,<wbr/> the value of this tag (unsigned) must be larger than the frame number of
+the capture result.<wbr/></p>
+            </td>
+          </tr>
+
 
           <tr class="entry_spacer"><td class="entry_spacer" colspan="7"></td></tr>
            <!-- end of entry -->

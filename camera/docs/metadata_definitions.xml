@@ -3545,7 +3545,7 @@ xsi:schemaLocation="http://schemas.android.com/service/camera/metadata/ metadata
           </details>
         </entry>
         <entry name="settingsOverride" type="int32" visibility="public" enum="true"
-            hwlevel="limited" hal_version="3.9">
+            hal_version="3.9">
           <enum>
             <value>OFF
               <notes>
@@ -3690,6 +3690,16 @@ xsi:schemaLocation="http://schemas.android.com/service/camera/metadata/ metadata
     <dynamic>
       <clone entry="android.control.settingsOverride" kind="controls">
       </clone>
+      <entry name="settingsOverridingFrameNumber" type="int32" visibility="system"
+        hal_version="3.9">
+        <description>The frame number of the newer request overriding this capture.
+        </description>
+        <details>Must be equal to the frame number of the result if this capture isn't
+        overridden by a newer request, i.e. if android.control.settingsOverride is OFF
+        in the capture result. On the other hand, if the capture is overridden by a newer
+        request, the value of this tag (unsigned) must be larger than the frame number of
+        the capture result.</details>
+      </entry>
     </dynamic>
     <controls>
       <entry name="autoframing" type="byte" visibility="public"

@@ -192,6 +192,7 @@ typedef enum camera_metadata_tag {
     ANDROID_CONTROL_AWB_REGIONS_SET,                  // enum         | fwk_only
     ANDROID_CONTROL_SETTINGS_OVERRIDE,                // enum         | public       | HIDL v3.9
     ANDROID_CONTROL_AVAILABLE_SETTINGS_OVERRIDES,     // int32[]      | public       | HIDL v3.9
+    ANDROID_CONTROL_SETTINGS_OVERRIDING_FRAME_NUMBER, // int32        | system       | HIDL v3.9
     ANDROID_CONTROL_AUTOFRAMING,                      // enum         | public       | HIDL v3.9
     ANDROID_CONTROL_AUTOFRAMING_AVAILABLE,            // enum         | public       | HIDL v3.9
     ANDROID_CONTROL_AUTOFRAMING_STATE,                // enum         | public       | HIDL v3.9

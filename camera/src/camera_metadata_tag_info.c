@@ -265,6 +265,8 @@ static tag_info_t android_control[ANDROID_CONTROL_END -
     { "settingsOverride",              TYPE_INT32  },
     [ ANDROID_CONTROL_AVAILABLE_SETTINGS_OVERRIDES - ANDROID_CONTROL_START ] =
     { "availableSettingsOverrides",    TYPE_INT32  },
+    [ ANDROID_CONTROL_SETTINGS_OVERRIDING_FRAME_NUMBER - ANDROID_CONTROL_START ] =
+    { "settingsOverridingFrameNumber", TYPE_INT32  },
     [ ANDROID_CONTROL_AUTOFRAMING - ANDROID_CONTROL_START ] =
     { "autoframing",                   TYPE_BYTE   },
     [ ANDROID_CONTROL_AUTOFRAMING_AVAILABLE - ANDROID_CONTROL_START ] =
@@ -1771,6 +1773,9 @@ int camera_metadata_enum_snprint(uint32_t tag,
             break;
         }
         case ANDROID_CONTROL_AVAILABLE_SETTINGS_OVERRIDES: {
+            break;
+        }
+        case ANDROID_CONTROL_SETTINGS_OVERRIDING_FRAME_NUMBER: {
             break;
         }
         case ANDROID_CONTROL_AUTOFRAMING: {
@@ -4870,6 +4875,9 @@ int camera_metadata_enum_value(uint32_t tag,
             break;
         }
         case ANDROID_CONTROL_AVAILABLE_SETTINGS_OVERRIDES: {
+            break;
+        }
+        case ANDROID_CONTROL_SETTINGS_OVERRIDING_FRAME_NUMBER: {
             break;
         }
         case ANDROID_CONTROL_AUTOFRAMING: {

@@ -362,6 +362,8 @@ static_assert(static_cast<int>(ANDROID_CONTROL_SETTINGS_OVERRIDE)
         == static_cast<int>(::aidl::android::hardware::camera::metadata::CameraMetadataTag::ANDROID_CONTROL_SETTINGS_OVERRIDE));
 static_assert(static_cast<int>(ANDROID_CONTROL_AVAILABLE_SETTINGS_OVERRIDES)
         == static_cast<int>(::aidl::android::hardware::camera::metadata::CameraMetadataTag::ANDROID_CONTROL_AVAILABLE_SETTINGS_OVERRIDES));
+static_assert(static_cast<int>(ANDROID_CONTROL_SETTINGS_OVERRIDING_FRAME_NUMBER)
+        == static_cast<int>(::aidl::android::hardware::camera::metadata::CameraMetadataTag::ANDROID_CONTROL_SETTINGS_OVERRIDING_FRAME_NUMBER));
 static_assert(static_cast<int>(ANDROID_CONTROL_AUTOFRAMING)
         == static_cast<int>(::aidl::android::hardware::camera::metadata::CameraMetadataTag::ANDROID_CONTROL_AUTOFRAMING));
 static_assert(static_cast<int>(ANDROID_CONTROL_AUTOFRAMING_AVAILABLE)
