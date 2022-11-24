@@ -23590,17 +23590,67 @@ can provide.<wbr/></p>
 check if it limits the maximum size for image data.<wbr/></p>
 <p>For applications targeting SDK version older than 31,<wbr/> the following table
 describes the minimum required output stream configurations based on the
-hardware level (<a href="#static_android.info.supportedHardwareLevel">android.<wbr/>info.<wbr/>supported<wbr/>Hardware<wbr/>Level</a>):
-Format                                             |<wbr/> Size                                         |<wbr/> Hardware Level |<wbr/> Notes
-:-------------------------------------------------:|<wbr/>:--------------------------------------------:|<wbr/>:--------------:|<wbr/>:--------------:
-<a href="https://developer.android.com/reference/android/graphics/ImageFormat.html#JPEG">ImageFormat#JPEG</a>          |<wbr/> <a href="#static_android.sensor.info.activeArraySize">android.<wbr/>sensor.<wbr/>info.<wbr/>active<wbr/>Array<wbr/>Size</a> (*1)     |<wbr/> Any            |<wbr/>
-<a href="https://developer.android.com/reference/android/graphics/ImageFormat.html#JPEG">ImageFormat#JPEG</a>          |<wbr/> 1920x1080 (1080p)                            |<wbr/> Any            |<wbr/> if 1080p &lt;= activeArraySize
-<a href="https://developer.android.com/reference/android/graphics/ImageFormat.html#JPEG">ImageFormat#JPEG</a>          |<wbr/> 1280x720 (720p)                               |<wbr/> Any            |<wbr/> if 720p &lt;= activeArraySize
-<a href="https://developer.android.com/reference/android/graphics/ImageFormat.html#JPEG">ImageFormat#JPEG</a>          |<wbr/> 640x480 (480p)                               |<wbr/> Any            |<wbr/> if 480p &lt;= activeArraySize
-<a href="https://developer.android.com/reference/android/graphics/ImageFormat.html#JPEG">ImageFormat#JPEG</a>          |<wbr/> 320x240 (240p)                               |<wbr/> Any            |<wbr/> if 240p &lt;= activeArraySize
-<a href="https://developer.android.com/reference/android/graphics/ImageFormat.html#YUV_420_888">Image<wbr/>Format#YUV_<wbr/>420_<wbr/>888</a>   |<wbr/> all output sizes available for JPEG          |<wbr/> FULL           |<wbr/>
-<a href="https://developer.android.com/reference/android/graphics/ImageFormat.html#YUV_420_888">Image<wbr/>Format#YUV_<wbr/>420_<wbr/>888</a>   |<wbr/> all output sizes available for JPEG,<wbr/> up to the maximum video size |<wbr/> LIMITED        |<wbr/>
-<a href="https://developer.android.com/reference/android/graphics/ImageFormat.html#PRIVATE">ImageFormat#PRIVATE</a>       |<wbr/> same as YUV_<wbr/>420_<wbr/>888                          |<wbr/> Any            |<wbr/></p>
+hardware level (<a href="#static_android.info.supportedHardwareLevel">android.<wbr/>info.<wbr/>supported<wbr/>Hardware<wbr/>Level</a>):</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">Format</th>
+<th style="text-align: center;">Size</th>
+<th style="text-align: center;">Hardware Level</th>
+<th style="text-align: center;">Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;"><a href="https://developer.android.com/reference/android/graphics/ImageFormat.html#JPEG">ImageFormat#JPEG</a></td>
+<td style="text-align: center;"><a href="#static_android.sensor.info.activeArraySize">android.<wbr/>sensor.<wbr/>info.<wbr/>active<wbr/>Array<wbr/>Size</a> (*1)</td>
+<td style="text-align: center;">Any</td>
+<td style="text-align: center;"></td>
+</tr>
+<tr>
+<td style="text-align: center;"><a href="https://developer.android.com/reference/android/graphics/ImageFormat.html#JPEG">ImageFormat#JPEG</a></td>
+<td style="text-align: center;">1920x1080 (1080p)</td>
+<td style="text-align: center;">Any</td>
+<td style="text-align: center;">if 1080p &lt;= activeArraySize</td>
+</tr>
+<tr>
+<td style="text-align: center;"><a href="https://developer.android.com/reference/android/graphics/ImageFormat.html#JPEG">ImageFormat#JPEG</a></td>
+<td style="text-align: center;">1280x720 (720p)</td>
+<td style="text-align: center;">Any</td>
+<td style="text-align: center;">if 720p &lt;= activeArraySize</td>
+</tr>
+<tr>
+<td style="text-align: center;"><a href="https://developer.android.com/reference/android/graphics/ImageFormat.html#JPEG">ImageFormat#JPEG</a></td>
+<td style="text-align: center;">640x480 (480p)</td>
+<td style="text-align: center;">Any</td>
+<td style="text-align: center;">if 480p &lt;= activeArraySize</td>
+</tr>
+<tr>
+<td style="text-align: center;"><a href="https://developer.android.com/reference/android/graphics/ImageFormat.html#JPEG">ImageFormat#JPEG</a></td>
+<td style="text-align: center;">320x240 (240p)</td>
+<td style="text-align: center;">Any</td>
+<td style="text-align: center;">if 240p &lt;= activeArraySize</td>
+</tr>
+<tr>
+<td style="text-align: center;"><a href="https://developer.android.com/reference/android/graphics/ImageFormat.html#YUV_420_888">Image<wbr/>Format#YUV_<wbr/>420_<wbr/>888</a></td>
+<td style="text-align: center;">all output sizes available for JPEG</td>
+<td style="text-align: center;">FULL</td>
+<td style="text-align: center;"></td>
+</tr>
+<tr>
+<td style="text-align: center;"><a href="https://developer.android.com/reference/android/graphics/ImageFormat.html#YUV_420_888">Image<wbr/>Format#YUV_<wbr/>420_<wbr/>888</a></td>
+<td style="text-align: center;">all output sizes available for JPEG,<wbr/> up to the maximum video size</td>
+<td style="text-align: center;">LIMITED</td>
+<td style="text-align: center;"></td>
+</tr>
+<tr>
+<td style="text-align: center;"><a href="https://developer.android.com/reference/android/graphics/ImageFormat.html#PRIVATE">ImageFormat#PRIVATE</a></td>
+<td style="text-align: center;">same as YUV_<wbr/>420_<wbr/>888</td>
+<td style="text-align: center;">Any</td>
+<td style="text-align: center;"></td>
+</tr>
+</tbody>
+</table>
 <p>For applications targeting SDK version 31 or newer,<wbr/> if the mobile device declares to be
 media performance class 12 or higher by setting
 <a href="https://developer.android.com/reference/android/os/Build.VERSION.html#MEDIA_PERFORMANCE_CLASS">VERSION#MEDIA_<wbr/>PERFORMANCE_<wbr/>CLASS</a> to be 31 or larger,<wbr/>
