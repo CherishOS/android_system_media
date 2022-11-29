@@ -169,7 +169,7 @@ int32_t MelProcessor::process(const void* buffer, size_t bytes) {
                               + kMeldBFSTodBSPLOffset, 0.0f));
 
         samples -= processSamples;
-        buffer = (const uint8_t *)buffer + mCurrentSamples * bytes_per_sample;
+        buffer = (const uint8_t *)buffer + processSamples * bytes_per_sample;
         mCurrentSamples = 0;
     }
 
