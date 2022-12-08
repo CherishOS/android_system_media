@@ -16,12 +16,10 @@
 
 #pragma once
 
-#include <audio_utils/MelProcessor.h>
-
 #include <android-base/thread_annotations.h>
+#include <audio_utils/MelProcessor.h>
 #include <map>
 #include <mutex>
-#include <unordered_map>
 
 namespace android::audio_utils {
 
@@ -32,14 +30,38 @@ struct MelRecord {
      * Array of continuously recorded MEL values >= RS1 (1 per second). First
      * value in the array was recorded at time: timestamp.
      */
-    std::vector<int32_t> mels;
+    std::vector<float> mels;
     /** Corresponds to the time when the first MEL entry in MelRecord was recorded. */
     int64_t timestamp;
 
-    explicit MelRecord(audio_port_handle_t portId,
-                      std::vector<int32_t> mels,
-                      int64_t timestamp) :
-        portId(portId), mels(std::move(mels)), timestamp(timestamp) {}
+    MelRecord(audio_port_handle_t portId,
+              std::vector<float> mels,
+              int64_t timestamp)
+        : portId(portId), mels(std::move(mels)), timestamp(timestamp) {}
+
+    inline bool overlapsEnd(const MelRecord& record) const {
+        return timestamp + static_cast<int64_t>(mels.size()) > record.timestamp;
+    }
+};
+
+struct CsdRecord {
+    /** Corresponds to the time when the CSD value is calculated from. */
+    const int64_t timestamp;
+    /** Corresponds to the duration that leads to the CSD value. */
+    const size_t duration;
+    /** The actual contribution to the CSD computation normalized: 1.f is 100%CSD. */
+    const float value;
+    /** The average MEL value that lead to this CSD value. */
+    const float averageMel;
+
+    CsdRecord(int64_t timestamp,
+              size_t duration,
+              float value,
+              float averageMel)
+        : timestamp(timestamp),
+          duration(duration),
+          value(value),
+          averageMel(averageMel) {};
 };
 
 /**
@@ -50,75 +72,79 @@ struct MelRecord {
  */
 class MelAggregator : public RefBase {
 public:
-    explicit MelAggregator(size_t storageDurationSeconds)
-        : mStorageDurationSeconds(storageDurationSeconds) {};
+
+    explicit MelAggregator(int64_t csdWindowSeconds)
+        : mCsdWindowSeconds(csdWindowSeconds),
+          mCurrentMelRecordsCsd(0.f) {}
 
     /**
-     * \brief Creates or gets the callback assigned to the streamHandle
+     * \returns the size of the stored CSD values.
+     */
+    size_t getCsdRecordsSize() const;
+
+    /**
+     * \brief Iterate over the CsdRecords and applies function f.
      *
-     * \param deviceId          id for the devices where the stream is active.
-     * \param streanHandle      handle to the stream
+     * \param f      function to apply on the iterated CsdRecord's sorted by timestamp
      */
-    sp<MelProcessor::MelCallback> getOrCreateCallbackForDevice(
-        audio_port_handle_t deviceId,
-        audio_io_handle_t streamHandle);
+    void foreachCsd(const std::function<void(const CsdRecord&)>& f) const;
+
+    /** Returns the current CSD computed with a rolling window of mCsdWindowSeconds. */
+    float getCsd();
 
     /**
-     * \brief Removes stream callback when MEL computation is not needed anymore
-     *
-     * \param streanHandle      handle to the stream
+     * \returns the size of the stored MEL records.
      */
-    void removeStreamCallback(audio_io_handle_t streamHandle);
-
-    /**
-     * \brief Returns the size of the stored MEL records.
-     */
-    size_t getMelRecordsSize() const;
+    size_t getCachedMelRecordsSize() const;
 
     /**
      * \brief Iterate over the MelRecords and applies function f.
      *
      * \param f      function to apply on the iterated MelRecord's sorted by timestamp
      */
-     void foreach(const std::function<void(const MelRecord&)>& f) const;
-
-private:
-    /**
-     * An implementation of the MelProcessor::MelCallback that is assigned to a
-     * specific device.
-     */
-    class Callback : public MelProcessor::MelCallback {
-    public:
-        explicit Callback(MelAggregator& melAggregator, audio_port_handle_t deviceHandle)
-            : mMelAggregator(melAggregator), mDeviceHandle(deviceHandle) {}
-
-        void onNewMelValues(const std::vector<int32_t>& mels,
-                            size_t offset,
-                            size_t length) const override;
-
-        MelAggregator& mMelAggregator;
-        audio_port_handle_t mDeviceHandle;
-    };
+    void foreachCachedMel(const std::function<void(const MelRecord&)>& f) const;
 
     /**
      * New value are stored and MEL values that correspond to the same timestamp
      * will be aggregated.
+     *
+     * \returns a vector containing all the new CsdRecord's that were added to
+     *   the current CSD value. Vector could be empty in case no new records
+     *   contributed to CSD.
      */
-    void aggregateAndAddNewMelRecord_l(MelRecord value) REQUIRES(mLock);
+    std::vector<CsdRecord> aggregateAndAddNewMelRecord(const MelRecord& record);
+private:
+    /** Locked aggregateAndAddNewMelRecord method. */
+    std::vector<CsdRecord> aggregateAndAddNewMelRecord_l(const MelRecord& record) REQUIRES(mLock);
 
     /** Insert new MelRecord sorted into mMelRecords. */
-    void insertSorted_l(std::vector<int32_t>& mels,
-                        int64_t timeBegin,
-                        int64_t timeEnd,
-                        int64_t timestamp,
+    void insertSorted_l(const std::vector<float>& mels,
+                        int64_t timeBeginSeconds,
+                        int64_t timeEndSeconds,
+                        int64_t timestampSeconds,
                         audio_port_handle_t portId) REQUIRES(mLock);
 
-    const size_t mStorageDurationSeconds;
+    std::vector<CsdRecord> updateCsdRecords_l() REQUIRES(mLock);
+
+    int64_t csdTimeIntervalStored_l() REQUIRES(mLock);
+
+    std::map<int64_t, CsdRecord>::iterator addNewestCsdRecord_l(int64_t timestamp,
+                                                                int64_t duration,
+                                                                 float csdRecord,
+                                                                 float averageMel) REQUIRES(mLock);
+
+    const int64_t mCsdWindowSeconds;
 
     mutable std::mutex mLock;
 
     std::map<int64_t, MelRecord> mMelRecords GUARDED_BY(mLock);
-    std::unordered_map<audio_io_handle_t, sp<Callback>> mActiveCallbacks GUARDED_BY(mLock);
+    std::map<int64_t, CsdRecord> mCsdRecords GUARDED_BY(mLock);
+
+    /** Current CSD value in mMelRecords. */
+    float mCurrentMelRecordsCsd GUARDED_BY(mLock);
+
+    /** CSD value containing sum of all CSD values stored. */
+    float mCurrentCsd GUARDED_BY(mLock);
 };
 
 }  // naemspace android::audio_utils

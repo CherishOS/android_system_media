@@ -26,13 +26,16 @@
 namespace android::audio_utils {
 
 constexpr int32_t kSecondsPerMelValue = 1;
-constexpr int32_t kMelAdjustmentDb = -3;
+constexpr float kMelAdjustmentDb = -3.f;
 
 // Estimated offset defined in Table39 of IEC62368-1 3rd edition
 // -30dBFS, -10dBFS should correspond to 80dBSPL, 100dBSPL
-constexpr int32_t kMeldBFSTodBSPLOffset = 110;
+constexpr float kMeldBFSTodBSPLOffset = 110.f;
 
-constexpr int32_t kRs1OutputdBFS = 80;
+constexpr float kRs1OutputdBFS = 80.f;  // dBA
+
+constexpr float kRs2LowerLimit = 80.f;  // dBA
+constexpr float kRs2UpperLimit = 100.f;  // dBA
 
 // The following arrays contain the IIR biquad filter coefficients for performing A-weighting as
 // described in IEC 61672:2003 for samples with 44.1kHz and 48kHz.
@@ -49,19 +52,23 @@ constexpr std::array<std::array<float, kBiquadNumCoefs>, 2> kBiquadCoefs3 =
 MelProcessor::MelProcessor(uint32_t sampleRate,
         uint32_t channelCount,
         audio_format_t format,
-        sp<MelCallback> callback,
+        const MelCallback& callback,
+        audio_port_handle_t deviceId,
+        float rs2Value,
         size_t maxMelsCallback)
     : mSampleRate(sampleRate),
       mChannelCount(channelCount),
       mFormat(format),
       mFramesPerMelValue(sampleRate * kSecondsPerMelValue),
-      mCallback(std::move(callback)),
+      mCallback(callback),
       mCurrentSamples(0),
       mCurrentChannelEnergy(channelCount, 0.0f),
       mAWeightSamples(mFramesPerMelValue * mChannelCount),
       mFloatSamples(mFramesPerMelValue * mChannelCount),
       mMelValues(maxMelsCallback),
-      mCurrentIndex(0)
+      mCurrentIndex(0),
+      mDeviceId(deviceId),
+      mRs2Value(rs2Value)
 {
     createBiquads();
 }
@@ -87,7 +94,31 @@ void MelProcessor::createBiquads() {
                std::make_unique<DefaultBiquadFilter>(mChannelCount, kBiquadCoefs3.at(coefsIndex))};
 }
 
-void MelProcessor::applyAWeight(const void* buffer, size_t samples)
+status_t MelProcessor::setOutputRs2(float rs2Value)
+{
+    if (rs2Value < kRs2LowerLimit || rs2Value > kRs2UpperLimit) {
+        return BAD_VALUE;
+    }
+
+    std::lock_guard guard(mLock);
+    mRs2Value = rs2Value;
+
+    return NO_ERROR;
+}
+
+float MelProcessor::getOutputRs2() const
+{
+    std::lock_guard guard(mLock);
+    return mRs2Value;
+}
+
+void MelProcessor::setDeviceId(audio_port_handle_t deviceId)
+{
+    std::lock_guard guard(mLock);
+    mDeviceId = deviceId;
+}
+
+void MelProcessor::applyAWeight_l(const void* buffer, size_t samples)
 {
     memcpy_by_audio_format(mFloatSamples.data(), AUDIO_FORMAT_PCM_FLOAT, buffer, mFormat, samples);
 
@@ -106,7 +137,7 @@ void MelProcessor::applyAWeight(const void* buffer, size_t samples)
     }
 }
 
-float MelProcessor::getCombinedChannelEnergy() {
+float MelProcessor::getCombinedChannelEnergy_l() {
     float combinedEnergy = 0.0f;
     for (auto& energy: mCurrentChannelEnergy) {
         combinedEnergy += energy;
@@ -117,9 +148,19 @@ float MelProcessor::getCombinedChannelEnergy() {
     return combinedEnergy;
 }
 
-void MelProcessor::addMelValue(float mel) {
-    mMelValues[mCurrentIndex] = static_cast<int32_t>(roundf(mel));
-    ALOGV("writing MEL %d at index %d", mMelValues[mCurrentIndex], mCurrentIndex);
+void MelProcessor::addMelValue_l(float mel, std::vector<std::function<void()>>& callbacks) {
+    mMelValues[mCurrentIndex] = mel;
+    ALOGV("%s: writing MEL %f at index %d for device %d",
+          __func__,
+          mel,
+          mCurrentIndex,
+          mDeviceId);
+
+    if (mel > mRs2Value) {
+        callbacks.emplace_back([&, mel]() {
+            mCallback.onMomentaryExposure(mel, mDeviceId);
+        });
+    }
 
     bool reportContinuousValues = false;
     if ((mMelValues[mCurrentIndex] < kRs1OutputdBFS && mCurrentIndex > 0)) {
@@ -130,7 +171,9 @@ void MelProcessor::addMelValue(float mel) {
     }
 
     if (reportContinuousValues || (mCurrentIndex > mMelValues.size() - 1)) {
-        mCallback->onNewMelValues(mMelValues, /* offset= */0, mCurrentIndex);
+        callbacks.emplace_back([&, melValuesSize = this->mCurrentIndex]() {
+            mCallback.onNewMelValues(mMelValues, /* offset= */0, melValuesSize, mDeviceId);
+        });
         mCurrentIndex = 0;
     }
 }
@@ -140,37 +183,52 @@ int32_t MelProcessor::process(const void* buffer, size_t bytes) {
         return 0;
     }
 
-    std::lock_guard<std::mutex> guard(mLock);
+    std::vector<std::function<void()>> callbacks;
+    {
+        std::lock_guard<std::mutex> guard(mLock);
 
-    const size_t bytes_per_sample = audio_bytes_per_sample(mFormat);
-    size_t samples = bytes_per_sample > 0 ? bytes / bytes_per_sample : 0;
-    while (samples > 0) {
-        const size_t requiredSamples = mFramesPerMelValue * mChannelCount - mCurrentSamples;
-        size_t processSamples = std::min(requiredSamples, samples);
-        processSamples -= processSamples % mChannelCount;
+        const size_t bytes_per_sample = audio_bytes_per_sample(mFormat);
+        size_t samples = bytes_per_sample > 0 ? bytes / bytes_per_sample : 0;
+        while (samples > 0) {
+            const size_t requiredSamples =
+                mFramesPerMelValue * mChannelCount - mCurrentSamples;
+            size_t processSamples = std::min(requiredSamples, samples);
+            processSamples -= processSamples % mChannelCount;
 
-        applyAWeight(buffer, processSamples);
+            applyAWeight_l(buffer, processSamples);
 
-        audio_utils_accumulate_energy(mAWeightSamples.data(),
-                                      AUDIO_FORMAT_PCM_FLOAT,
-                                      processSamples,
-                                      mChannelCount,
-                                      mCurrentChannelEnergy.data());
-        mCurrentSamples += processSamples;
+            audio_utils_accumulate_energy(mAWeightSamples.data(),
+                                          AUDIO_FORMAT_PCM_FLOAT,
+                                          processSamples,
+                                          mChannelCount,
+                                          mCurrentChannelEnergy.data());
+            mCurrentSamples += processSamples;
 
-        ALOGV("required:%zu, process:%zu, mCurrentChannelEnergy[0]:%f, mCurrentSamples:%zu",
-                  requiredSamples, processSamples, mCurrentChannelEnergy[0], mCurrentSamples);
-        if (processSamples < requiredSamples) {
-            return bytes;
+            ALOGV(
+                "required:%zu, process:%zu, mCurrentChannelEnergy[0]:%f, mCurrentSamples:%zu",
+                requiredSamples,
+                processSamples,
+                mCurrentChannelEnergy[0],
+                mCurrentSamples);
+            if (processSamples < requiredSamples) {
+                return bytes;
+            }
+
+            addMelValue_l(fmaxf(
+                audio_utils_power_from_energy(getCombinedChannelEnergy_l())
+                    + kMelAdjustmentDb
+                    + kMeldBFSTodBSPLOffset, 0.0f), callbacks);
+
+            samples -= processSamples;
+            buffer =
+                (const uint8_t*) buffer + processSamples * bytes_per_sample;
+            mCurrentSamples = 0;
         }
+    }
 
-        addMelValue(fmaxf(audio_utils_power_from_energy(getCombinedChannelEnergy())
-                              + kMelAdjustmentDb
-                              + kMeldBFSTodBSPLOffset, 0.0f));
-
-        samples -= processSamples;
-        buffer = (const uint8_t *)buffer + processSamples * bytes_per_sample;
-        mCurrentSamples = 0;
+    // Execute callbacks without the lock
+    for (const auto& f: callbacks) {
+        f();
     }
 
     return bytes;

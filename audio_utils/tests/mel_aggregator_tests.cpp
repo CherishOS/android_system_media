@@ -25,72 +25,125 @@
 namespace android::audio_utils {
 namespace {
 
+constexpr int32_t kTestPortId = 1;
+constexpr float kFloatError = 0.1f;
+constexpr float kMelFloatError = 0.0001f;
+
 using ::testing::ElementsAre;
-
-TEST(MelAggregatorTest, GetCallbackForExistingStream) {
-    MelAggregator aggregator{1};
-    sp<MelProcessor::MelCallback> callback1 =
-        aggregator.getOrCreateCallbackForDevice(/*deviceId=*/1, /*streamHandle=*/1);
-    sp<MelProcessor::MelCallback> callback2 =
-        aggregator.getOrCreateCallbackForDevice(/*deviceId=*/2, /*streamHandle=*/1);
-
-    EXPECT_EQ(callback1, callback2);
-}
+using ::testing::Pointwise;
+using ::testing::FloatNear;
 
 TEST(MelAggregatorTest, AggregateValuesFromDifferentStreams) {
-    MelAggregator aggregator{2};
-    sp<MelProcessor::MelCallback> callback1 =
-        aggregator.getOrCreateCallbackForDevice(/*deviceId=*/1, /*streamHandle=*/1);
-    sp<MelProcessor::MelCallback> callback2 =
-        aggregator.getOrCreateCallbackForDevice(/*deviceId=*/1, /*streamHandle=*/2);
+    MelAggregator aggregator{/* csdWindowSeconds */ 100};
 
-    callback1->onNewMelValues({10, 10}, 0, 2);
-    callback2->onNewMelValues({10, 10}, 0, 2);
+    aggregator.aggregateAndAddNewMelRecord(MelRecord(kTestPortId, {10.f, 10.f},
+                                                     /* timestamp */0));
+    aggregator.aggregateAndAddNewMelRecord(MelRecord(kTestPortId, {10.f, 10.f},
+                                                     /* timestamp */0));
 
-    ASSERT_EQ(aggregator.getMelRecordsSize(), size_t{1});
-    aggregator.foreach([](const MelRecord &value) {
-        EXPECT_EQ(value.portId, 1);
-        EXPECT_THAT(value.mels, ElementsAre(13, 13));
+    ASSERT_EQ(aggregator.getCachedMelRecordsSize(), size_t{1});
+    aggregator.foreachCachedMel([](const MelRecord &record) {
+        EXPECT_EQ(record.portId, kTestPortId);
+        EXPECT_THAT(record.mels, Pointwise(FloatNear(kFloatError), {13.f, 13.f}));
     });
 }
 
-TEST(MelAggregatorTest, RemoveOlderValuesAndAggregate) {
-    MelAggregator aggregator{2};
-    sp<MelProcessor::MelCallback> callback =
-        aggregator.getOrCreateCallbackForDevice(/*deviceId=*/1, /*streamHandle=*/1);
+TEST(MelAggregatorTest, AggregateWithOlderValues) {
+    MelAggregator aggregator{/* csdWindowSeconds */ 100};
 
-    callback->onNewMelValues({1, 1}, 0, 2);
-    // second mel array contains values that are too old and will be removed
-    callback->onNewMelValues({2, 2, 2}, 0, 3);
+    aggregator.aggregateAndAddNewMelRecord(MelRecord(kTestPortId, {1.f, 1.f},
+                                                     /* timestamp */1));
+    // second mel array contains values that are older than the first entry
+    aggregator.aggregateAndAddNewMelRecord(MelRecord(kTestPortId, {2.f, 2.f, 2.f},
+                                                     /* timestamp */0));
 
-    ASSERT_EQ(aggregator.getMelRecordsSize(), size_t{1});
-    aggregator.foreach([](const MelRecord &value) {
-        EXPECT_EQ(value.portId, 1);
-        EXPECT_THAT(value.mels, ElementsAre(5, 5));
+    ASSERT_EQ(aggregator.getCachedMelRecordsSize(), size_t{1});
+    aggregator.foreachCachedMel([](const MelRecord &record) {
+        EXPECT_EQ(record.portId, kTestPortId);
+        EXPECT_THAT(record.mels, Pointwise(FloatNear(kFloatError), {2.f, 4.5f, 4.5f}));
+    });
+}
+
+TEST(MelAggregatorTest, AggregateWithNewerValues) {
+    MelAggregator aggregator{/* csdWindowSeconds */ 100};
+
+    aggregator.aggregateAndAddNewMelRecord(MelRecord(kTestPortId, {1.f, 1.f},
+                                                     /* timestamp */1));
+    // second mel array contains values that are older than the first entry
+    aggregator.aggregateAndAddNewMelRecord(MelRecord(kTestPortId, {2.f, 2.f},
+                                                     /* timestamp */2));
+
+    ASSERT_EQ(aggregator.getCachedMelRecordsSize(), size_t{1});
+    aggregator.foreachCachedMel([](const MelRecord &record) {
+        EXPECT_EQ(record.portId, kTestPortId);
+        EXPECT_THAT(record.mels, Pointwise(FloatNear(kFloatError), {1.f, 4.5f, 2.f}));
+    });
+}
+
+TEST(MelAggregatorTest, AggregateWithNonOverlappingValues) {
+    MelAggregator aggregator{/* csdWindowSeconds */ 100};
+
+    aggregator.aggregateAndAddNewMelRecord(MelRecord(kTestPortId, {1.f, 1.f},
+                                                     /* timestamp */0));
+    // second mel array contains values that are older than the first entry
+    aggregator.aggregateAndAddNewMelRecord(MelRecord(kTestPortId, {1.f, 1.f},
+                                                     /* timestamp */2));
+
+    ASSERT_EQ(aggregator.getCachedMelRecordsSize(), size_t{2});
+    aggregator.foreachCachedMel([](const MelRecord &record) {
+        EXPECT_EQ(record.portId, kTestPortId);
+        EXPECT_THAT(record.mels, Pointwise(FloatNear(kFloatError), {1.f, 1.f}));
     });
 }
 
 TEST(MelAggregatorTest, CheckMelIntervalSplit) {
-    MelAggregator aggregator{4};
-    sp<MelProcessor::MelCallback> callback =
-        aggregator.getOrCreateCallbackForDevice(/*deviceId=*/1, /*streamHandle=*/1);
+    MelAggregator aggregator{/* csdWindowSeconds */ 100};
 
-    callback->onNewMelValues({3, 3}, 0, 2);
-    sleep(1);
-    callback->onNewMelValues({3, 3, 3, 3}, 0, 4);
+    aggregator.aggregateAndAddNewMelRecord(MelRecord(kTestPortId, {3.f, 3.f}, /* timestamp */1));
+    aggregator.aggregateAndAddNewMelRecord(MelRecord(kTestPortId, {3.f, 3.f, 3.f, 3.f},
+                                                     /* timestamp */0));
 
-    ASSERT_EQ(aggregator.getMelRecordsSize(), size_t{3});
+    ASSERT_EQ(aggregator.getCachedMelRecordsSize(), size_t{1});
 
-    int index = 0;
-    aggregator.foreach([&index](const MelRecord &value) {
-        EXPECT_EQ(value.portId, 1);
-        if (index == 1) {
-            EXPECT_THAT(value.mels, ElementsAre(6, 6));
-        } else {
-            EXPECT_THAT(value.mels, ElementsAre(3));
-        }
-        ++ index;
+    aggregator.foreachCachedMel([](const MelRecord &record) {
+        EXPECT_EQ(record.portId, kTestPortId);
+        EXPECT_THAT(record.mels, Pointwise(FloatNear(kFloatError), {3.f, 6.f, 6.f, 3.f}));
     });
+}
+
+TEST(MelAggregatorTest, CsdRollingWindowDiscardsOldElements) {
+    MelAggregator aggregator{/* csdWindowSeconds */ 3};
+
+    aggregator.aggregateAndAddNewMelRecord(MelRecord(kTestPortId, std::vector<float>(3, 107.0f),
+                                                    /* timestamp */0));
+    float csdValue = aggregator.getCsd();
+    aggregator.aggregateAndAddNewMelRecord(MelRecord(kTestPortId, std::vector<float>(3, 107.0f),
+                                                    /* timestamp */3));
+
+    EXPECT_EQ(csdValue, aggregator.getCsd());
+    EXPECT_EQ(aggregator.getCsdRecordsSize(), size_t{1});
+}
+
+TEST(MelAggregatorTest, CsdReaches100PercWith107dB) {
+    MelAggregator aggregator{/* csdWindowSeconds */ 300};
+
+    // 287s of 107dB should produce at least 100% CSD
+    aggregator.aggregateAndAddNewMelRecord(MelRecord(kTestPortId, std::vector<float>(288, 107.0f),
+                                                    /* timestamp */0));
+
+    EXPECT_GE(aggregator.getCsd(), 1.f);
+}
+
+TEST(MelAggregatorTest, CsdReaches100PercWith80dB) {
+    constexpr int64_t seconds40h = 40*3600;
+    MelAggregator aggregator{seconds40h};
+
+    // 40h of 80dB should produce (near) exactly 100% CSD
+    aggregator.aggregateAndAddNewMelRecord(MelRecord(kTestPortId,
+                                                     std::vector<float>(seconds40h, 80.0f),
+                                                     /* timestamp */0));
+
+    EXPECT_NEAR(aggregator.getCsd(), 1.f, kMelFloatError);
 }
 
 }  // namespace

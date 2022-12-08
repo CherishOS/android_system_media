@@ -31,7 +31,10 @@ namespace android::audio_utils {
 namespace {
 
 using ::testing::_;
+using ::testing::AtMost;
+using ::testing::Eq;
 using ::testing::Le;
+using ::testing::Gt;
 using ::testing::TestWithParam;
 using ::testing::Values;
 using ::testing::Combine;
@@ -46,9 +49,10 @@ const std::unordered_map<int32_t, int32_t> kAWeightDelta1000 =
 
 
 class MelCallbackMock : public MelProcessor::MelCallback {
- public:
-  MOCK_METHOD(void, onNewMelValues, (const std::vector<int32_t>&, size_t, size_t),
-              (const override));
+public:
+    MOCK_METHOD(void, onNewMelValues, (const std::vector<float>&, size_t, size_t,
+              audio_port_handle_t), (const override));
+    MOCK_METHOD(void, onMomentaryExposure, (float, audio_port_handle_t), (const override));
 };
 
 void appendSineWaveBuffer(std::vector<float>& buffer,
@@ -67,15 +71,22 @@ protected:
     MelProcessorFixtureTest()
         : mSampleRate(std::get<0>(GetParam())),
           mFrequency(std::get<1>(GetParam())),
-          mMelCallback(sp<MelCallbackMock>::make()),
-          mProcessor(mSampleRate, 1, AUDIO_FORMAT_PCM_FLOAT, mMelCallback, mMaxMelsCallback) {}
+          mProcessor(mSampleRate,
+                     1,
+                     AUDIO_FORMAT_PCM_FLOAT,
+                     mMelCallback,
+                     mDeviceId,
+                     mDefaultRs2,
+                     mMaxMelsCallback) {}
 
 
     int32_t mSampleRate;
     int32_t mFrequency;
     int32_t mMaxMelsCallback = 2;
+    audio_port_handle_t mDeviceId = 1;
+    int32_t mDefaultRs2 = 100;
 
-    sp<MelCallbackMock> mMelCallback;
+    MelCallbackMock mMelCallback;
     MelProcessor mProcessor;
 
     std::vector<float> mBuffer;
@@ -83,7 +94,8 @@ protected:
 
 
 TEST(MelProcessorTest, UnsupportedSamplerateCheck) {
-    auto processor = MelProcessor(1000, 1, AUDIO_FORMAT_PCM_FLOAT, nullptr, 1);
+    MelCallbackMock callback;
+    auto processor = MelProcessor(1000, 1, AUDIO_FORMAT_PCM_FLOAT, callback, 1, 100);
     std::vector<float> buffer(1000);
 
     EXPECT_EQ(processor.process(buffer.data(), 1000), 0);
@@ -91,14 +103,16 @@ TEST(MelProcessorTest, UnsupportedSamplerateCheck) {
 
 TEST_P(MelProcessorFixtureTest, CheckNumberOfCallbacks) {
     if (mFrequency != 1000.0f) {
-        ALOGV("NOTE: CheckNumberOfCallbacks disabeld for frequency %d", mFrequency);
+        ALOGV("NOTE: CheckNumberOfCallbacks disabled for frequency %d", mFrequency);
         return;
     }
 
     appendSineWaveBuffer(mBuffer, 1000.0f, mSampleRate, mSampleRate * mMaxMelsCallback);
     appendSineWaveBuffer(mBuffer, 1000.0f, mSampleRate, mSampleRate * mMaxMelsCallback, 0.01f);
 
-    EXPECT_CALL(*mMelCallback.get(), onNewMelValues(_, _, Le(size_t{2}))).Times(1);
+    EXPECT_CALL(mMelCallback, onMomentaryExposure(Gt(mDefaultRs2), Eq(mDeviceId)))
+        .Times(AtMost(2));
+    EXPECT_CALL(mMelCallback, onNewMelValues(_, _, Le(size_t{2}), Eq(mDeviceId))).Times(1);
 
     EXPECT_GT(mProcessor.process(mBuffer.data(), mBuffer.size() * sizeof(float)), 0);
 }
@@ -107,14 +121,18 @@ TEST_P(MelProcessorFixtureTest, CheckAWeightingFrequency) {
     appendSineWaveBuffer(mBuffer, mFrequency, mSampleRate, mSampleRate);
     appendSineWaveBuffer(mBuffer, 1000.0f, mSampleRate, mSampleRate);
 
-    EXPECT_CALL(*mMelCallback.get(), onNewMelValues(_, _, _))
+    EXPECT_CALL(mMelCallback, onMomentaryExposure(Gt(mDefaultRs2), Eq(mDeviceId)))
+        .Times(AtMost(2));
+    EXPECT_CALL(mMelCallback, onNewMelValues(_, _, _, Eq(mDeviceId)))
         .Times(1)
-        .WillRepeatedly([&] (const std::vector<int32_t>& mel, size_t offset, size_t length) {
+        .WillRepeatedly([&] (const std::vector<float>& mel, size_t offset, size_t length,
+                                audio_port_handle_t deviceId) {
             EXPECT_EQ(offset, size_t{0});
             EXPECT_EQ(length, size_t{2});
+            EXPECT_EQ(deviceId, mDeviceId);
             int32_t deltaValue = abs(mel[0] - mel[1]);
-            ALOGV("MEL[%d] = %d,  MEL[1000] = %d\n", mFrequency, mel[0], mel[1]);
-            EXPECT_TRUE(abs(deltaValue - kAWeightDelta1000.at(mFrequency)) <= 1);
+            ALOGV("MEL[%d] = %.2f,  MEL[1000] = %.2f\n", mFrequency, mel[0], mel[1]);
+            EXPECT_TRUE(abs(deltaValue - kAWeightDelta1000.at(mFrequency)) <= 1.f);
         });
 
     EXPECT_GT(mProcessor.process(mBuffer.data(), mBuffer.size() * sizeof(float)), 0);

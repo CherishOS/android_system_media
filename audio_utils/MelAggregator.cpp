@@ -19,10 +19,21 @@
 
 #include <audio_utils/MelAggregator.h>
 #include <audio_utils/power.h>
+#include <cinttypes>
+#include <iterator>
 #include <utils/Log.h>
 
 namespace android::audio_utils {
 namespace {
+
+/** Min value after which the MEL values are aggregated to CSD. */
+constexpr float kMinCsdRecordToStore = 0.01f;
+
+/** Threshold for 100% CSD expressed in Pa^2s. */
+constexpr float kCsdThreshold = 5760.0f; // 1.6f(Pa^2h) * 3600.0f(s);
+
+/** Reference energy used for dB calculation in Pa^2. */
+constexpr float kReferenceEnergyPa = 4e-10;
 
 /**
  * Checking the intersection of the time intervals of v1 and v2. Each MelRecord v
@@ -38,129 +49,210 @@ std::pair<int64_t, int64_t> intersectRegion(const MelRecord& v1, const MelRecord
     return {maxStart, minEnd};
 }
 
-int64_t getCurrentSecond() {
-    struct timespec now_ts;
-    if (clock_gettime(CLOCK_MONOTONIC, &now_ts) != 0) {
-        ALOGE("%s: cannot get timestamp", __func__);
-        return -1;
-    }
-    return now_ts.tv_sec;
+float aggregateMels(const float mel1, const float mel2) {
+    return audio_utils_power_from_energy(powf(10.f, mel1 / 10.f) + powf(10.f, mel2 / 10.f));
 }
 
-int32_t aggregateMels(const int32_t mel1, const int32_t mel2) {
-    return roundf(audio_utils_power_from_energy(powf(10, mel1 / 10.0f) + powf(10, mel2 / 10.0f)));
+float averageMelEnergy(const float mel1,
+                       const int64_t duration1,
+                       const float mel2,
+                       const int64_t duration2) {
+    return audio_utils_power_from_energy((powf(10.f, mel1 / 10.f) * duration1
+        + powf(10.f, mel2 / 10.f) * duration2) / (duration1 + duration2));
+}
+
+float melToCsd(float mel) {
+    float energy = powf(10.f, mel / 10.0f);
+    return kReferenceEnergyPa * energy / kCsdThreshold;
 }
 
 }  // namespace
 
-sp<MelProcessor::MelCallback> MelAggregator::getOrCreateCallbackForDevice(
-        audio_port_handle_t deviceId,
-        audio_io_handle_t streamHandle)
+int64_t MelAggregator::csdTimeIntervalStored_l()
 {
-    std::lock_guard _l(mLock);
-
-    auto streamHandleCallback = mActiveCallbacks.find(streamHandle);
-    if (streamHandleCallback != mActiveCallbacks.end()) {
-        ALOGV("%s: found callback for stream %d", __func__, streamHandle);
-        auto callback = streamHandleCallback->second;
-        callback->mDeviceHandle = deviceId;
-        return callback;
-    } else {
-        ALOGV("%s: creating new callback for device %d", __func__, streamHandle);
-        sp<Callback> melCallback = sp<Callback>::make(*this, deviceId);
-        mActiveCallbacks[streamHandle] = melCallback;
-        return melCallback;
-    }
+    return mCsdRecords.rbegin()->second.timestamp + mCsdRecords.rbegin()->second.duration
+        - mCsdRecords.begin()->second.timestamp;
 }
 
-void MelAggregator::Callback::onNewMelValues(const std::vector<int32_t>& mels,
-                                             size_t offset,
-                                             size_t length) const
+std::map<int64_t, CsdRecord>::iterator MelAggregator::addNewestCsdRecord_l(int64_t timestamp,
+                                                                           int64_t duration,
+                                                                           float csdRecord,
+                                                                           float averageMel)
 {
-    ALOGV("%s", __func__);
-    std::lock_guard _l(mMelAggregator.mLock);
+    ALOGV("%s: add new csd[%" PRId64 ", %" PRId64 "]=%f for MEL avg %f",
+                      __func__,
+                      timestamp,
+                      duration,
+                      csdRecord,
+                      averageMel);
 
-    int64_t timestampSec = getCurrentSecond();
-    mMelAggregator.aggregateAndAddNewMelRecord_l(MelRecord(mDeviceHandle,
-                                                         std::vector<int32_t>(
-                                                             mels.begin() + offset,
-                                                             mels.begin() + offset + length),
-                                                         timestampSec - length));
+    mCurrentCsd += csdRecord;
+    return mCsdRecords.emplace_hint(mCsdRecords.end(),
+                                    timestamp,
+                                    CsdRecord(timestamp,
+                                              duration,
+                                              csdRecord,
+                                              averageMel));
 }
 
-void MelAggregator::insertSorted_l(std::vector<int32_t>& mels,
-                                   int64_t timeBegin,
-                                   int64_t timeEnd,
-                                   int64_t timestampMels,
-                                   audio_port_handle_t portId)
+std::vector<CsdRecord> MelAggregator::updateCsdRecords_l()
 {
-    mMelRecords.emplace_hint(mMelRecords.end(), timeBegin, MelRecord(portId,
-                               std::vector<int32_t>(
-                                   mels.begin() + timeBegin - timestampMels,
-                                   mels.begin() + timeEnd - timestampMels),
-                               timeBegin));
-}
+    std::vector<CsdRecord> newRecords;
 
-void MelAggregator::aggregateAndAddNewMelRecord_l(MelRecord mel)
-{
-    for (auto& storedMel: mMelRecords) {
-        auto aggregateInterval = intersectRegion(storedMel.second, mel);
-        if (aggregateInterval.first >= aggregateInterval.second) {
-            // no overlap
-            continue;
-        }
-
-        for (int64_t aggregateTime = aggregateInterval.first;
-             aggregateTime < aggregateInterval.second; ++aggregateTime) {
-            const int offsetStored = aggregateTime - storedMel.second.timestamp;
-            const int offsetNew = aggregateTime - mel.timestamp;
-            storedMel.second.mels[offsetStored] =
-                aggregateMels(storedMel.second.mels[offsetStored], mel.mels[offsetNew]);
-
-            // invalidate new value since it was aggregated
-            mel.mels[offsetNew] = -1;
-        }
+    // only update if we are above threshold
+    if (mCurrentMelRecordsCsd < kMinCsdRecordToStore) {
+        return newRecords;
     }
 
-    int64_t timeBegin = mel.timestamp;
-    int64_t timeEnd = mel.timestamp;
-    int64_t lastTimestamp = mel.timestamp + mel.mels.size();
-    mel.mels.push_back(-1);  // for last interval termination
-    for (; timeEnd <= lastTimestamp; ++ timeEnd) {
-        if (mel.mels[timeEnd - mel.timestamp] == -1) {
-            if (timeEnd - timeBegin > 0) {
-                // new interval to add
-                insertSorted_l(mel.mels, timeBegin, timeEnd, mel.timestamp, mel.portId);
+    float converted = 0.f;
+    float averageMel = 0.f;
+    float csdValue = 0.f;
+    int64_t duration = 0;
+    int64_t timestamp = mMelRecords.begin()->first;
+    for (const auto& storedMel: mMelRecords) {
+        int melsIdx = 0;
+        for (const auto& mel: storedMel.second.mels) {
+            averageMel = averageMelEnergy(averageMel, duration, mel, 1.f);
+            csdValue += melToCsd(mel);
+            ++duration;
+            if (csdValue >= kMinCsdRecordToStore
+                && mCurrentMelRecordsCsd - converted - csdValue >= kMinCsdRecordToStore) {
+                auto it = addNewestCsdRecord_l(timestamp,
+                                               duration,
+                                               csdValue,
+                                               averageMel);
+                newRecords.emplace_back(it->second);
+
+                duration = 0;
+                averageMel = 0.f;
+                converted += csdValue;
+                csdValue = 0.f;
+                timestamp = storedMel.first + melsIdx;
             }
-            timeBegin = timeEnd + 1;
+            ++ melsIdx;
         }
     }
 
-    // clean up older values
-    // TODO: optimize MelRecord to use deque. This will allow to remove single MELs.
-    while (mMelRecords.size() > 1 && lastTimestamp - mMelRecords.begin()->first
-            > mStorageDurationSeconds) {
-        mMelRecords.erase(mMelRecords.begin());
+    if(csdValue > 0) {
+        auto it = addNewestCsdRecord_l(timestamp,
+                                       duration,
+                                       csdValue,
+                                       averageMel);
+        newRecords.emplace_back(it->second);
     }
+
+    // reset mel values
+    mCurrentMelRecordsCsd = 0.0f;
+    mMelRecords.clear();
+
+    // Remove older CSD values
+    while (mCsdRecords.size() > 0 && csdTimeIntervalStored_l() > mCsdWindowSeconds) {
+        mCurrentCsd -= mCsdRecords.begin()->second.value;
+        mCsdRecords.erase(mCsdRecords.begin());
+    }
+
+    return newRecords;
 }
 
-void MelAggregator::removeStreamCallback(audio_io_handle_t streamHandle)
+std::vector<CsdRecord> MelAggregator::aggregateAndAddNewMelRecord(const MelRecord& mel)
 {
     std::lock_guard _l(mLock);
-    mActiveCallbacks.erase(streamHandle);
+    return aggregateAndAddNewMelRecord_l(mel);
 }
 
-size_t MelAggregator::getMelRecordsSize() const
+std::vector<CsdRecord> MelAggregator::aggregateAndAddNewMelRecord_l(const MelRecord& mel)
+{
+    for (const auto& m : mel.mels) {
+        mCurrentMelRecordsCsd += melToCsd(m);
+    }
+    ALOGV("%s: current mel values CSD %f", __func__, mCurrentMelRecordsCsd);
+
+    auto mergeIt = mMelRecords.lower_bound(mel.timestamp);
+
+    if (mergeIt != mMelRecords.begin()) {
+        auto prevMergeIt = std::prev(mergeIt);
+        if (prevMergeIt->second.overlapsEnd(mel)) {
+            mergeIt = prevMergeIt;
+        }
+    }
+
+    int64_t newTimestamp = mel.timestamp;
+    std::vector<float> newMels = mel.mels;
+    auto mergeStart = mergeIt;
+    int overlapStart = 0;
+    while(mergeIt != mMelRecords.end()) {
+        const auto& [melRecordStart, melRecord] = *mergeIt;
+        const auto [regionStart, regionEnd] = intersectRegion(melRecord, mel);
+        if (regionStart >= regionEnd) {
+            // no intersection
+            break;
+        }
+
+        if (melRecordStart < regionStart) {
+            newTimestamp = melRecordStart;
+            overlapStart = regionStart - melRecordStart;
+            newMels.insert(newMels.begin(), melRecord.mels.begin(),
+                           melRecord.mels.begin() + overlapStart);
+        }
+
+        for (int64_t aggregateTime = regionStart; aggregateTime < regionEnd; ++aggregateTime) {
+            const int offsetStored = aggregateTime - melRecordStart;
+            const int offsetNew = aggregateTime - mel.timestamp;
+            newMels[overlapStart + offsetNew] =
+                aggregateMels(melRecord.mels[offsetStored], mel.mels[offsetNew]);
+        }
+
+        const int64_t mergeEndTime = melRecordStart + melRecord.mels.size();
+        if (mergeEndTime > regionEnd) {
+            newMels.insert(newMels.end(),
+                           melRecord.mels.end() - mergeEndTime + regionEnd,
+                           melRecord.mels.end());
+        }
+
+        ++mergeIt;
+    }
+
+    std::map<int64_t, MelRecord>::iterator hint = mergeIt;
+    if (mergeStart != mergeIt) {
+        hint = mMelRecords.erase(mergeStart, mergeIt);
+    }
+
+    mMelRecords.emplace_hint(hint,
+                             newTimestamp,
+                             MelRecord(mel.portId, newMels, newTimestamp));
+
+    return updateCsdRecords_l();
+}
+
+size_t MelAggregator::getCachedMelRecordsSize() const
 {
     std::lock_guard _l(mLock);
     return mMelRecords.size();
 }
 
-void MelAggregator::foreach(const std::function<void(const MelRecord&)>& f) const
+void MelAggregator::foreachCachedMel(const std::function<void(const MelRecord&)>& f) const
 {
      std::lock_guard _l(mLock);
      for (const auto &melRecord : mMelRecords) {
          f(melRecord.second);
+     }
+}
+
+float MelAggregator::getCsd() {
+    std::lock_guard _l(mLock);
+    return mCurrentCsd;
+}
+
+size_t MelAggregator::getCsdRecordsSize() const {
+    std::lock_guard _l(mLock);
+    return mCsdRecords.size();
+}
+
+void MelAggregator::foreachCsd(const std::function<void(const CsdRecord&)>& f) const
+{
+     std::lock_guard _l(mLock);
+     for (const auto &csdRecord : mCsdRecords) {
+         f(csdRecord.second);
      }
 }
 
