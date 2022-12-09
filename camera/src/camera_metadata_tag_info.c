@@ -64,6 +64,7 @@ const char *camera_metadata_section_names[ANDROID_SECTION_COUNT] = {
     [ANDROID_HEIC_INFO]            = "android.heic.info",
     [ANDROID_AUTOMOTIVE]           = "android.automotive",
     [ANDROID_AUTOMOTIVE_LENS]      = "android.automotive.lens",
+    [ANDROID_EXTENSION]            = "android.extension",
 };
 
 unsigned int camera_metadata_section_bounds[ANDROID_SECTION_COUNT][2] = {
@@ -132,6 +133,8 @@ unsigned int camera_metadata_section_bounds[ANDROID_SECTION_COUNT][2] = {
                                        ANDROID_AUTOMOTIVE_END },
     [ANDROID_AUTOMOTIVE_LENS]      = { ANDROID_AUTOMOTIVE_LENS_START,
                                        ANDROID_AUTOMOTIVE_LENS_END },
+    [ANDROID_EXTENSION]            = { ANDROID_EXTENSION_START,
+                                       ANDROID_EXTENSION_END },
 };
 
 static tag_info_t android_color_correction[ANDROID_COLOR_CORRECTION_END -
@@ -920,6 +923,14 @@ static tag_info_t android_automotive_lens[ANDROID_AUTOMOTIVE_LENS_END -
     { "facing",                        TYPE_BYTE   },
 };
 
+static tag_info_t android_extension[ANDROID_EXTENSION_END -
+        ANDROID_EXTENSION_START] = {
+    [ ANDROID_EXTENSION_STRENGTH - ANDROID_EXTENSION_START ] =
+    { "strength",                      TYPE_INT32  },
+    [ ANDROID_EXTENSION_CURRENT_TYPE - ANDROID_EXTENSION_START ] =
+    { "currentType",                   TYPE_INT32  },
+};
+
 
 tag_info_t *tag_info[ANDROID_SECTION_COUNT] = {
     android_color_correction,
@@ -954,6 +965,7 @@ tag_info_t *tag_info[ANDROID_SECTION_COUNT] = {
     android_heic_info,
     android_automotive,
     android_automotive_lens,
+    android_extension,
 };
 
 static int32_t tag_permission_needed[18] = {
@@ -3920,6 +3932,13 @@ int camera_metadata_enum_snprint(uint32_t tag,
                 default:
                     msg = "error: enum value out of range";
             }
+            break;
+        }
+
+        case ANDROID_EXTENSION_STRENGTH: {
+            break;
+        }
+        case ANDROID_EXTENSION_CURRENT_TYPE: {
             break;
         }
 
@@ -7308,6 +7327,13 @@ int camera_metadata_enum_value(uint32_t tag,
                     ret = 0;
                     break;
                 }
+            break;
+        }
+
+        case ANDROID_EXTENSION_STRENGTH: {
+            break;
+        }
+        case ANDROID_EXTENSION_CURRENT_TYPE: {
             break;
         }
 

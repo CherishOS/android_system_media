@@ -54,8 +54,7 @@ ${concatenated_info | javadoc(metadata)}\
      * @deprecated
 ${entry.deprecation_description | javadoc(metadata)}
   % endif
-  ## TODO: Remove fwk_java_public
-  % if entry.applied_visibility in ('hidden', 'ndk_public', 'fwk_only', 'fwk_java_public'):
+  % if entry.applied_visibility in ('hidden', 'ndk_public', 'fwk_only'):
      * @hide
   % endif
      */

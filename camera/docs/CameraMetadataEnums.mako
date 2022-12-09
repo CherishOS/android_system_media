@@ -38,8 +38,7 @@ ${value.notes | javadoc(metadata)}\
 ${value.sdk_notes | javadoc(metadata)}\
     % endif
      * @see ${target_class}#${entry.name | jkey_identifier}
-## TODO: Remove fwk_java_public
-    % if entry.applied_visibility in ('hidden', 'ndk_public', 'fwk_java_public') or value.hidden:
+    % if entry.applied_visibility in ('hidden', 'ndk_public') or value.hidden:
      * @hide
     %endif
     % if value.deprecated:

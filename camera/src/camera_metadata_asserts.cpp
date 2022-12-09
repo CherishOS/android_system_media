@@ -180,6 +180,8 @@ static_assert(static_cast<int>(ANDROID_AUTOMOTIVE)
         == static_cast<int>(::aidl::android::hardware::camera::metadata::CameraMetadataSection::ANDROID_AUTOMOTIVE));
 static_assert(static_cast<int>(ANDROID_AUTOMOTIVE_LENS)
         == static_cast<int>(::aidl::android::hardware::camera::metadata::CameraMetadataSection::ANDROID_AUTOMOTIVE_LENS));
+static_assert(static_cast<int>(ANDROID_EXTENSION)
+        == static_cast<int>(::aidl::android::hardware::camera::metadata::CameraMetadataSection::ANDROID_EXTENSION));
 static_assert(static_cast<int>(VENDOR_SECTION)
         == static_cast<int>(::aidl::android::hardware::camera::metadata::CameraMetadataSection::VENDOR_SECTION));
 
@@ -247,6 +249,8 @@ static_assert(static_cast<int>(ANDROID_AUTOMOTIVE_START)
         == static_cast<int>(::aidl::android::hardware::camera::metadata::CameraMetadataSectionStart::ANDROID_AUTOMOTIVE_START));
 static_assert(static_cast<int>(ANDROID_AUTOMOTIVE_LENS_START)
         == static_cast<int>(::aidl::android::hardware::camera::metadata::CameraMetadataSectionStart::ANDROID_AUTOMOTIVE_LENS_START));
+static_assert(static_cast<int>(ANDROID_EXTENSION_START)
+        == static_cast<int>(::aidl::android::hardware::camera::metadata::CameraMetadataSectionStart::ANDROID_EXTENSION_START));
 static_assert(static_cast<int>(VENDOR_SECTION_START)
         == static_cast<int>(::aidl::android::hardware::camera::metadata::CameraMetadataSectionStart::VENDOR_SECTION_START));
 
