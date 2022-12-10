@@ -2206,6 +2206,46 @@ typedef enum {
 } audio_offload_mode_t;
 #endif // AUDIO_NO_SYSTEM_DECLARATIONS
 
+typedef enum : int32_t {
+    AUDIO_MIXER_BEHAVIOR_INVALID = -1,
+    AUDIO_MIXER_BEHAVIOR_DEFAULT = 0,
+} audio_mixer_behavior_t;
+
+struct audio_mixer_attributes {
+    audio_config_base_t config;
+    audio_mixer_behavior_t mixer_behavior;
+};
+
+typedef struct audio_mixer_attributes audio_mixer_attributes_t;
+
+static const audio_mixer_attributes_t AUDIO_MIXER_ATTRIBUTES_INITIALIZER = {
+    /* .config */ {
+        /* .sample_rate*/ 0,
+        /* .channel_mask*/ AUDIO_CHANNEL_NONE,
+        /* .format */ AUDIO_FORMAT_DEFAULT,
+    },
+    /* .mixer_behavior */ AUDIO_MIXER_BEHAVIOR_DEFAULT,
+};
+
+static inline audio_output_flags_t audio_output_flags_from_mixer_behavior(
+        audio_mixer_behavior_t mixerBehavior) {
+    switch (mixerBehavior) {
+        case AUDIO_MIXER_BEHAVIOR_DEFAULT:
+        default:
+            return AUDIO_OUTPUT_FLAG_NONE;
+    }
+}
+
+inline const char* audio_channel_mask_to_string(audio_channel_mask_t channel_mask) {
+    if (audio_is_input_channel(channel_mask)) {
+        return audio_channel_in_mask_to_string(channel_mask);
+    } else if (audio_is_output_channel(channel_mask)) {
+        return audio_channel_out_mask_to_string(channel_mask);
+    } else {
+        return audio_channel_index_mask_to_string(channel_mask);
+    }
+}
+
 __END_DECLS
 
 /**
