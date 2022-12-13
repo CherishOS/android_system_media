@@ -113,6 +113,12 @@ public:
      *   contributed to CSD.
      */
     std::vector<CsdRecord> aggregateAndAddNewMelRecord(const MelRecord& record);
+
+    /**
+     * Reset the aggregator values. Discards all the previous cached values and
+     * uses the passed records for the new callbacks.
+     **/
+    void reset(float newCsd, const std::vector<CsdRecord>& newRecords);
 private:
     /** Locked aggregateAndAddNewMelRecord method. */
     std::vector<CsdRecord> aggregateAndAddNewMelRecord_l(const MelRecord& record) REQUIRES(mLock);

@@ -33,6 +33,17 @@ using ::testing::ElementsAre;
 using ::testing::Pointwise;
 using ::testing::FloatNear;
 
+TEST(MelAggregatorTest, ResetAggregator) {
+    MelAggregator aggregator{100};
+
+    aggregator.aggregateAndAddNewMelRecord(MelRecord(1, {10.f, 10.f}, 0));
+    aggregator.reset(1.f, {CsdRecord(1, 1, 1.f, 1.f)});
+
+    EXPECT_EQ(aggregator.getCachedMelRecordsSize(), size_t{0});
+    EXPECT_EQ(aggregator.getCsd(), 1.f);
+    EXPECT_EQ(aggregator.getCsdRecordsSize(), size_t{1});
+}
+
 TEST(MelAggregatorTest, AggregateValuesFromDifferentStreams) {
     MelAggregator aggregator{/* csdWindowSeconds */ 100};
 

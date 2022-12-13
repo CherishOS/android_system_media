@@ -2209,6 +2209,7 @@ typedef enum {
 typedef enum : int32_t {
     AUDIO_MIXER_BEHAVIOR_INVALID = -1,
     AUDIO_MIXER_BEHAVIOR_DEFAULT = 0,
+    AUDIO_MIXER_BEHAVIOR_BIT_PERFECT = 1,
 } audio_mixer_behavior_t;
 
 struct audio_mixer_attributes {
@@ -2230,6 +2231,8 @@ static const audio_mixer_attributes_t AUDIO_MIXER_ATTRIBUTES_INITIALIZER = {
 static inline audio_output_flags_t audio_output_flags_from_mixer_behavior(
         audio_mixer_behavior_t mixerBehavior) {
     switch (mixerBehavior) {
+        case AUDIO_MIXER_BEHAVIOR_BIT_PERFECT:
+            return AUDIO_OUTPUT_FLAG_BIT_PERFECT;
         case AUDIO_MIXER_BEHAVIOR_DEFAULT:
         default:
             return AUDIO_OUTPUT_FLAG_NONE;

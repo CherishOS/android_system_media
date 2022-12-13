@@ -224,6 +224,18 @@ std::vector<CsdRecord> MelAggregator::aggregateAndAddNewMelRecord_l(const MelRec
     return updateCsdRecords_l();
 }
 
+void MelAggregator::reset(float newCsd, const std::vector<CsdRecord>& newRecords)
+{
+    std::lock_guard _l(mLock);
+    mCsdRecords.clear();
+    mMelRecords.clear();
+
+    mCurrentCsd = newCsd;
+    for (const auto& record : newRecords) {
+        mCsdRecords.emplace_hint(mCsdRecords.end(), record.timestamp, record);
+    }
+}
+
 size_t MelAggregator::getCachedMelRecordsSize() const
 {
     std::lock_guard _l(mLock);
