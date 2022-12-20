@@ -113,6 +113,8 @@
 #include <aidl/android/hardware/camera/metadata/HeicInfoSupported.h>
 #include <aidl/android/hardware/camera/metadata/AutomotiveLocation.h>
 #include <aidl/android/hardware/camera/metadata/AutomotiveLensFacing.h>
+#include <aidl/android/hardware/camera/metadata/JpegrAvailableJpegRStreamConfigurations.h>
+#include <aidl/android/hardware/camera/metadata/JpegrAvailableJpegRStreamConfigurationsMaximumResolution.h>
 
 #include <system/camera_metadata_tags.h>
 
@@ -182,6 +184,8 @@ static_assert(static_cast<int>(ANDROID_AUTOMOTIVE_LENS)
         == static_cast<int>(::aidl::android::hardware::camera::metadata::CameraMetadataSection::ANDROID_AUTOMOTIVE_LENS));
 static_assert(static_cast<int>(ANDROID_EXTENSION)
         == static_cast<int>(::aidl::android::hardware::camera::metadata::CameraMetadataSection::ANDROID_EXTENSION));
+static_assert(static_cast<int>(ANDROID_JPEGR)
+        == static_cast<int>(::aidl::android::hardware::camera::metadata::CameraMetadataSection::ANDROID_JPEGR));
 static_assert(static_cast<int>(VENDOR_SECTION)
         == static_cast<int>(::aidl::android::hardware::camera::metadata::CameraMetadataSection::VENDOR_SECTION));
 
@@ -251,6 +255,8 @@ static_assert(static_cast<int>(ANDROID_AUTOMOTIVE_LENS_START)
         == static_cast<int>(::aidl::android::hardware::camera::metadata::CameraMetadataSectionStart::ANDROID_AUTOMOTIVE_LENS_START));
 static_assert(static_cast<int>(ANDROID_EXTENSION_START)
         == static_cast<int>(::aidl::android::hardware::camera::metadata::CameraMetadataSectionStart::ANDROID_EXTENSION_START));
+static_assert(static_cast<int>(ANDROID_JPEGR_START)
+        == static_cast<int>(::aidl::android::hardware::camera::metadata::CameraMetadataSectionStart::ANDROID_JPEGR_START));
 static_assert(static_cast<int>(VENDOR_SECTION_START)
         == static_cast<int>(::aidl::android::hardware::camera::metadata::CameraMetadataSectionStart::VENDOR_SECTION_START));
 
@@ -848,6 +854,18 @@ static_assert(static_cast<int>(ANDROID_AUTOMOTIVE_LOCATION)
         == static_cast<int>(::aidl::android::hardware::camera::metadata::CameraMetadataTag::ANDROID_AUTOMOTIVE_LOCATION));
 static_assert(static_cast<int>(ANDROID_AUTOMOTIVE_LENS_FACING)
         == static_cast<int>(::aidl::android::hardware::camera::metadata::CameraMetadataTag::ANDROID_AUTOMOTIVE_LENS_FACING));
+static_assert(static_cast<int>(ANDROID_JPEGR_AVAILABLE_JPEG_R_STREAM_CONFIGURATIONS)
+        == static_cast<int>(::aidl::android::hardware::camera::metadata::CameraMetadataTag::ANDROID_JPEGR_AVAILABLE_JPEG_R_STREAM_CONFIGURATIONS));
+static_assert(static_cast<int>(ANDROID_JPEGR_AVAILABLE_JPEG_R_MIN_FRAME_DURATIONS)
+        == static_cast<int>(::aidl::android::hardware::camera::metadata::CameraMetadataTag::ANDROID_JPEGR_AVAILABLE_JPEG_R_MIN_FRAME_DURATIONS));
+static_assert(static_cast<int>(ANDROID_JPEGR_AVAILABLE_JPEG_R_STALL_DURATIONS)
+        == static_cast<int>(::aidl::android::hardware::camera::metadata::CameraMetadataTag::ANDROID_JPEGR_AVAILABLE_JPEG_R_STALL_DURATIONS));
+static_assert(static_cast<int>(ANDROID_JPEGR_AVAILABLE_JPEG_R_STREAM_CONFIGURATIONS_MAXIMUM_RESOLUTION)
+        == static_cast<int>(::aidl::android::hardware::camera::metadata::CameraMetadataTag::ANDROID_JPEGR_AVAILABLE_JPEG_R_STREAM_CONFIGURATIONS_MAXIMUM_RESOLUTION));
+static_assert(static_cast<int>(ANDROID_JPEGR_AVAILABLE_JPEG_R_MIN_FRAME_DURATIONS_MAXIMUM_RESOLUTION)
+        == static_cast<int>(::aidl::android::hardware::camera::metadata::CameraMetadataTag::ANDROID_JPEGR_AVAILABLE_JPEG_R_MIN_FRAME_DURATIONS_MAXIMUM_RESOLUTION));
+static_assert(static_cast<int>(ANDROID_JPEGR_AVAILABLE_JPEG_R_STALL_DURATIONS_MAXIMUM_RESOLUTION)
+        == static_cast<int>(::aidl::android::hardware::camera::metadata::CameraMetadataTag::ANDROID_JPEGR_AVAILABLE_JPEG_R_STALL_DURATIONS_MAXIMUM_RESOLUTION));
 
 static_assert(static_cast<int32_t>(ANDROID_COLOR_CORRECTION_MODE_TRANSFORM_MATRIX)
         == static_cast<int32_t>(::aidl::android::hardware::camera::metadata::ColorCorrectionMode::ANDROID_COLOR_CORRECTION_MODE_TRANSFORM_MATRIX));
@@ -1724,3 +1742,13 @@ static_assert(static_cast<int32_t>(ANDROID_AUTOMOTIVE_LENS_FACING_INTERIOR_SEAT_
         == static_cast<int32_t>(::aidl::android::hardware::camera::metadata::AutomotiveLensFacing::ANDROID_AUTOMOTIVE_LENS_FACING_INTERIOR_SEAT_ROW_3_CENTER));
 static_assert(static_cast<int32_t>(ANDROID_AUTOMOTIVE_LENS_FACING_INTERIOR_SEAT_ROW_3_RIGHT)
         == static_cast<int32_t>(::aidl::android::hardware::camera::metadata::AutomotiveLensFacing::ANDROID_AUTOMOTIVE_LENS_FACING_INTERIOR_SEAT_ROW_3_RIGHT));
+
+static_assert(static_cast<int32_t>(ANDROID_JPEGR_AVAILABLE_JPEG_R_STREAM_CONFIGURATIONS_OUTPUT)
+        == static_cast<int32_t>(::aidl::android::hardware::camera::metadata::JpegrAvailableJpegRStreamConfigurations::ANDROID_JPEGR_AVAILABLE_JPEG_R_STREAM_CONFIGURATIONS_OUTPUT));
+static_assert(static_cast<int32_t>(ANDROID_JPEGR_AVAILABLE_JPEG_R_STREAM_CONFIGURATIONS_INPUT)
+        == static_cast<int32_t>(::aidl::android::hardware::camera::metadata::JpegrAvailableJpegRStreamConfigurations::ANDROID_JPEGR_AVAILABLE_JPEG_R_STREAM_CONFIGURATIONS_INPUT));
+
+static_assert(static_cast<int32_t>(ANDROID_JPEGR_AVAILABLE_JPEG_R_STREAM_CONFIGURATIONS_MAXIMUM_RESOLUTION_OUTPUT)
+        == static_cast<int32_t>(::aidl::android::hardware::camera::metadata::JpegrAvailableJpegRStreamConfigurationsMaximumResolution::ANDROID_JPEGR_AVAILABLE_JPEG_R_STREAM_CONFIGURATIONS_MAXIMUM_RESOLUTION_OUTPUT));
+static_assert(static_cast<int32_t>(ANDROID_JPEGR_AVAILABLE_JPEG_R_STREAM_CONFIGURATIONS_MAXIMUM_RESOLUTION_INPUT)
+        == static_cast<int32_t>(::aidl::android::hardware::camera::metadata::JpegrAvailableJpegRStreamConfigurationsMaximumResolution::ANDROID_JPEGR_AVAILABLE_JPEG_R_STREAM_CONFIGURATIONS_MAXIMUM_RESOLUTION_INPUT));

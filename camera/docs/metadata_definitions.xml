@@ -14091,5 +14091,144 @@ xsi:schemaLocation="http://schemas.android.com/service/camera/metadata/ metadata
         </clone>
       </dynamic>
     </section>
+    <section name="jpegr">
+      <static>
+        <entry name="availableJpegRStreamConfigurations" type="int32" visibility="ndk_public"
+            enum="true" container="array" typedef="streamConfiguration"
+            hwlevel="limited" hal_version="3.9">
+          <array>
+            <size>n</size>
+            <size>4</size>
+          </array>
+          <enum>
+            <value>OUTPUT</value>
+            <value>INPUT</value>
+          </enum>
+          <description>The available Jpeg/R stream
+          configurations that this camera device supports
+          (i.e. format, width, height, output/input stream).
+          </description>
+          <details>
+          The configurations are listed as `(format, width, height, input?)` tuples.
+
+          If the camera device supports Jpeg/R, it will support the same stream combinations with
+          Jpeg/R as it does with P010. The stream combinations with Jpeg/R (or P010) supported
+          by the device is determined by the device's hardware level and capabilities.
+
+          All the static, control, and dynamic metadata tags related to JPEG apply to Jpeg/R formats.
+          Configuring JPEG and Jpeg/R streams at the same time is not supported.
+          </details>
+          <ndk_details>
+          All the configuration tuples `(format, width, height, input?)` will contain
+          AIMAGE_FORMAT_JPEGR format as OUTPUT only.
+          </ndk_details>
+        </entry>
+        <entry name="availableJpegRMinFrameDurations" type="int64" visibility="ndk_public"
+               container="array" typedef="streamConfigurationDuration" hwlevel="limited"
+               hal_version="3.9">
+          <array>
+            <size>4</size>
+            <size>n</size>
+          </array>
+          <description>This lists the minimum frame duration for each
+          format/size combination for Jpeg/R output formats.
+          </description>
+          <units>(format, width, height, ns) x n</units>
+          <details>
+          This should correspond to the frame duration when only that
+          stream is active, with all processing (typically in android.*.mode)
+          set to either OFF or FAST.
+
+          When multiple streams are used in a request, the minimum frame
+          duration will be max(individual stream min durations).
+
+          See android.sensor.frameDuration and
+          android.scaler.availableStallDurations for more details about
+          calculating the max frame rate.
+          </details>
+        </entry>
+        <entry name="availableJpegRStallDurations" type="int64" visibility="ndk_public"
+               container="array" typedef="streamConfigurationDuration" hwlevel="limited"
+               hal_version="3.9">
+          <array>
+            <size>4</size>
+            <size>n</size>
+          </array>
+          <description>This lists the maximum stall duration for each
+          output format/size combination for Jpeg/R streams.
+          </description>
+          <units>(format, width, height, ns) x n</units>
+          <details>
+          A stall duration is how much extra time would get added
+          to the normal minimum frame duration for a repeating request
+          that has streams with non-zero stall.
+
+          This functions similarly to
+          android.scaler.availableStallDurations for Jpeg/R
+          streams.
+
+          All Jpeg/R output stream formats may have a nonzero stall
+          duration.
+          </details>
+        </entry>
+        <entry name="availableJpegRStreamConfigurationsMaximumResolution" type="int32"
+          visibility="ndk_public" enum="true" container="array" typedef="streamConfiguration"
+          hal_version="3.9">
+          <array>
+            <size>n</size>
+            <size>4</size>
+          </array>
+          <enum>
+            <value>OUTPUT</value>
+            <value>INPUT</value>
+          </enum>
+          <description>The available Jpeg/R stream
+          configurations that this camera device supports
+          (i.e. format, width, height, output/input stream).
+          </description>
+          <details>
+          Refer to android.jpegr.availableJpegRStreamConfigurations for details.
+          </details>
+          <ndk_details>
+          All the configuration tuples `(format, width, height, input?)` will contain
+          AIMAGE_FORMAT_JPEG_R format as OUTPUT only.
+          </ndk_details>
+        </entry>
+        <entry name="availableJpegRMinFrameDurationsMaximumResolution" type="int64"
+          visibility="ndk_public" container="array" typedef="streamConfigurationDuration"
+          hal_version="3.9">
+          <array>
+            <size>4</size>
+            <size>n</size>
+          </array>
+          <description>This lists the minimum frame duration for each
+          format/size combination for Jpeg/R output formats for CaptureRequests where
+          android.sensor.pixelMode is set to
+          {@link android.hardware.camera2.CameraMetadata#SENSOR_PIXEL_MODE_MAXIMUM_RESOLUTION}.
+          </description>
+          <units>(format, width, height, ns) x n</units>
+          <details>
+          Refer to android.jpegr.availableJpegRMinFrameDurations for details.
+          </details>
+        </entry>
+        <entry name="availableJpegRStallDurationsMaximumResolution" type="int64"
+          visibility="ndk_public" container="array" typedef="streamConfigurationDuration"
+          hal_version="3.9">
+          <array>
+            <size>4</size>
+            <size>n</size>
+          </array>
+          <description>This lists the maximum stall duration for each
+          output format/size combination for Jpeg/R streams for CaptureRequests where
+          android.sensor.pixelMode is set to
+          {@link android.hardware.camera2.CameraMetadata#SENSOR_PIXEL_MODE_MAXIMUM_RESOLUTION}.
+          </description>
+          <units>(format, width, height, ns) x n</units>
+          <details>
+          Refer to android.jpegr.availableJpegRStallDurations for details.
+          </details>
+        </entry>
+      </static>
+    </section>
   </namespace>
 </metadata>

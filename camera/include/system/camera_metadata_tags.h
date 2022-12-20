@@ -68,6 +68,7 @@ typedef enum camera_metadata_section {
     ANDROID_AUTOMOTIVE,
     ANDROID_AUTOMOTIVE_LENS,
     ANDROID_EXTENSION,
+    ANDROID_JPEGR,
     ANDROID_SECTION_COUNT,
 
     VENDOR_SECTION = 0x8000
@@ -115,6 +116,7 @@ typedef enum camera_metadata_section_start {
     ANDROID_AUTOMOTIVE_START       = ANDROID_AUTOMOTIVE        << 16,
     ANDROID_AUTOMOTIVE_LENS_START  = ANDROID_AUTOMOTIVE_LENS   << 16,
     ANDROID_EXTENSION_START        = ANDROID_EXTENSION         << 16,
+    ANDROID_JPEGR_START            = ANDROID_JPEGR             << 16,
     VENDOR_SECTION_START           = VENDOR_SECTION            << 16
 } camera_metadata_section_start_t;
 
@@ -569,6 +571,20 @@ typedef enum camera_metadata_tag {
             ANDROID_EXTENSION_START,
     ANDROID_EXTENSION_CURRENT_TYPE,                   // int32        | fwk_java_public
     ANDROID_EXTENSION_END,
+
+    ANDROID_JPEGR_AVAILABLE_JPEG_R_STREAM_CONFIGURATIONS = 
+                                                      // enum[]       | ndk_public   | HIDL v3.9
+            ANDROID_JPEGR_START,
+    ANDROID_JPEGR_AVAILABLE_JPEG_R_MIN_FRAME_DURATIONS,
+                                                      // int64[]      | ndk_public   | HIDL v3.9
+    ANDROID_JPEGR_AVAILABLE_JPEG_R_STALL_DURATIONS,   // int64[]      | ndk_public   | HIDL v3.9
+    ANDROID_JPEGR_AVAILABLE_JPEG_R_STREAM_CONFIGURATIONS_MAXIMUM_RESOLUTION,
+                                                      // enum[]       | ndk_public   | HIDL v3.9
+    ANDROID_JPEGR_AVAILABLE_JPEG_R_MIN_FRAME_DURATIONS_MAXIMUM_RESOLUTION,
+                                                      // int64[]      | ndk_public   | HIDL v3.9
+    ANDROID_JPEGR_AVAILABLE_JPEG_R_STALL_DURATIONS_MAXIMUM_RESOLUTION,
+                                                      // int64[]      | ndk_public   | HIDL v3.9
+    ANDROID_JPEGR_END,
 
 } camera_metadata_tag_t;
 
@@ -1424,5 +1440,20 @@ typedef enum camera_metadata_enum_android_automotive_lens_facing {
     ANDROID_AUTOMOTIVE_LENS_FACING_INTERIOR_SEAT_ROW_3_RIGHT        , // HIDL v3.8
 } camera_metadata_enum_android_automotive_lens_facing_t;
 
+
+
+// ANDROID_JPEGR_AVAILABLE_JPEG_R_STREAM_CONFIGURATIONS
+typedef enum camera_metadata_enum_android_jpegr_available_jpeg_r_stream_configurations {
+    ANDROID_JPEGR_AVAILABLE_JPEG_R_STREAM_CONFIGURATIONS_OUTPUT     , // HIDL v3.9
+    ANDROID_JPEGR_AVAILABLE_JPEG_R_STREAM_CONFIGURATIONS_INPUT      , // HIDL v3.9
+} camera_metadata_enum_android_jpegr_available_jpeg_r_stream_configurations_t;
+
+// ANDROID_JPEGR_AVAILABLE_JPEG_R_STREAM_CONFIGURATIONS_MAXIMUM_RESOLUTION
+typedef enum camera_metadata_enum_android_jpegr_available_jpeg_r_stream_configurations_maximum_resolution {
+    ANDROID_JPEGR_AVAILABLE_JPEG_R_STREAM_CONFIGURATIONS_MAXIMUM_RESOLUTION_OUTPUT
+                                                                     , // HIDL v3.9
+    ANDROID_JPEGR_AVAILABLE_JPEG_R_STREAM_CONFIGURATIONS_MAXIMUM_RESOLUTION_INPUT
+                                                                     , // HIDL v3.9
+} camera_metadata_enum_android_jpegr_available_jpeg_r_stream_configurations_maximum_resolution_t;
 
 

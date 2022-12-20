@@ -1431,6 +1431,28 @@
         </li>
       </ul> <!-- toc_section -->
     </li>
+    <li>
+      <span class="toc_section_header"><a href="#section_jpegr">jpegr</a></span>
+      <ul class="toc_section">
+        <li>
+          <span class="toc_kind_header">static</span>
+          <ul class="toc_section">
+            <li
+            ><a href="#static_android.jpegr.availableJpegRStreamConfigurations">android.jpegr.availableJpegRStreamConfigurations</a></li>
+            <li
+            ><a href="#static_android.jpegr.availableJpegRMinFrameDurations">android.jpegr.availableJpegRMinFrameDurations</a></li>
+            <li
+            ><a href="#static_android.jpegr.availableJpegRStallDurations">android.jpegr.availableJpegRStallDurations</a></li>
+            <li
+            ><a href="#static_android.jpegr.availableJpegRStreamConfigurationsMaximumResolution">android.jpegr.availableJpegRStreamConfigurationsMaximumResolution</a></li>
+            <li
+            ><a href="#static_android.jpegr.availableJpegRMinFrameDurationsMaximumResolution">android.jpegr.availableJpegRMinFrameDurationsMaximumResolution</a></li>
+            <li
+            ><a href="#static_android.jpegr.availableJpegRStallDurationsMaximumResolution">android.jpegr.availableJpegRStallDurationsMaximumResolution</a></li>
+          </ul>
+        </li>
+      </ul> <!-- toc_section -->
+    </li>
   </ul>
 
 
@@ -39528,6 +39550,411 @@ smoothing.<wbr/></li>
 The control is only defined and available to clients sending capture requests via
 <a href="https://developer.android.com/reference/android/hardware/camera2/CameraExtensionSession.html">CameraExtensionSession</a>.<wbr/>
 The default value is 100.<wbr/></p>
+            </td>
+          </tr>
+
+
+          <tr class="entry_spacer"><td class="entry_spacer" colspan="7"></td></tr>
+           <!-- end of entry -->
+        
+        
+
+      <!-- end of kind -->
+      </tbody>
+
+  <!-- end of section -->
+  <tr><td colspan="7" id="section_jpegr" class="section">jpegr</td></tr>
+
+
+      <tr><td colspan="7" class="kind">static</td></tr>
+
+      <thead class="entries_header">
+        <tr>
+          <th class="th_name">Property Name</th>
+          <th class="th_type">Type</th>
+          <th class="th_description">Description</th>
+          <th class="th_units">Units</th>
+          <th class="th_range">Range</th>
+          <th class="th_hal_version">Initial HIDL HAL version</th>
+          <th class="th_tags">Tags</th>
+        </tr>
+      </thead>
+
+      <tbody>
+
+        
+
+        
+
+        
+
+        
+
+                
+          <tr class="entry" id="static_android.jpegr.availableJpegRStreamConfigurations">
+            <td class="entry_name
+             " rowspan="3">
+              android.<wbr/>jpegr.<wbr/>available<wbr/>Jpeg<wbr/>RStream<wbr/>Configurations
+            </td>
+            <td class="entry_type">
+                <span class="entry_type_name entry_type_name_enum">int32</span>
+                <span class="entry_type_container">x</span>
+
+                <span class="entry_type_array">
+                  n x 4
+                </span>
+              <span class="entry_type_visibility"> [ndk_public as streamConfiguration]</span>
+
+
+              <span class="entry_type_hwlevel">[limited] </span>
+
+
+
+                <ul class="entry_type_enum">
+                  <li>
+                    <span class="entry_type_enum_name">OUTPUT (v3.9)</span>
+                  </li>
+                  <li>
+                    <span class="entry_type_enum_name">INPUT (v3.9)</span>
+                  </li>
+                </ul>
+
+            </td> <!-- entry_type -->
+
+            <td class="entry_description">
+              <p>The available Jpeg/<wbr/>R stream
+configurations that this camera device supports
+(i.<wbr/>e.<wbr/> format,<wbr/> width,<wbr/> height,<wbr/> output/<wbr/>input stream).<wbr/></p>
+            </td>
+
+            <td class="entry_units">
+            </td>
+
+            <td class="entry_range">
+            </td>
+
+            <td class="entry_hal_version">
+              <p>3.<wbr/>9</p>
+            </td>
+
+            <td class="entry_tags">
+            </td>
+
+          </tr>
+          <tr class="entries_header">
+            <th class="th_details" colspan="6">Details</th>
+          </tr>
+          <tr class="entry_cont">
+            <td class="entry_details" colspan="6">
+              <p>The configurations are listed as <code>(format,<wbr/> width,<wbr/> height,<wbr/> input?)</code> tuples.<wbr/></p>
+<p>If the camera device supports Jpeg/<wbr/>R,<wbr/> it will support the same stream combinations with
+Jpeg/<wbr/>R as it does with P010.<wbr/> The stream combinations with Jpeg/<wbr/>R (or P010) supported
+by the device is determined by the device's hardware level and capabilities.<wbr/></p>
+<p>All the static,<wbr/> control,<wbr/> and dynamic metadata tags related to JPEG apply to Jpeg/<wbr/>R formats.<wbr/>
+Configuring JPEG and Jpeg/<wbr/>R streams at the same time is not supported.<wbr/></p>
+            </td>
+          </tr>
+
+
+          <tr class="entry_spacer"><td class="entry_spacer" colspan="7"></td></tr>
+           <!-- end of entry -->
+        
+                
+          <tr class="entry" id="static_android.jpegr.availableJpegRMinFrameDurations">
+            <td class="entry_name
+             " rowspan="3">
+              android.<wbr/>jpegr.<wbr/>available<wbr/>Jpeg<wbr/>RMin<wbr/>Frame<wbr/>Durations
+            </td>
+            <td class="entry_type">
+                <span class="entry_type_name">int64</span>
+                <span class="entry_type_container">x</span>
+
+                <span class="entry_type_array">
+                  4 x n
+                </span>
+              <span class="entry_type_visibility"> [ndk_public as streamConfigurationDuration]</span>
+
+
+              <span class="entry_type_hwlevel">[limited] </span>
+
+
+
+
+            </td> <!-- entry_type -->
+
+            <td class="entry_description">
+              <p>This lists the minimum frame duration for each
+format/<wbr/>size combination for Jpeg/<wbr/>R output formats.<wbr/></p>
+            </td>
+
+            <td class="entry_units">
+              (format,<wbr/> width,<wbr/> height,<wbr/> ns) x n
+            </td>
+
+            <td class="entry_range">
+            </td>
+
+            <td class="entry_hal_version">
+              <p>3.<wbr/>9</p>
+            </td>
+
+            <td class="entry_tags">
+            </td>
+
+          </tr>
+          <tr class="entries_header">
+            <th class="th_details" colspan="6">Details</th>
+          </tr>
+          <tr class="entry_cont">
+            <td class="entry_details" colspan="6">
+              <p>This should correspond to the frame duration when only that
+stream is active,<wbr/> with all processing (typically in android.<wbr/>*.<wbr/>mode)
+set to either OFF or FAST.<wbr/></p>
+<p>When multiple streams are used in a request,<wbr/> the minimum frame
+duration will be max(individual stream min durations).<wbr/></p>
+<p>See <a href="#controls_android.sensor.frameDuration">android.<wbr/>sensor.<wbr/>frame<wbr/>Duration</a> and
+<a href="#static_android.scaler.availableStallDurations">android.<wbr/>scaler.<wbr/>available<wbr/>Stall<wbr/>Durations</a> for more details about
+calculating the max frame rate.<wbr/></p>
+            </td>
+          </tr>
+
+
+          <tr class="entry_spacer"><td class="entry_spacer" colspan="7"></td></tr>
+           <!-- end of entry -->
+        
+                
+          <tr class="entry" id="static_android.jpegr.availableJpegRStallDurations">
+            <td class="entry_name
+             " rowspan="3">
+              android.<wbr/>jpegr.<wbr/>available<wbr/>Jpeg<wbr/>RStall<wbr/>Durations
+            </td>
+            <td class="entry_type">
+                <span class="entry_type_name">int64</span>
+                <span class="entry_type_container">x</span>
+
+                <span class="entry_type_array">
+                  4 x n
+                </span>
+              <span class="entry_type_visibility"> [ndk_public as streamConfigurationDuration]</span>
+
+
+              <span class="entry_type_hwlevel">[limited] </span>
+
+
+
+
+            </td> <!-- entry_type -->
+
+            <td class="entry_description">
+              <p>This lists the maximum stall duration for each
+output format/<wbr/>size combination for Jpeg/<wbr/>R streams.<wbr/></p>
+            </td>
+
+            <td class="entry_units">
+              (format,<wbr/> width,<wbr/> height,<wbr/> ns) x n
+            </td>
+
+            <td class="entry_range">
+            </td>
+
+            <td class="entry_hal_version">
+              <p>3.<wbr/>9</p>
+            </td>
+
+            <td class="entry_tags">
+            </td>
+
+          </tr>
+          <tr class="entries_header">
+            <th class="th_details" colspan="6">Details</th>
+          </tr>
+          <tr class="entry_cont">
+            <td class="entry_details" colspan="6">
+              <p>A stall duration is how much extra time would get added
+to the normal minimum frame duration for a repeating request
+that has streams with non-zero stall.<wbr/></p>
+<p>This functions similarly to
+<a href="#static_android.scaler.availableStallDurations">android.<wbr/>scaler.<wbr/>available<wbr/>Stall<wbr/>Durations</a> for Jpeg/<wbr/>R
+streams.<wbr/></p>
+<p>All Jpeg/<wbr/>R output stream formats may have a nonzero stall
+duration.<wbr/></p>
+            </td>
+          </tr>
+
+
+          <tr class="entry_spacer"><td class="entry_spacer" colspan="7"></td></tr>
+           <!-- end of entry -->
+        
+                
+          <tr class="entry" id="static_android.jpegr.availableJpegRStreamConfigurationsMaximumResolution">
+            <td class="entry_name
+             " rowspan="3">
+              android.<wbr/>jpegr.<wbr/>available<wbr/>Jpeg<wbr/>RStream<wbr/>Configurations<wbr/>Maximum<wbr/>Resolution
+            </td>
+            <td class="entry_type">
+                <span class="entry_type_name entry_type_name_enum">int32</span>
+                <span class="entry_type_container">x</span>
+
+                <span class="entry_type_array">
+                  n x 4
+                </span>
+              <span class="entry_type_visibility"> [ndk_public as streamConfiguration]</span>
+
+
+
+
+
+                <ul class="entry_type_enum">
+                  <li>
+                    <span class="entry_type_enum_name">OUTPUT (v3.9)</span>
+                  </li>
+                  <li>
+                    <span class="entry_type_enum_name">INPUT (v3.9)</span>
+                  </li>
+                </ul>
+
+            </td> <!-- entry_type -->
+
+            <td class="entry_description">
+              <p>The available Jpeg/<wbr/>R stream
+configurations that this camera device supports
+(i.<wbr/>e.<wbr/> format,<wbr/> width,<wbr/> height,<wbr/> output/<wbr/>input stream).<wbr/></p>
+            </td>
+
+            <td class="entry_units">
+            </td>
+
+            <td class="entry_range">
+            </td>
+
+            <td class="entry_hal_version">
+              <p>3.<wbr/>9</p>
+            </td>
+
+            <td class="entry_tags">
+            </td>
+
+          </tr>
+          <tr class="entries_header">
+            <th class="th_details" colspan="6">Details</th>
+          </tr>
+          <tr class="entry_cont">
+            <td class="entry_details" colspan="6">
+              <p>Refer to <a href="#static_android.jpegr.availableJpegRStreamConfigurations">android.<wbr/>jpegr.<wbr/>available<wbr/>Jpeg<wbr/>RStream<wbr/>Configurations</a> for details.<wbr/></p>
+            </td>
+          </tr>
+
+
+          <tr class="entry_spacer"><td class="entry_spacer" colspan="7"></td></tr>
+           <!-- end of entry -->
+        
+                
+          <tr class="entry" id="static_android.jpegr.availableJpegRMinFrameDurationsMaximumResolution">
+            <td class="entry_name
+             " rowspan="3">
+              android.<wbr/>jpegr.<wbr/>available<wbr/>Jpeg<wbr/>RMin<wbr/>Frame<wbr/>Durations<wbr/>Maximum<wbr/>Resolution
+            </td>
+            <td class="entry_type">
+                <span class="entry_type_name">int64</span>
+                <span class="entry_type_container">x</span>
+
+                <span class="entry_type_array">
+                  4 x n
+                </span>
+              <span class="entry_type_visibility"> [ndk_public as streamConfigurationDuration]</span>
+
+
+
+
+
+
+            </td> <!-- entry_type -->
+
+            <td class="entry_description">
+              <p>This lists the minimum frame duration for each
+format/<wbr/>size combination for Jpeg/<wbr/>R output formats for CaptureRequests where
+<a href="#controls_android.sensor.pixelMode">android.<wbr/>sensor.<wbr/>pixel<wbr/>Mode</a> is set to
+<a href="https://developer.android.com/reference/android/hardware/camera2/CameraMetadata.html#SENSOR_PIXEL_MODE_MAXIMUM_RESOLUTION">Camera<wbr/>Metadata#SENSOR_<wbr/>PIXEL_<wbr/>MODE_<wbr/>MAXIMUM_<wbr/>RESOLUTION</a>.<wbr/></p>
+            </td>
+
+            <td class="entry_units">
+              (format,<wbr/> width,<wbr/> height,<wbr/> ns) x n
+            </td>
+
+            <td class="entry_range">
+            </td>
+
+            <td class="entry_hal_version">
+              <p>3.<wbr/>9</p>
+            </td>
+
+            <td class="entry_tags">
+            </td>
+
+          </tr>
+          <tr class="entries_header">
+            <th class="th_details" colspan="6">Details</th>
+          </tr>
+          <tr class="entry_cont">
+            <td class="entry_details" colspan="6">
+              <p>Refer to <a href="#static_android.jpegr.availableJpegRMinFrameDurations">android.<wbr/>jpegr.<wbr/>available<wbr/>Jpeg<wbr/>RMin<wbr/>Frame<wbr/>Durations</a> for details.<wbr/></p>
+            </td>
+          </tr>
+
+
+          <tr class="entry_spacer"><td class="entry_spacer" colspan="7"></td></tr>
+           <!-- end of entry -->
+        
+                
+          <tr class="entry" id="static_android.jpegr.availableJpegRStallDurationsMaximumResolution">
+            <td class="entry_name
+             " rowspan="3">
+              android.<wbr/>jpegr.<wbr/>available<wbr/>Jpeg<wbr/>RStall<wbr/>Durations<wbr/>Maximum<wbr/>Resolution
+            </td>
+            <td class="entry_type">
+                <span class="entry_type_name">int64</span>
+                <span class="entry_type_container">x</span>
+
+                <span class="entry_type_array">
+                  4 x n
+                </span>
+              <span class="entry_type_visibility"> [ndk_public as streamConfigurationDuration]</span>
+
+
+
+
+
+
+            </td> <!-- entry_type -->
+
+            <td class="entry_description">
+              <p>This lists the maximum stall duration for each
+output format/<wbr/>size combination for Jpeg/<wbr/>R streams for CaptureRequests where
+<a href="#controls_android.sensor.pixelMode">android.<wbr/>sensor.<wbr/>pixel<wbr/>Mode</a> is set to
+<a href="https://developer.android.com/reference/android/hardware/camera2/CameraMetadata.html#SENSOR_PIXEL_MODE_MAXIMUM_RESOLUTION">Camera<wbr/>Metadata#SENSOR_<wbr/>PIXEL_<wbr/>MODE_<wbr/>MAXIMUM_<wbr/>RESOLUTION</a>.<wbr/></p>
+            </td>
+
+            <td class="entry_units">
+              (format,<wbr/> width,<wbr/> height,<wbr/> ns) x n
+            </td>
+
+            <td class="entry_range">
+            </td>
+
+            <td class="entry_hal_version">
+              <p>3.<wbr/>9</p>
+            </td>
+
+            <td class="entry_tags">
+            </td>
+
+          </tr>
+          <tr class="entries_header">
+            <th class="th_details" colspan="6">Details</th>
+          </tr>
+          <tr class="entry_cont">
+            <td class="entry_details" colspan="6">
+              <p>Refer to <a href="#static_android.jpegr.availableJpegRStallDurations">android.<wbr/>jpegr.<wbr/>available<wbr/>Jpeg<wbr/>RStall<wbr/>Durations</a> for details.<wbr/></p>
             </td>
           </tr>
 

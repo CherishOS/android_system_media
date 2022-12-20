@@ -65,6 +65,7 @@ const char *camera_metadata_section_names[ANDROID_SECTION_COUNT] = {
     [ANDROID_AUTOMOTIVE]           = "android.automotive",
     [ANDROID_AUTOMOTIVE_LENS]      = "android.automotive.lens",
     [ANDROID_EXTENSION]            = "android.extension",
+    [ANDROID_JPEGR]                = "android.jpegr",
 };
 
 unsigned int camera_metadata_section_bounds[ANDROID_SECTION_COUNT][2] = {
@@ -135,6 +136,8 @@ unsigned int camera_metadata_section_bounds[ANDROID_SECTION_COUNT][2] = {
                                        ANDROID_AUTOMOTIVE_LENS_END },
     [ANDROID_EXTENSION]            = { ANDROID_EXTENSION_START,
                                        ANDROID_EXTENSION_END },
+    [ANDROID_JPEGR]                = { ANDROID_JPEGR_START,
+                                       ANDROID_JPEGR_END },
 };
 
 static tag_info_t android_color_correction[ANDROID_COLOR_CORRECTION_END -
@@ -931,6 +934,27 @@ static tag_info_t android_extension[ANDROID_EXTENSION_END -
     { "currentType",                   TYPE_INT32  },
 };
 
+static tag_info_t android_jpegr[ANDROID_JPEGR_END -
+        ANDROID_JPEGR_START] = {
+    [ ANDROID_JPEGR_AVAILABLE_JPEG_R_STREAM_CONFIGURATIONS - ANDROID_JPEGR_START ] =
+    { "availableJpegRStreamConfigurations",
+                                        TYPE_INT32  },
+    [ ANDROID_JPEGR_AVAILABLE_JPEG_R_MIN_FRAME_DURATIONS - ANDROID_JPEGR_START ] =
+    { "availableJpegRMinFrameDurations",
+                                        TYPE_INT64  },
+    [ ANDROID_JPEGR_AVAILABLE_JPEG_R_STALL_DURATIONS - ANDROID_JPEGR_START ] =
+    { "availableJpegRStallDurations",  TYPE_INT64  },
+    [ ANDROID_JPEGR_AVAILABLE_JPEG_R_STREAM_CONFIGURATIONS_MAXIMUM_RESOLUTION - ANDROID_JPEGR_START ] =
+    { "availableJpegRStreamConfigurationsMaximumResolution",
+                                        TYPE_INT32  },
+    [ ANDROID_JPEGR_AVAILABLE_JPEG_R_MIN_FRAME_DURATIONS_MAXIMUM_RESOLUTION - ANDROID_JPEGR_START ] =
+    { "availableJpegRMinFrameDurationsMaximumResolution",
+                                        TYPE_INT64  },
+    [ ANDROID_JPEGR_AVAILABLE_JPEG_R_STALL_DURATIONS_MAXIMUM_RESOLUTION - ANDROID_JPEGR_START ] =
+    { "availableJpegRStallDurationsMaximumResolution",
+                                        TYPE_INT64  },
+};
+
 
 tag_info_t *tag_info[ANDROID_SECTION_COUNT] = {
     android_color_correction,
@@ -966,6 +990,7 @@ tag_info_t *tag_info[ANDROID_SECTION_COUNT] = {
     android_automotive,
     android_automotive_lens,
     android_extension,
+    android_jpegr,
 };
 
 static int32_t tag_permission_needed[18] = {
@@ -3939,6 +3964,49 @@ int camera_metadata_enum_snprint(uint32_t tag,
             break;
         }
         case ANDROID_EXTENSION_CURRENT_TYPE: {
+            break;
+        }
+
+        case ANDROID_JPEGR_AVAILABLE_JPEG_R_STREAM_CONFIGURATIONS: {
+            switch (value) {
+                case ANDROID_JPEGR_AVAILABLE_JPEG_R_STREAM_CONFIGURATIONS_OUTPUT:
+                    msg = "OUTPUT";
+                    ret = 0;
+                    break;
+                case ANDROID_JPEGR_AVAILABLE_JPEG_R_STREAM_CONFIGURATIONS_INPUT:
+                    msg = "INPUT";
+                    ret = 0;
+                    break;
+                default:
+                    msg = "error: enum value out of range";
+            }
+            break;
+        }
+        case ANDROID_JPEGR_AVAILABLE_JPEG_R_MIN_FRAME_DURATIONS: {
+            break;
+        }
+        case ANDROID_JPEGR_AVAILABLE_JPEG_R_STALL_DURATIONS: {
+            break;
+        }
+        case ANDROID_JPEGR_AVAILABLE_JPEG_R_STREAM_CONFIGURATIONS_MAXIMUM_RESOLUTION: {
+            switch (value) {
+                case ANDROID_JPEGR_AVAILABLE_JPEG_R_STREAM_CONFIGURATIONS_MAXIMUM_RESOLUTION_OUTPUT:
+                    msg = "OUTPUT";
+                    ret = 0;
+                    break;
+                case ANDROID_JPEGR_AVAILABLE_JPEG_R_STREAM_CONFIGURATIONS_MAXIMUM_RESOLUTION_INPUT:
+                    msg = "INPUT";
+                    ret = 0;
+                    break;
+                default:
+                    msg = "error: enum value out of range";
+            }
+            break;
+        }
+        case ANDROID_JPEGR_AVAILABLE_JPEG_R_MIN_FRAME_DURATIONS_MAXIMUM_RESOLUTION: {
+            break;
+        }
+        case ANDROID_JPEGR_AVAILABLE_JPEG_R_STALL_DURATIONS_MAXIMUM_RESOLUTION: {
             break;
         }
 
@@ -7334,6 +7402,49 @@ int camera_metadata_enum_value(uint32_t tag,
             break;
         }
         case ANDROID_EXTENSION_CURRENT_TYPE: {
+            break;
+        }
+
+        case ANDROID_JPEGR_AVAILABLE_JPEG_R_STREAM_CONFIGURATIONS: {
+                enumName = "OUTPUT";
+                if (strncmp(name, enumName, size) == 0) {
+                    *value = ANDROID_JPEGR_AVAILABLE_JPEG_R_STREAM_CONFIGURATIONS_OUTPUT;
+                    ret = 0;
+                    break;
+                }
+                enumName = "INPUT";
+                if (strncmp(name, enumName, size) == 0) {
+                    *value = ANDROID_JPEGR_AVAILABLE_JPEG_R_STREAM_CONFIGURATIONS_INPUT;
+                    ret = 0;
+                    break;
+                }
+            break;
+        }
+        case ANDROID_JPEGR_AVAILABLE_JPEG_R_MIN_FRAME_DURATIONS: {
+            break;
+        }
+        case ANDROID_JPEGR_AVAILABLE_JPEG_R_STALL_DURATIONS: {
+            break;
+        }
+        case ANDROID_JPEGR_AVAILABLE_JPEG_R_STREAM_CONFIGURATIONS_MAXIMUM_RESOLUTION: {
+                enumName = "OUTPUT";
+                if (strncmp(name, enumName, size) == 0) {
+                    *value = ANDROID_JPEGR_AVAILABLE_JPEG_R_STREAM_CONFIGURATIONS_MAXIMUM_RESOLUTION_OUTPUT;
+                    ret = 0;
+                    break;
+                }
+                enumName = "INPUT";
+                if (strncmp(name, enumName, size) == 0) {
+                    *value = ANDROID_JPEGR_AVAILABLE_JPEG_R_STREAM_CONFIGURATIONS_MAXIMUM_RESOLUTION_INPUT;
+                    ret = 0;
+                    break;
+                }
+            break;
+        }
+        case ANDROID_JPEGR_AVAILABLE_JPEG_R_MIN_FRAME_DURATIONS_MAXIMUM_RESOLUTION: {
+            break;
+        }
+        case ANDROID_JPEGR_AVAILABLE_JPEG_R_STALL_DURATIONS_MAXIMUM_RESOLUTION: {
             break;
         }
 
