@@ -37,7 +37,8 @@ class MelProcessor : public RefBase {
 public:
 
     static constexpr int kCascadeBiquadNumber = 3;
-    static constexpr int32_t kMaxMelValues = 30;
+    /** Should represent the minimal value after which a 1% CSD change can occur. */
+    static constexpr int32_t kMaxMelValues = 3;
 
     /**
      * An interface through which the MelProcessor client will be notified about
