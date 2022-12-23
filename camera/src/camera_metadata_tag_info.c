@@ -557,6 +557,8 @@ static tag_info_t android_scaler[ANDROID_SCALER_END -
     { "cropRegionSet",                 TYPE_BYTE   },
     [ ANDROID_SCALER_AVAILABLE_STREAM_USE_CASES - ANDROID_SCALER_START ] =
     { "availableStreamUseCases",       TYPE_INT64  },
+    [ ANDROID_SCALER_RAW_CROP_REGION - ANDROID_SCALER_START ] =
+    { "rawCropRegion",                 TYPE_INT32  },
 };
 
 static tag_info_t android_sensor[ANDROID_SENSOR_END -
@@ -2864,6 +2866,10 @@ int camera_metadata_enum_snprint(uint32_t tag,
                     msg = "VIDEO_CALL";
                     ret = 0;
                     break;
+                case ANDROID_SCALER_AVAILABLE_STREAM_USE_CASES_CROPPED_RAW:
+                    msg = "CROPPED_RAW";
+                    ret = 0;
+                    break;
                 case ANDROID_SCALER_AVAILABLE_STREAM_USE_CASES_VENDOR_START:
                     msg = "VENDOR_START";
                     ret = 0;
@@ -2871,6 +2877,9 @@ int camera_metadata_enum_snprint(uint32_t tag,
                 default:
                     msg = "error: enum value out of range";
             }
+            break;
+        }
+        case ANDROID_SCALER_RAW_CROP_REGION: {
             break;
         }
 
@@ -6189,12 +6198,21 @@ int camera_metadata_enum_value(uint32_t tag,
                     ret = 0;
                     break;
                 }
+                enumName = "CROPPED_RAW";
+                if (strncmp(name, enumName, size) == 0) {
+                    *value = ANDROID_SCALER_AVAILABLE_STREAM_USE_CASES_CROPPED_RAW;
+                    ret = 0;
+                    break;
+                }
                 enumName = "VENDOR_START";
                 if (strncmp(name, enumName, size) == 0) {
                     *value = ANDROID_SCALER_AVAILABLE_STREAM_USE_CASES_VENDOR_START;
                     ret = 0;
                     break;
                 }
+            break;
+        }
+        case ANDROID_SCALER_RAW_CROP_REGION: {
             break;
         }
 

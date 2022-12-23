@@ -357,6 +357,7 @@ typedef enum camera_metadata_tag {
     ANDROID_SCALER_MULTI_RESOLUTION_STREAM_SUPPORTED, // enum         | ndk_public   | HIDL v3.6
     ANDROID_SCALER_CROP_REGION_SET,                   // enum         | fwk_only
     ANDROID_SCALER_AVAILABLE_STREAM_USE_CASES,        // enum[]       | public       | HIDL v3.8
+    ANDROID_SCALER_RAW_CROP_REGION,                   // int32[]      | public       | HIDL v3.9
     ANDROID_SCALER_END,
 
     ANDROID_SENSOR_EXPOSURE_TIME =                    // int64        | public       | HIDL v3.2
@@ -1132,6 +1133,7 @@ typedef enum camera_metadata_enum_android_scaler_available_stream_use_cases {
     ANDROID_SCALER_AVAILABLE_STREAM_USE_CASES_VIDEO_RECORD           = 0x3, // HIDL v3.8
     ANDROID_SCALER_AVAILABLE_STREAM_USE_CASES_PREVIEW_VIDEO_STILL    = 0x4, // HIDL v3.8
     ANDROID_SCALER_AVAILABLE_STREAM_USE_CASES_VIDEO_CALL             = 0x5, // HIDL v3.8
+    ANDROID_SCALER_AVAILABLE_STREAM_USE_CASES_CROPPED_RAW            = 0x6, // HIDL v3.9
     ANDROID_SCALER_AVAILABLE_STREAM_USE_CASES_VENDOR_START           = 0x10000, // HIDL v3.8
 } camera_metadata_enum_android_scaler_available_stream_use_cases_t;
 

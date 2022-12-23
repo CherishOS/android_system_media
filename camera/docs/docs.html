@@ -851,6 +851,8 @@
             ><a href="#dynamic_android.scaler.cropRegion">android.scaler.cropRegion</a></li>
             <li
             ><a href="#dynamic_android.scaler.rotateAndCrop">android.scaler.rotateAndCrop</a></li>
+            <li
+            ><a href="#dynamic_android.scaler.rawCropRegion">android.scaler.rawCropRegion</a></li>
           </ul>
         </li>
       </ul> <!-- toc_section -->
@@ -21903,9 +21905,9 @@ active array.<wbr/></p>
 <p>Output streams use this rectangle to produce their output,<wbr/> cropping to a smaller region
 if necessary to maintain the stream's aspect ratio,<wbr/> then scaling the sensor input to
 match the output's configured resolution.<wbr/></p>
-<p>The crop region is applied after the RAW to other color space (e.<wbr/>g.<wbr/> YUV)
-conversion.<wbr/> Since raw streams (e.<wbr/>g.<wbr/> RAW16) don't have the conversion stage,<wbr/> they are not
-croppable.<wbr/> The crop region will be ignored by raw streams.<wbr/></p>
+<p>The crop region is usually applied after the RAW to other color space (e.<wbr/>g.<wbr/> YUV)
+conversion.<wbr/> As a result RAW streams are not croppable unless supported by the
+camera device.<wbr/> See <a href="#static_android.scaler.availableStreamUseCases">android.<wbr/>scaler.<wbr/>available<wbr/>Stream<wbr/>Use<wbr/>Cases</a>#CROPPED_<wbr/>RAW for details.<wbr/></p>
 <p>For non-raw streams,<wbr/> any additional per-stream cropping will be done to maximize the
 final pixel area of the stream.<wbr/></p>
 <p>For example,<wbr/> if the crop region is set to a 4:3 aspect ratio,<wbr/> then 4:3 streams will use
@@ -25411,6 +25413,29 @@ outputs are expected to work in dark conditions,<wbr/> so are usually accompanie
 variable frame rate settings to allow sufficient exposure time in low light.<wbr/></p></span>
                   </li>
                   <li>
+                    <span class="entry_type_enum_name">CROPPED_RAW (v3.9)</span>
+                    <span class="entry_type_enum_optional">[optional]</span>
+                    <span class="entry_type_enum_value">0x6</span>
+                    <span class="entry_type_enum_notes"><p>Cropped RAW stream when the client chooses to crop the field of view.<wbr/></p>
+<p>Certain types of image sensors can run in binned modes in order to improve signal to
+noise ratio while capturing frames.<wbr/> However,<wbr/> at certain zoom levels and /<wbr/> or when
+other scene conditions are deemed fit,<wbr/> the camera sub-system may choose to un-bin and
+remosaic the sensor's output.<wbr/> This results in a RAW frame which is cropped in field
+of view and yet has the same number of pixels as full field of view RAW,<wbr/> thereby
+improving image detail.<wbr/></p>
+<p>The resultant field of view of the RAW stream will be greater than or equal to
+croppable non-RAW streams.<wbr/> The effective crop region for this RAW stream will be
+reflected in the CaptureResult key <a href="#dynamic_android.scaler.rawCropRegion">android.<wbr/>scaler.<wbr/>raw<wbr/>Crop<wbr/>Region</a>.<wbr/></p>
+<p>If this stream use case is set on a non-RAW stream,<wbr/> i.<wbr/>e.<wbr/> not one of :</p>
+<ul>
+<li><a href="https://developer.android.com/reference/android/graphics/ImageFormat.html#RAW_SENSOR">RAW_<wbr/>SENSOR</a></li>
+<li><a href="https://developer.android.com/reference/android/graphics/ImageFormat.html#RAW10">RAW10</a></li>
+<li><a href="https://developer.android.com/reference/android/graphics/ImageFormat.html#RAW12">RAW12</a></li>
+</ul>
+<p>session configuration is not guaranteed to succeed.<wbr/></p>
+<p>This stream use case may not be supported on some devices.<wbr/></p></span>
+                  </li>
+                  <li>
                     <span class="entry_type_enum_name">VENDOR_START (v3.8)</span>
                     <span class="entry_type_enum_optional">[optional]</span>
                     <span class="entry_type_enum_hidden">[hidden]</span>
@@ -25667,9 +25692,9 @@ active array.<wbr/></p>
 <p>Output streams use this rectangle to produce their output,<wbr/> cropping to a smaller region
 if necessary to maintain the stream's aspect ratio,<wbr/> then scaling the sensor input to
 match the output's configured resolution.<wbr/></p>
-<p>The crop region is applied after the RAW to other color space (e.<wbr/>g.<wbr/> YUV)
-conversion.<wbr/> Since raw streams (e.<wbr/>g.<wbr/> RAW16) don't have the conversion stage,<wbr/> they are not
-croppable.<wbr/> The crop region will be ignored by raw streams.<wbr/></p>
+<p>The crop region is usually applied after the RAW to other color space (e.<wbr/>g.<wbr/> YUV)
+conversion.<wbr/> As a result RAW streams are not croppable unless supported by the
+camera device.<wbr/> See <a href="#static_android.scaler.availableStreamUseCases">android.<wbr/>scaler.<wbr/>available<wbr/>Stream<wbr/>Use<wbr/>Cases</a>#CROPPED_<wbr/>RAW for details.<wbr/></p>
 <p>For non-raw streams,<wbr/> any additional per-stream cropping will be done to maximize the
 final pixel area of the stream.<wbr/></p>
 <p>For example,<wbr/> if the crop region is set to a 4:3 aspect ratio,<wbr/> then 4:3 streams will use
@@ -25941,6 +25966,94 @@ Any translation required to implement ROTATE_<wbr/>AND_<wbr/>CROP_<wbr/>AUTO wil
 service.<wbr/></p>
             </td>
           </tr>
+
+          <tr class="entry_spacer"><td class="entry_spacer" colspan="7"></td></tr>
+           <!-- end of entry -->
+        
+                
+          <tr class="entry" id="dynamic_android.scaler.rawCropRegion">
+            <td class="entry_name
+             " rowspan="3">
+              android.<wbr/>scaler.<wbr/>raw<wbr/>Crop<wbr/>Region
+            </td>
+            <td class="entry_type">
+                <span class="entry_type_name">int32</span>
+                <span class="entry_type_container">x</span>
+
+                <span class="entry_type_array">
+                  4
+                </span>
+              <span class="entry_type_visibility"> [public as rectangle]</span>
+
+
+
+
+
+
+            </td> <!-- entry_type -->
+
+            <td class="entry_description">
+              <p>The region of the sensor that corresponds to the RAW read out for this
+capture when the stream use case of a RAW stream is set to CROPPED_<wbr/>RAW.<wbr/></p>
+            </td>
+
+            <td class="entry_units">
+              Pixel coordinates relative to
+          android.<wbr/>sensor.<wbr/>info.<wbr/>active<wbr/>Array<wbr/>Size or
+          android.<wbr/>sensor.<wbr/>info.<wbr/>pre<wbr/>Correction<wbr/>Active<wbr/>Array<wbr/>Size depending on distortion correction
+          capability and mode
+            </td>
+
+            <td class="entry_range">
+            </td>
+
+            <td class="entry_hal_version">
+              <p>3.<wbr/>9</p>
+            </td>
+
+            <td class="entry_tags">
+            </td>
+
+          </tr>
+          <tr class="entries_header">
+            <th class="th_details" colspan="6">Details</th>
+          </tr>
+          <tr class="entry_cont">
+            <td class="entry_details" colspan="6">
+              <p>The coordinate system follows that of <a href="#static_android.sensor.info.preCorrectionActiveArraySize">android.<wbr/>sensor.<wbr/>info.<wbr/>pre<wbr/>Correction<wbr/>Active<wbr/>Array<wbr/>Size</a>.<wbr/></p>
+<p>This CaptureResult key will be set when the corresponding CaptureRequest has a RAW target
+with stream use case set to
+<a href="https://developer.android.com/reference/android/hardware/camera2/CameraMetadata.html#SCALER_AVAILABLE_STREAM_USE_CASES_CROPPED_RAW">Camera<wbr/>Metadata#SCALER_<wbr/>AVAILABLE_<wbr/>STREAM_<wbr/>USE_<wbr/>CASES_<wbr/>CROPPED_<wbr/>RAW</a>,<wbr/>
+otherwise it will be {@code null}.<wbr/>
+The value of this key specifies the region of the sensor used for the RAW capture and can
+be used to calculate the corresponding field of view of RAW streams.<wbr/>
+This field of view will always be &gt;= field of view for (processed) non-RAW streams for the
+capture.<wbr/> Note: The region specified may not necessarily be centered.<wbr/></p>
+<p>For example: Assume a camera device has a pre correction active array size of
+{@code {0,<wbr/> 0,<wbr/> 1500,<wbr/> 2000}}.<wbr/> If the RAW_<wbr/>CROP_<wbr/>REGION is {@code {500,<wbr/> 375,<wbr/> 1500,<wbr/> 1125}},<wbr/> that
+corresponds to a centered crop of 1/<wbr/>4th of the full field of view RAW stream.<wbr/></p>
+<p>The metadata keys which describe properties of RAW frames:</p>
+<ul>
+<li><a href="#dynamic_android.statistics.hotPixelMap">android.<wbr/>statistics.<wbr/>hot<wbr/>Pixel<wbr/>Map</a></li>
+<li><a href="#dynamic_android.statistics.lensShadingCorrectionMap">android.<wbr/>statistics.<wbr/>lens<wbr/>Shading<wbr/>Correction<wbr/>Map</a></li>
+<li><a href="#static_android.lens.distortion">android.<wbr/>lens.<wbr/>distortion</a></li>
+<li><a href="#static_android.lens.poseTranslation">android.<wbr/>lens.<wbr/>pose<wbr/>Translation</a></li>
+<li><a href="#static_android.lens.poseRotation">android.<wbr/>lens.<wbr/>pose<wbr/>Rotation</a></li>
+<li><a href="#static_android.lens.distortion">android.<wbr/>lens.<wbr/>distortion</a></li>
+<li><a href="#static_android.lens.intrinsicCalibration">android.<wbr/>lens.<wbr/>intrinsic<wbr/>Calibration</a></li>
+</ul>
+<p>should be interpreted in the effective after raw crop field-of-view coordinate system.<wbr/>
+In this coordinate system,<wbr/>
+{preCorrectionActiveArraySize.<wbr/>left,<wbr/> preCorrectionActiveArraySize.<wbr/>top} corresponds to the
+the top left corner of the cropped RAW frame and
+{preCorrectionActiveArraySize.<wbr/>right,<wbr/> preCorrectionActiveArraySize.<wbr/>bottom} corresponds to
+the bottom right corner.<wbr/> Client applications must use the values of the keys
+in the CaptureResult metadata if present.<wbr/></p>
+<p>Crop regions (android.<wbr/>scaler.<wbr/>Crop<wbr/>Region),<wbr/> AE/<wbr/>AWB/<wbr/>AF regions and face coordinates still
+use the <a href="#static_android.sensor.info.activeArraySize">android.<wbr/>sensor.<wbr/>info.<wbr/>active<wbr/>Array<wbr/>Size</a> coordinate system as usual.<wbr/></p>
+            </td>
+          </tr>
+
 
           <tr class="entry_spacer"><td class="entry_spacer" colspan="7"></td></tr>
            <!-- end of entry -->

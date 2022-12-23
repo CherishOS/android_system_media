@@ -592,6 +592,8 @@ static_assert(static_cast<int>(ANDROID_SCALER_MULTI_RESOLUTION_STREAM_SUPPORTED)
         == static_cast<int>(::aidl::android::hardware::camera::metadata::CameraMetadataTag::ANDROID_SCALER_MULTI_RESOLUTION_STREAM_SUPPORTED));
 static_assert(static_cast<int>(ANDROID_SCALER_AVAILABLE_STREAM_USE_CASES)
         == static_cast<int>(::aidl::android::hardware::camera::metadata::CameraMetadataTag::ANDROID_SCALER_AVAILABLE_STREAM_USE_CASES));
+static_assert(static_cast<int>(ANDROID_SCALER_RAW_CROP_REGION)
+        == static_cast<int>(::aidl::android::hardware::camera::metadata::CameraMetadataTag::ANDROID_SCALER_RAW_CROP_REGION));
 static_assert(static_cast<int>(ANDROID_SENSOR_EXPOSURE_TIME)
         == static_cast<int>(::aidl::android::hardware::camera::metadata::CameraMetadataTag::ANDROID_SENSOR_EXPOSURE_TIME));
 static_assert(static_cast<int>(ANDROID_SENSOR_FRAME_DURATION)
@@ -1446,6 +1448,8 @@ static_assert(static_cast<int64_t>(ANDROID_SCALER_AVAILABLE_STREAM_USE_CASES_PRE
         == static_cast<int64_t>(::aidl::android::hardware::camera::metadata::ScalerAvailableStreamUseCases::ANDROID_SCALER_AVAILABLE_STREAM_USE_CASES_PREVIEW_VIDEO_STILL));
 static_assert(static_cast<int64_t>(ANDROID_SCALER_AVAILABLE_STREAM_USE_CASES_VIDEO_CALL)
         == static_cast<int64_t>(::aidl::android::hardware::camera::metadata::ScalerAvailableStreamUseCases::ANDROID_SCALER_AVAILABLE_STREAM_USE_CASES_VIDEO_CALL));
+static_assert(static_cast<int64_t>(ANDROID_SCALER_AVAILABLE_STREAM_USE_CASES_CROPPED_RAW)
+        == static_cast<int64_t>(::aidl::android::hardware::camera::metadata::ScalerAvailableStreamUseCases::ANDROID_SCALER_AVAILABLE_STREAM_USE_CASES_CROPPED_RAW));
 static_assert(static_cast<int64_t>(ANDROID_SCALER_AVAILABLE_STREAM_USE_CASES_VENDOR_START)
         == static_cast<int64_t>(::aidl::android::hardware::camera::metadata::ScalerAvailableStreamUseCases::ANDROID_SCALER_AVAILABLE_STREAM_USE_CASES_VENDOR_START));
 
