@@ -473,7 +473,9 @@ inline bool audio_output_flag_from_string(const char* s, audio_output_flags_t* t
     V(AUDIO_INPUT_FLAG_VOIP_TX, 0x20) \
     V(AUDIO_INPUT_FLAG_HW_AV_SYNC, 0x40) \
     V(AUDIO_INPUT_FLAG_DIRECT, 0x80) \
-    V(AUDIO_INPUT_FLAG_ULTRASOUND, 0x100)
+    V(AUDIO_INPUT_FLAG_ULTRASOUND, 0x100) \
+    V(AUDIO_INPUT_FLAG_HOTWORD_TAP, 0x200) \
+    V(AUDIO_INPUT_FLAG_HW_LOOKBACK, 0x400) \
 
 typedef enum : uint32_t {
     AUDIO_INPUT_FLAG_LIST_DEF(AUDIO_DEFINE_ENUM_SYMBOL_V)
