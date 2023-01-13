@@ -66,6 +66,10 @@ float melToCsd(float mel) {
     return kReferenceEnergyPa * energy / kCsdThreshold;
 }
 
+CsdRecord createRevertedRecord(const CsdRecord& record) {
+    return {record.timestamp, record.duration, -record.value, record.averageMel};
+}
+
 }  // namespace
 
 int64_t MelAggregator::csdTimeIntervalStored_l()
@@ -95,12 +99,22 @@ std::map<int64_t, CsdRecord>::iterator MelAggregator::addNewestCsdRecord_l(int64
                                               averageMel));
 }
 
+void MelAggregator::removeOldCsdRecords_l(std::vector<CsdRecord>& removeRecords) {
+    // Remove older CSD values
+    while (!mCsdRecords.empty() && csdTimeIntervalStored_l() > mCsdWindowSeconds) {
+        mCurrentCsd -= mCsdRecords.begin()->second.value;
+        removeRecords.emplace_back(createRevertedRecord(mCsdRecords.begin()->second));
+        mCsdRecords.erase(mCsdRecords.begin());
+    }
+}
+
 std::vector<CsdRecord> MelAggregator::updateCsdRecords_l()
 {
     std::vector<CsdRecord> newRecords;
 
     // only update if we are above threshold
     if (mCurrentMelRecordsCsd < kMinCsdRecordToStore) {
+        removeOldCsdRecords_l(newRecords);
         return newRecords;
     }
 
@@ -141,15 +155,11 @@ std::vector<CsdRecord> MelAggregator::updateCsdRecords_l()
         newRecords.emplace_back(it->second);
     }
 
+    removeOldCsdRecords_l(newRecords);
+
     // reset mel values
     mCurrentMelRecordsCsd = 0.0f;
     mMelRecords.clear();
-
-    // Remove older CSD values
-    while (mCsdRecords.size() > 0 && csdTimeIntervalStored_l() > mCsdWindowSeconds) {
-        mCurrentCsd -= mCsdRecords.begin()->second.value;
-        mCsdRecords.erase(mCsdRecords.begin());
-    }
 
     return newRecords;
 }
@@ -212,7 +222,7 @@ std::vector<CsdRecord> MelAggregator::aggregateAndAddNewMelRecord_l(const MelRec
         ++mergeIt;
     }
 
-    std::map<int64_t, MelRecord>::iterator hint = mergeIt;
+    auto hint = mergeIt;
     if (mergeStart != mergeIt) {
         hint = mMelRecords.erase(mergeStart, mergeIt);
     }

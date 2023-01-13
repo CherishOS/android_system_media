@@ -74,8 +74,7 @@ class MelAggregator : public RefBase {
 public:
 
     explicit MelAggregator(int64_t csdWindowSeconds)
-        : mCsdWindowSeconds(csdWindowSeconds),
-          mCurrentMelRecordsCsd(0.f) {}
+        : mCsdWindowSeconds(csdWindowSeconds) {}
 
     /**
      * \returns the size of the stored CSD values.
@@ -123,12 +122,7 @@ private:
     /** Locked aggregateAndAddNewMelRecord method. */
     std::vector<CsdRecord> aggregateAndAddNewMelRecord_l(const MelRecord& record) REQUIRES(mLock);
 
-    /** Insert new MelRecord sorted into mMelRecords. */
-    void insertSorted_l(const std::vector<float>& mels,
-                        int64_t timeBeginSeconds,
-                        int64_t timeEndSeconds,
-                        int64_t timestampSeconds,
-                        audio_port_handle_t portId) REQUIRES(mLock);
+    void removeOldCsdRecords_l(std::vector<CsdRecord>& removeRecords) REQUIRES(mLock);
 
     std::vector<CsdRecord> updateCsdRecords_l() REQUIRES(mLock);
 
@@ -147,10 +141,10 @@ private:
     std::map<int64_t, CsdRecord> mCsdRecords GUARDED_BY(mLock);
 
     /** Current CSD value in mMelRecords. */
-    float mCurrentMelRecordsCsd GUARDED_BY(mLock);
+    float mCurrentMelRecordsCsd GUARDED_BY(mLock) = 0.f;
 
     /** CSD value containing sum of all CSD values stored. */
-    float mCurrentCsd GUARDED_BY(mLock);
+    float mCurrentCsd GUARDED_BY(mLock) = 0.f;
 };
 
 }  // naemspace android::audio_utils
