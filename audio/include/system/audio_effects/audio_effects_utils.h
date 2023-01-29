@@ -39,12 +39,12 @@ namespace utils {
  */
 class EffectParamWrapper {
  public:
-  explicit EffectParamWrapper(effect_param_t& param)
-      : mParam(param), mPaddedPSize(EffectParamWrapper::padding(param.psize)) {}
+  explicit EffectParamWrapper(effect_param_t& param) : mParam(param) {}
 
   // validate command size to be at least parameterSize + valueSize after effect_param_t
   bool validateCmdSize(size_t cmdSize) const {
-    return (uint64_t)mPaddedPSize + mParam.vsize + sizeof(effect_param_t) <= cmdSize;
+    return (uint64_t)getPaddedParameterSize() + mParam.vsize + sizeof(effect_param_t) <=
+           cmdSize;
   }
 
   /**
@@ -58,7 +58,8 @@ class EffectParamWrapper {
     std::ostringstream os;
     os << "effect_param_t: { ";
     os << "status: " << mParam.status << ", p: " << mParam.psize
-       << ", v: " << mParam.vsize << ", dataAddr: " << &mParam.data;
+       << " (padded: " << getPaddedParameterSize() << "), v: " << mParam.vsize
+       << ", dataAddr: " << &mParam.data;
     os << "}";
     return os.str();
   }
@@ -77,7 +78,7 @@ class EffectParamWrapper {
   }
 
   status_t getStatus() const { return mParam.status; }
-  size_t getPaddedParameterSize() const { return mPaddedPSize; }
+  size_t getPaddedParameterSize() const { return padding(mParam.psize); }
   size_t getParameterSize() const { return mParam.psize; }
   size_t getValueSize() const { return mParam.vsize; }
   uint64_t getTotalSize() const {
@@ -104,7 +105,6 @@ class EffectParamWrapper {
  private:
   /* member with variable sized type at end of class */
   const effect_param_t& mParam;
-  const size_t mPaddedPSize;
 };
 
 /**
@@ -122,8 +122,8 @@ class EffectParamReader : public EffectParamWrapper {
   template <typename T>
   status_t readFromParameter(T* buf, size_t n = 1) {
     size_t len = n * sizeof(T);
-    status_t ret = readFromData(buf, len, mParamROffset /* data offset */,
-                                getParameterSize() /* max */);
+    status_t ret = readFromData(buf, len, mParamROffset /* param offset */,
+                                getParameterSize() /* max offset */);
     if (OK == ret) {
        mParamROffset += len;
     }
@@ -138,7 +138,7 @@ class EffectParamReader : public EffectParamWrapper {
   status_t readFromValue(T* buf, size_t n = 1) {
     size_t len = n * sizeof(T);
     status_t ret = readFromData(buf, len, mValueROffset /* data offset */,
-                                getPaddedParameterSize() + getValueSize() /* max */);
+                                getPaddedParameterSize() + getValueSize() /* max offset */);
     if (OK == ret) {
        mValueROffset += len;
     }
@@ -191,6 +191,12 @@ class EffectParamWriter : public EffectParamReader {
     }
     return ret;
   }
+
+  /**
+   * Set the current value write offset to vsize.
+   * Together with getTotalSize(), can be used by getParameter to set replySize.
+   */
+  void finishValueWrite() { mParam.vsize = mValueWOffset - getPaddedParameterSize(); }
 
   void setStatus(status_t status) { mParam.status = status; }
 

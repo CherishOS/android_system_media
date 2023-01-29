@@ -263,6 +263,13 @@ TEST(EffectParamWriterReaderTest, writeAndReadParameterBlock) {
     EXPECT_NE(OK, writer.writeToParameter(&data[5])); // expect write error
     EXPECT_EQ(OK, writer.writeToValue(&data[6], 5));
     EXPECT_NE(OK, writer.writeToValue(&data[10])); // expect write error
+    writer.finishValueWrite();
+    EXPECT_EQ(5 * sizeof(uint16_t), writer.getValueSize());
+    EXPECT_EQ(sizeof(effect_param_t) +
+                  6 * sizeof(uint16_t) /* padded parameter */ +
+                  5 * sizeof(uint16_t),
+              writer.getTotalSize())
+        << writer.toString();
 
     // read and compare
     uint16_t getData[12] = {};
@@ -306,7 +313,15 @@ TEST(EffectParamWriterReaderTest, writeAndReadParameterDiffSize) {
     EXPECT_NE(OK, writer.writeToParameter(&data[5])); // expect write error
     EXPECT_EQ(OK, writer.writeToValue((uint32_t *)&data[6], 2));
     EXPECT_EQ(OK, writer.writeToValue(&data[10]));
+    writer.finishValueWrite();
+    EXPECT_EQ(5 * sizeof(uint16_t), writer.getValueSize());
+    EXPECT_EQ(sizeof(effect_param_t) + 11 * sizeof(uint16_t),
+              writer.getTotalSize()) << writer.toString();
     EXPECT_NE(OK, writer.writeToValue(&data[10])); // expect write error
+    writer.finishValueWrite();
+    EXPECT_EQ(5 * sizeof(uint16_t), writer.getValueSize());
+    EXPECT_EQ(sizeof(effect_param_t) + 11 * sizeof(uint16_t),
+              writer.getTotalSize()) << writer.toString();
 
     // read and compare
     uint16_t getData[12] = {};
