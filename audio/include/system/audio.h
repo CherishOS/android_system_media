@@ -18,6 +18,7 @@
 #ifndef ANDROID_AUDIO_CORE_H
 #define ANDROID_AUDIO_CORE_H
 
+#include <float.h>
 #include <stdbool.h>
 #include <stdint.h>
 #include <stdio.h>
