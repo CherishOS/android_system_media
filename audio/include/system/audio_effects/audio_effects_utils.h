@@ -81,6 +81,10 @@ class EffectParamWrapper {
   size_t getPaddedParameterSize() const { return padding(mParam.psize); }
   size_t getParameterSize() const { return mParam.psize; }
   size_t getValueSize() const { return mParam.vsize; }
+  const uint8_t* getValueAddress() const {
+    return (uint8_t*)mParam.data + getPaddedParameterSize();
+  }
+
   uint64_t getTotalSize() const {
     return (uint64_t)sizeof(effect_param_t) + getPaddedParameterSize() + getValueSize();
   }
@@ -145,6 +149,14 @@ class EffectParamReader : public EffectParamWrapper {
     return ret;
   }
 
+  std::string toString() const {
+    std::ostringstream os;
+    os << EffectParamWrapper::toString();
+    os << ", paramROffset: " << mParamROffset;
+    os << ", valueROffset: " << mValueROffset;
+    return os.str();
+  }
+
  private:
   size_t mParamROffset = 0;
   size_t mValueROffset = 0;
@@ -199,6 +211,14 @@ class EffectParamWriter : public EffectParamReader {
   void finishValueWrite() { mParam.vsize = mValueWOffset - getPaddedParameterSize(); }
 
   void setStatus(status_t status) { mParam.status = status; }
+
+  std::string toString() const {
+    std::ostringstream os;
+    os << EffectParamReader::toString();
+    os << ", paramWOffset: " << mParamWOffset;
+    os << ", valueWOffset: " << mValueWOffset;
+    return os.str();
+  }
 
  private:
   effect_param_t& mParam;
