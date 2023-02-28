@@ -118,6 +118,11 @@ void MelProcessor::setDeviceId(audio_port_handle_t deviceId)
     mDeviceId = deviceId;
 }
 
+audio_port_handle_t MelProcessor::getDeviceId() {
+    std::lock_guard guard(mLock);
+    return mDeviceId;
+}
+
 void MelProcessor::applyAWeight_l(const void* buffer, size_t samples)
 {
     memcpy_by_audio_format(mFloatSamples.data(), AUDIO_FORMAT_PCM_FLOAT, buffer, mFormat, samples);
@@ -217,7 +222,8 @@ int32_t MelProcessor::process(const void* buffer, size_t bytes) {
             addMelValue_l(fmaxf(
                 audio_utils_power_from_energy(getCombinedChannelEnergy_l())
                     + kMelAdjustmentDb
-                    + kMeldBFSTodBSPLOffset, 0.0f), callbacks);
+                    + kMeldBFSTodBSPLOffset
+                    + mAttenuationDB, 0.0f), callbacks);
 
             samples -= processSamples;
             buffer =
@@ -232,6 +238,12 @@ int32_t MelProcessor::process(const void* buffer, size_t bytes) {
     }
 
     return bytes;
+}
+
+void MelProcessor::setAttenuation(float attenuationDB) {
+    std::lock_guard<std::mutex> guard(mLock);
+    ALOGV("%s: setting the attenuation %f", __func__, attenuationDB);
+    mAttenuationDB = attenuationDB;
 }
 
 }   // namespace android

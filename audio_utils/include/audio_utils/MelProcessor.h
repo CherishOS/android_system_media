@@ -108,18 +108,29 @@ public:
     /** Updates the device id. */
     void setDeviceId(audio_port_handle_t deviceId);
 
+    /** Returns the device id. */
+    audio_port_handle_t getDeviceId();
+
     /**
      * \brief Computes the MEL values for the given buffer and triggers a
      * callback with time-continuous MEL values when: MEL buffer is full or if
      * there is a discontinue in MEL calculation (e.g.: MEL is under RS1)
      *
-     * \param buffer            pointer to the audio data buffer.
+     * \param buffer           pointer to the audio data buffer.
      * \param bytes            buffer size in bytes.
      *
      * \return the number of bytes that were processed. Note: the method will
      *   output 0 for sample rates that are not supported.
      */
     int32_t process(const void* buffer, size_t bytes);
+
+    /**
+     * Sets the given attenuation for the MEL calculation. This can be used when
+     * the audio framework is operating in absolute volume mode.
+     *
+     * @param attenuationDB    attenuation to use on computed MEL values
+     */
+    void setAttenuation(float attenuationDB);
 
 private:
     bool isSampleRateSupported();
@@ -140,6 +151,8 @@ private:
 
     // number of samples in the energy
     size_t mCurrentSamples GUARDED_BY(mLock);
+
+    float mAttenuationDB GUARDED_BY(mLock) = 0.f;
 
     // local energy accumulation
     std::vector<float> mCurrentChannelEnergy GUARDED_BY(mLock);

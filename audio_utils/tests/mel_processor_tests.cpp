@@ -42,11 +42,9 @@ using ::testing::Combine;
 // Contains the sample rate and frequency for sine wave
 using AudioParam = std::tuple<int32_t, int32_t>;
 
-
 const std::unordered_map<int32_t, int32_t> kAWeightDelta1000 =
     {{80, 23}, {100, 19}, {500, 3}, {1000, 0}, {2000, 1}, {3000, 1},
      {8000, 1}};
-
 
 class MelCallbackMock : public MelProcessor::MelCallback {
 public:
@@ -82,7 +80,7 @@ protected:
 
     int32_t mSampleRate;
     int32_t mFrequency;
-    int32_t mMaxMelsCallback = 2;
+    size_t mMaxMelsCallback = 2;
     audio_port_handle_t mDeviceId = 1;
     int32_t mDefaultRs2 = 100;
 
@@ -91,7 +89,6 @@ protected:
 
     std::vector<float> mBuffer;
 };
-
 
 TEST(MelProcessorTest, UnsupportedSamplerateCheck) {
     MelCallbackMock callback;
@@ -107,8 +104,8 @@ TEST_P(MelProcessorFixtureTest, CheckNumberOfCallbacks) {
         return;
     }
 
-    appendSineWaveBuffer(mBuffer, 1000.0f, mSampleRate, mSampleRate * mMaxMelsCallback);
-    appendSineWaveBuffer(mBuffer, 1000.0f, mSampleRate, mSampleRate * mMaxMelsCallback, 0.01f);
+    appendSineWaveBuffer(mBuffer, 1000.0f, mSampleRate * mMaxMelsCallback, mSampleRate);
+    appendSineWaveBuffer(mBuffer, 1000.0f, mSampleRate * mMaxMelsCallback, mSampleRate, 0.01f);
 
     EXPECT_CALL(mMelCallback, onMomentaryExposure(Gt(mDefaultRs2), Eq(mDeviceId)))
         .Times(AtMost(2));
@@ -128,7 +125,7 @@ TEST_P(MelProcessorFixtureTest, CheckAWeightingFrequency) {
         .WillRepeatedly([&] (const std::vector<float>& mel, size_t offset, size_t length,
                                 audio_port_handle_t deviceId) {
             EXPECT_EQ(offset, size_t{0});
-            EXPECT_EQ(length, size_t{2});
+            EXPECT_EQ(length, mMaxMelsCallback);
             EXPECT_EQ(deviceId, mDeviceId);
             int32_t deltaValue = abs(mel[0] - mel[1]);
             ALOGV("MEL[%d] = %.2f,  MEL[1000] = %.2f\n", mFrequency, mel[0], mel[1]);
@@ -136,6 +133,45 @@ TEST_P(MelProcessorFixtureTest, CheckAWeightingFrequency) {
         });
 
     EXPECT_GT(mProcessor.process(mBuffer.data(), mBuffer.size() * sizeof(float)), 0);
+}
+
+TEST_P(MelProcessorFixtureTest, AttenuationCheck) {
+    auto processorAttenuation =
+        MelProcessor(mSampleRate, 1, AUDIO_FORMAT_PCM_FLOAT, mMelCallback, mDeviceId+1, mDefaultRs2,
+                     mMaxMelsCallback);
+    float attenuationDB = -10.f;
+    std::vector<float> bufferAttenuation;
+    float melAttenuation = 0.f;
+    float melNoAttenuation = 0.f;
+
+    processorAttenuation.setAttenuation(attenuationDB);
+    appendSineWaveBuffer(bufferAttenuation, mFrequency, mSampleRate * mMaxMelsCallback,
+                         mSampleRate);
+    appendSineWaveBuffer(mBuffer, mFrequency, mSampleRate * mMaxMelsCallback, mSampleRate);
+
+    EXPECT_CALL(mMelCallback, onMomentaryExposure(Gt(mDefaultRs2), _))
+        .Times(AtMost(2 * mMaxMelsCallback));
+    EXPECT_CALL(mMelCallback, onNewMelValues(_, _, _, _))
+        .Times(AtMost(2))
+        .WillRepeatedly([&] (const std::vector<float>& mel, size_t offset, size_t length,
+                                audio_port_handle_t deviceId) {
+            EXPECT_EQ(offset, size_t{0});
+            EXPECT_EQ(length, mMaxMelsCallback);
+
+            if (deviceId == mDeviceId) {
+                melNoAttenuation = mel[0];
+            } else {
+                melAttenuation = mel[0];
+            }
+        });
+    EXPECT_GT(mProcessor.process(mBuffer.data(),
+                                 mSampleRate * mMaxMelsCallback * sizeof(float)), 0);
+    EXPECT_GT(processorAttenuation.process(bufferAttenuation.data(),
+                                           mSampleRate * mMaxMelsCallback * sizeof(float)), 0);
+    // with attenuation for some frequencies the MEL callback does not exceed the RS1 threshold
+    if (melAttenuation > 0.f) {
+        EXPECT_EQ(fabsf(melAttenuation - melNoAttenuation), fabsf(attenuationDB));
+    }
 }
 
 INSTANTIATE_TEST_SUITE_P(MelProcessorTestSuite,
