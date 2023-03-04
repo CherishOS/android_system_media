@@ -17,7 +17,9 @@
 #pragma once
 
 #include <array>
+#include <condition_variable>
 #include <mutex>
+#include <thread>
 
 #include <android-base/thread_annotations.h>
 #include <audio_utils/BiquadFilter.h>
@@ -30,8 +32,6 @@ namespace android::audio_utils {
 /**
  * Class used to capture the MEL (momentary exposure levels) values as defined
  * by IEC62368-1 3rd edition. MELs are computed for each second.
- *
- * The public methods are internally protected by a mutex to be thread-safe.
  */
 class MelProcessor : public RefBase {
 public:
@@ -86,7 +86,7 @@ public:
     MelProcessor(uint32_t sampleRate,
                  uint32_t channelCount,
                  audio_format_t format,
-                 const MelCallback& callback,
+                 const sp<MelCallback>& callback,
                  audio_port_handle_t deviceId,
                  float rs2Value,
                  size_t maxMelsCallback = kMaxMelValues);
@@ -111,6 +111,9 @@ public:
     /** Returns the device id. */
     audio_port_handle_t getDeviceId();
 
+    /** Update the format to use for the input frames to process. */
+    void updateAudioFormat(uint32_t sampleRate, uint32_t channelCount, audio_format_t newFormat);
+
     /**
      * \brief Computes the MEL values for the given buffer and triggers a
      * callback with time-continuous MEL values when: MEL buffer is full or if
@@ -132,47 +135,103 @@ public:
      */
     void setAttenuation(float attenuationDB);
 
+    void onLastStrongRef(const void* id) override;
+
 private:
-    bool isSampleRateSupported();
-    void createBiquads();
+    /** Struct to store the possible callback data. */
+    struct MelCallbackData {
+        // used for momentaryExposure callback
+        float mMel = 0.f;
+        // used for newMelValues callback
+        std::vector<float> mMels = std::vector<float>(kMaxMelValues);
+        // represents the number of valid MEL values in mMels
+        size_t mMelsSize = 0;
+        // port of deviceId for this callback
+        audio_port_handle_t mPort = AUDIO_PORT_HANDLE_NONE;
+    };
+
+    // class used to asynchronously execute all MelProcessor callbacks
+    class MelWorker {
+    public:
+        static constexpr int kRingBufferSize = 32;
+
+        MelWorker(std::string threadName, const wp<MelCallback>& callback)
+            : mCallback(callback),
+              mThreadName(std::move(threadName)),
+              mCallbackRingBuffer(kRingBufferSize) {};
+
+        void run();
+
+        // blocks until the MelWorker thread is stopped
+        void stop();
+
+        // callback methods for new MEL values
+        void momentaryExposure(float mel, audio_port_handle_t port);
+        void newMelValues(const std::vector<float>& mels,
+                          size_t melsSize,
+                          audio_port_handle_t port);
+
+        static void incRingBufferIndex(std::atomic_size_t& idx);
+        bool ringBufferIsFull() const;
+
+        const wp<MelCallback> mCallback;
+        const std::string mThreadName;
+        std::vector<MelCallbackData> mCallbackRingBuffer GUARDED_BY(mCondVarMutex);
+
+        std::atomic_size_t mRbReadPtr = 0;
+        std::atomic_size_t mRbWritePtr = 0;
+
+        std::thread mThread;
+        std::condition_variable mCondVar;
+        std::mutex mCondVarMutex;
+        bool mStopRequested GUARDED_BY(mCondVarMutex) = false;
+    };
+
+    std::string pointerString() const;
+    void createBiquads_l() REQUIRES(mLock);
+    bool isSampleRateSupported_l() const REQUIRES(mLock);
     void applyAWeight_l(const void* buffer, size_t frames) REQUIRES(mLock);
     float getCombinedChannelEnergy_l() REQUIRES(mLock);
-    void addMelValue_l(float mel, std::vector<std::function<void()>>& callbacks) REQUIRES(mLock);
+    void addMelValue_l(float mel) REQUIRES(mLock);
 
-
-    const uint32_t mSampleRate;                // audio data sample rate
-    const uint32_t mChannelCount;              // audio data channel count
-    const audio_format_t mFormat;              // audio data format
-    const size_t mFramesPerMelValue;           // number of audio frames per MEL value
-    const MelCallback& mCallback;              // callback to notify about new MEL values
+    const wp<MelCallback> mCallback;           // callback to notify about new MEL values
                                                // and momentary exposure warning
                                                // does not own the callback, must outlive
+
+    MelWorker mMelWorker;                      // spawns thread for asynchronous callbacks,
+                                               // worker is thread-safe
+
     mutable std::mutex mLock;                  // monitor mutex
-
-    // number of samples in the energy
-    size_t mCurrentSamples GUARDED_BY(mLock);
-
-    float mAttenuationDB GUARDED_BY(mLock) = 0.f;
-
-    // local energy accumulation
-    std::vector<float> mCurrentChannelEnergy GUARDED_BY(mLock);
-    // contains the A-weighted input samples
+    // audio data sample rate
+    uint32_t mSampleRate GUARDED_BY(mLock);
+    // number of audio frames per MEL value
+    size_t mFramesPerMelValue GUARDED_BY(mLock);
+    // audio data channel count
+    uint32_t mChannelCount GUARDED_BY(mLock);
+    // audio data format
+    audio_format_t mFormat GUARDED_BY(mLock);
+    // contains the A-weighted input samples to be processed
     std::vector<float> mAWeightSamples GUARDED_BY(mLock);
     // contains the input samples converted to float
     std::vector<float> mFloatSamples GUARDED_BY(mLock);
+    // local energy accumulation
+    std::vector<float> mCurrentChannelEnergy GUARDED_BY(mLock);
     // accumulated MEL values
     std::vector<float> mMelValues GUARDED_BY(mLock);
     // current index to store the MEL values
     uint32_t mCurrentIndex GUARDED_BY(mLock);
-
     using DefaultBiquadFilter = BiquadFilter<float, true, details::DefaultBiquadConstOptions>;
     // Biquads used for the A-weighting
     std::array<std::unique_ptr<DefaultBiquadFilter>, kCascadeBiquadNumber>
         mCascadedBiquads GUARDED_BY(mLock);
+
+    std::atomic<float> mAttenuationDB = 0.f;
     // device id used for the callbacks
-    audio_port_handle_t mDeviceId GUARDED_BY(mLock);
+    std::atomic<audio_port_handle_t> mDeviceId;
     // Value used for momentary exposure
-    float mRs2Value GUARDED_BY(mLock);
+    std::atomic<float> mRs2Value;
+    // number of samples in the energy
+    std::atomic_size_t mCurrentSamples;
 };
 
 }  // namespace android::audio_utils

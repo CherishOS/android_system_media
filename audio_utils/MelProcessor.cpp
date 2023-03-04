@@ -22,6 +22,8 @@
 #include <audio_utils/format.h>
 #include <audio_utils/power.h>
 #include <log/log.h>
+#include <sstream>
+#include <utils/threads.h>
 
 namespace android::audio_utils {
 
@@ -52,28 +54,31 @@ constexpr std::array<std::array<float, kBiquadNumCoefs>, 2> kBiquadCoefs3 =
 MelProcessor::MelProcessor(uint32_t sampleRate,
         uint32_t channelCount,
         audio_format_t format,
-        const MelCallback& callback,
+        const sp<MelCallback>& callback,
         audio_port_handle_t deviceId,
         float rs2Value,
         size_t maxMelsCallback)
-    : mSampleRate(sampleRate),
+    : mCallback(callback),
+      mMelWorker("MelWorker#" + pointerString(), mCallback),
+      mSampleRate(sampleRate),
+      mFramesPerMelValue(sampleRate * kSecondsPerMelValue),
       mChannelCount(channelCount),
       mFormat(format),
-      mFramesPerMelValue(sampleRate * kSecondsPerMelValue),
-      mCallback(callback),
-      mCurrentSamples(0),
-      mCurrentChannelEnergy(channelCount, 0.0f),
       mAWeightSamples(mFramesPerMelValue * mChannelCount),
       mFloatSamples(mFramesPerMelValue * mChannelCount),
+      mCurrentChannelEnergy(channelCount, 0.0f),
       mMelValues(maxMelsCallback),
       mCurrentIndex(0),
       mDeviceId(deviceId),
-      mRs2Value(rs2Value)
+      mRs2Value(rs2Value),
+      mCurrentSamples(0)
 {
-    createBiquads();
+    createBiquads_l();
+
+    mMelWorker.run();
 }
 
-bool MelProcessor::isSampleRateSupported() {
+bool MelProcessor::isSampleRateSupported_l() const {
     // For now only support 44.1 and 48kHz for Mel calculation
     if (mSampleRate != 44100 && mSampleRate != 48000) {
         return false;
@@ -82,8 +87,8 @@ bool MelProcessor::isSampleRateSupported() {
     return true;
 }
 
-void MelProcessor::createBiquads() {
-    if (!isSampleRateSupported()) {
+void MelProcessor::createBiquads_l() {
+    if (!isSampleRateSupported_l()) {
         return;
     }
 
@@ -100,7 +105,6 @@ status_t MelProcessor::setOutputRs2(float rs2Value)
         return BAD_VALUE;
     }
 
-    std::lock_guard guard(mLock);
     mRs2Value = rs2Value;
 
     return NO_ERROR;
@@ -108,19 +112,42 @@ status_t MelProcessor::setOutputRs2(float rs2Value)
 
 float MelProcessor::getOutputRs2() const
 {
-    std::lock_guard guard(mLock);
     return mRs2Value;
 }
 
 void MelProcessor::setDeviceId(audio_port_handle_t deviceId)
 {
-    std::lock_guard guard(mLock);
     mDeviceId = deviceId;
 }
 
 audio_port_handle_t MelProcessor::getDeviceId() {
-    std::lock_guard guard(mLock);
     return mDeviceId;
+}
+
+void MelProcessor::updateAudioFormat(uint32_t sampleRate,
+                                     uint32_t channelCount,
+                                     audio_format_t format) {
+    ALOGV("%s: update audio format %u, %u, %d", __func__, sampleRate, channelCount, format);
+
+    std::lock_guard l(mLock);
+
+    bool differentSampleRate = (mSampleRate != sampleRate);
+    bool differentChannelCount = (mChannelCount != channelCount);
+
+    mSampleRate = sampleRate;
+    mFramesPerMelValue = sampleRate * kSecondsPerMelValue;
+    mChannelCount = channelCount;
+    mFormat = format;
+
+    if (differentSampleRate || differentChannelCount) {
+        mAWeightSamples.resize(mFramesPerMelValue * mChannelCount);
+        mFloatSamples.resize(mFramesPerMelValue * mChannelCount);
+    }
+    if (differentChannelCount) {
+        mCurrentChannelEnergy.resize(channelCount);
+    }
+
+    createBiquads_l();
 }
 
 void MelProcessor::applyAWeight_l(const void* buffer, size_t samples)
@@ -153,18 +180,19 @@ float MelProcessor::getCombinedChannelEnergy_l() {
     return combinedEnergy;
 }
 
-void MelProcessor::addMelValue_l(float mel, std::vector<std::function<void()>>& callbacks) {
+void MelProcessor::addMelValue_l(float mel) {
     mMelValues[mCurrentIndex] = mel;
     ALOGV("%s: writing MEL %f at index %d for device %d",
           __func__,
           mel,
           mCurrentIndex,
-          mDeviceId);
+          mDeviceId.load());
+
+    bool notifyWorker = false;
 
     if (mel > mRs2Value) {
-        callbacks.emplace_back([&, mel]() {
-            mCallback.onMomentaryExposure(mel, mDeviceId);
-        });
+        mMelWorker.momentaryExposure(mel, mDeviceId);
+        notifyWorker = true;
     }
 
     bool reportContinuousValues = false;
@@ -176,74 +204,189 @@ void MelProcessor::addMelValue_l(float mel, std::vector<std::function<void()>>& 
     }
 
     if (reportContinuousValues || (mCurrentIndex > mMelValues.size() - 1)) {
-        callbacks.emplace_back([&, melValuesSize = this->mCurrentIndex]() {
-            mCallback.onNewMelValues(mMelValues, /* offset= */0, melValuesSize, mDeviceId);
-        });
+        mMelWorker.newMelValues(mMelValues, mCurrentIndex, mDeviceId);
+        notifyWorker = true;
         mCurrentIndex = 0;
+    }
+
+    if (notifyWorker) {
+        mMelWorker.mCondVar.notify_one();
     }
 }
 
 int32_t MelProcessor::process(const void* buffer, size_t bytes) {
-    if (!isSampleRateSupported()) {
+    // should be uncontested and not block if process method is called from a single thread
+    std::lock_guard<std::mutex> guard(mLock);
+
+    if (!isSampleRateSupported_l()) {
         return 0;
     }
 
-    std::vector<std::function<void()>> callbacks;
-    {
-        std::lock_guard<std::mutex> guard(mLock);
+    const size_t bytes_per_sample = audio_bytes_per_sample(mFormat);
+    size_t samples = bytes_per_sample > 0 ? bytes / bytes_per_sample : 0;
+    while (samples > 0) {
+        const size_t requiredSamples =
+            mFramesPerMelValue * mChannelCount - mCurrentSamples;
+        size_t processSamples = std::min(requiredSamples, samples);
+        processSamples -= processSamples % mChannelCount;
 
-        const size_t bytes_per_sample = audio_bytes_per_sample(mFormat);
-        size_t samples = bytes_per_sample > 0 ? bytes / bytes_per_sample : 0;
-        while (samples > 0) {
-            const size_t requiredSamples =
-                mFramesPerMelValue * mChannelCount - mCurrentSamples;
-            size_t processSamples = std::min(requiredSamples, samples);
-            processSamples -= processSamples % mChannelCount;
+        applyAWeight_l(buffer, processSamples);
 
-            applyAWeight_l(buffer, processSamples);
+        audio_utils_accumulate_energy(mAWeightSamples.data(),
+                                      AUDIO_FORMAT_PCM_FLOAT,
+                                      processSamples,
+                                      mChannelCount,
+                                      mCurrentChannelEnergy.data());
+        mCurrentSamples += processSamples;
 
-            audio_utils_accumulate_energy(mAWeightSamples.data(),
-                                          AUDIO_FORMAT_PCM_FLOAT,
-                                          processSamples,
-                                          mChannelCount,
-                                          mCurrentChannelEnergy.data());
-            mCurrentSamples += processSamples;
-
-            ALOGV(
-                "required:%zu, process:%zu, mCurrentChannelEnergy[0]:%f, mCurrentSamples:%zu",
-                requiredSamples,
-                processSamples,
-                mCurrentChannelEnergy[0],
-                mCurrentSamples);
-            if (processSamples < requiredSamples) {
-                return bytes;
-            }
-
-            addMelValue_l(fmaxf(
-                audio_utils_power_from_energy(getCombinedChannelEnergy_l())
-                    + kMelAdjustmentDb
-                    + kMeldBFSTodBSPLOffset
-                    + mAttenuationDB, 0.0f), callbacks);
-
-            samples -= processSamples;
-            buffer =
-                (const uint8_t*) buffer + processSamples * bytes_per_sample;
-            mCurrentSamples = 0;
+        ALOGV(
+            "required:%zu, process:%zu, mCurrentChannelEnergy[0]:%f, mCurrentSamples:%zu",
+            requiredSamples,
+            processSamples,
+            mCurrentChannelEnergy[0],
+            mCurrentSamples.load());
+        if (processSamples < requiredSamples) {
+            return static_cast<int32_t>(bytes);
         }
+
+        addMelValue_l(fmaxf(
+            audio_utils_power_from_energy(getCombinedChannelEnergy_l())
+                + kMelAdjustmentDb
+                + kMeldBFSTodBSPLOffset
+                + mAttenuationDB, 0.0f));
+
+        samples -= processSamples;
+        buffer =
+            (const uint8_t*) buffer + processSamples * bytes_per_sample;
+        mCurrentSamples = 0;
     }
 
-    // Execute callbacks without the lock
-    for (const auto& f: callbacks) {
-        f();
-    }
-
-    return bytes;
+    return static_cast<int32_t>(bytes);
 }
 
 void MelProcessor::setAttenuation(float attenuationDB) {
-    std::lock_guard<std::mutex> guard(mLock);
     ALOGV("%s: setting the attenuation %f", __func__, attenuationDB);
     mAttenuationDB = attenuationDB;
+}
+
+void MelProcessor::onLastStrongRef(const void* id __attribute__((unused))) {
+   mMelWorker.stop();
+   ALOGV("%s: Stopped thread: %s for device %d", __func__, mMelWorker.mThreadName.c_str(),
+         mDeviceId.load());
+}
+
+std::string MelProcessor::pointerString() const {
+    const void * address = static_cast<const void*>(this);
+    std::stringstream aStream;
+    aStream << address;
+    return aStream.str();
+}
+
+void MelProcessor::MelWorker::run() {
+    mThread = std::thread([&]{
+        // name the thread to help identification
+        androidSetThreadName(mThreadName.c_str());
+        ALOGV("%s::run(): Started thread", mThreadName.c_str());
+
+        while (true) {
+            std::unique_lock l(mCondVarMutex);
+            if (mStopRequested) {
+                return;
+            }
+            mCondVar.wait(l, [&] { return (mRbReadPtr != mRbWritePtr) || mStopRequested; });
+
+            while (mRbReadPtr != mRbWritePtr && !mStopRequested) {
+                ALOGV("%s::run(): new callbacks, rb idx read=%zu, write=%zu",
+                      mThreadName.c_str(),
+                      mRbReadPtr.load(),
+                      mRbWritePtr.load());
+                auto callback = mCallback.promote();
+                if (callback == nullptr) {
+                    ALOGW("%s::run(): MelCallback is null, quitting MelWorker",
+                          mThreadName.c_str());
+                    return;
+                }
+
+                MelCallbackData data = mCallbackRingBuffer[mRbReadPtr];
+                if (data.mMel != 0.f) {
+                    callback->onMomentaryExposure(data.mMel, data.mPort);
+                } else if (data.mMelsSize != 0) {
+                    callback->onNewMelValues(data.mMels, 0, data.mMelsSize, data.mPort);
+                } else {
+                    ALOGE("%s::run(): Invalid MEL data. Skipping callback", mThreadName.c_str());
+                }
+                incRingBufferIndex(mRbReadPtr);
+            }
+        }
+    });
+}
+
+void MelProcessor::MelWorker::stop() {
+    bool oldValue;
+    {
+        std::lock_guard l(mCondVarMutex);
+        oldValue = mStopRequested;
+        mStopRequested = true;
+    }
+    if (!oldValue) {
+        mCondVar.notify_one();
+        mThread.join();
+    }
+}
+
+void MelProcessor::MelWorker::momentaryExposure(float mel, audio_port_handle_t port) {
+    ALOGV("%s", __func__);
+
+    if (ringBufferIsFull()) {
+        ALOGW("%s: cannot add momentary exposure for port %d, MelWorker buffer is full", __func__,
+              port);
+        return;
+    }
+
+    // worker is thread-safe, no lock since there is only one writer and we take into account
+    // spurious wake-ups
+    mCallbackRingBuffer[mRbWritePtr].mMel = mel;
+    mCallbackRingBuffer[mRbWritePtr].mMelsSize = 0;
+    mCallbackRingBuffer[mRbWritePtr].mPort = port;
+
+    incRingBufferIndex(mRbWritePtr);
+}
+
+void MelProcessor::MelWorker::newMelValues(const std::vector<float>& mels,
+                                           size_t melsSize,
+                                           audio_port_handle_t port) {
+    ALOGV("%s", __func__);
+
+    if (ringBufferIsFull()) {
+        ALOGW("%s: cannot add %zu mel values for port %d, MelWorker buffer is full", __func__,
+              melsSize, port);
+        return;
+    }
+
+    // worker is thread-safe, no lock since there is only one writer and we take into account
+    // spurious wake-ups
+    std::copy_n(std::begin(mels), melsSize, mCallbackRingBuffer[mRbWritePtr].mMels.begin());
+    mCallbackRingBuffer[mRbWritePtr].mMelsSize = melsSize;
+    mCallbackRingBuffer[mRbWritePtr].mMel = 0.f;
+    mCallbackRingBuffer[mRbWritePtr].mPort = port;
+
+    incRingBufferIndex(mRbWritePtr);
+}
+
+bool MelProcessor::MelWorker::ringBufferIsFull() const {
+    size_t curIdx = mRbWritePtr.load();
+    size_t nextIdx = curIdx >= kRingBufferSize - 1 ? 0 : curIdx + 1;
+
+    return nextIdx == mRbReadPtr;
+}
+
+void MelProcessor::MelWorker::incRingBufferIndex(std::atomic_size_t& idx) {
+    size_t nextIdx;
+    size_t expected;
+    do {
+        expected = idx.load();
+        nextIdx = expected >= kRingBufferSize - 1 ? 0 : expected + 1;
+    } while (!idx.compare_exchange_strong(expected, nextIdx));
 }
 
 }   // namespace android
