@@ -119,6 +119,8 @@ typedef struct {
     audio_flags_mask_t   flags;
     char                 tags[AUDIO_ATTRIBUTES_TAGS_MAX_SIZE]; /* UTF8 */
 } __attribute__((packed)) audio_attributes_t; // sent through Binder;
+/** The separator for tags. */
+static const char AUDIO_ATTRIBUTES_TAGS_SEPARATOR = ';';
 
 static const audio_attributes_t AUDIO_ATTRIBUTES_INITIALIZER = {
     /* .content_type = */ AUDIO_CONTENT_TYPE_UNKNOWN,
