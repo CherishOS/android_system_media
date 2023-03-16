@@ -2936,7 +2936,9 @@ activeArraySize or preCorrectionActiveArraySize still depends on distortion corr
 mode.<wbr/></p>
 <p>For camera devices with the
 <a href="https://developer.android.com/reference/android/hardware/camera2/CameraMetadata.html#REQUEST_AVAILABLE_CAPABILITIES_ULTRA_HIGH_RESOLUTION_SENSOR">Camera<wbr/>Metadata#REQUEST_<wbr/>AVAILABLE_<wbr/>CAPABILITIES_<wbr/>ULTRA_<wbr/>HIGH_<wbr/>RESOLUTION_<wbr/>SENSOR</a>
-capability,<wbr/>
+capability or devices where
+<a href="https://developer.android.com/reference/CameraCharacteristics.html#getAvailableCaptureRequestKeys">CameraCharacteristics#getAvailableCaptureRequestKeys</a>
+lists <a href="https://developer.android.com/reference/CaptureRequest.html#SENSOR_PIXEL_MODE"><a href="#controls_android.sensor.pixelMode">android.<wbr/>sensor.<wbr/>pixel<wbr/>Mode</a></a>
 <a href="#static_android.sensor.info.activeArraySizeMaximumResolution">android.<wbr/>sensor.<wbr/>info.<wbr/>active<wbr/>Array<wbr/>Size<wbr/>Maximum<wbr/>Resolution</a> /<wbr/>
 <a href="#static_android.sensor.info.preCorrectionActiveArraySizeMaximumResolution">android.<wbr/>sensor.<wbr/>info.<wbr/>pre<wbr/>Correction<wbr/>Active<wbr/>Array<wbr/>Size<wbr/>Maximum<wbr/>Resolution</a> must be used as the
 coordinate system for requests where <a href="#controls_android.sensor.pixelMode">android.<wbr/>sensor.<wbr/>pixel<wbr/>Mode</a> is set to
@@ -3443,7 +3445,10 @@ activeArraySize or preCorrectionActiveArraySize still depends on distortion corr
 mode.<wbr/></p>
 <p>For camera devices with the
 <a href="https://developer.android.com/reference/android/hardware/camera2/CameraMetadata.html#REQUEST_AVAILABLE_CAPABILITIES_ULTRA_HIGH_RESOLUTION_SENSOR">Camera<wbr/>Metadata#REQUEST_<wbr/>AVAILABLE_<wbr/>CAPABILITIES_<wbr/>ULTRA_<wbr/>HIGH_<wbr/>RESOLUTION_<wbr/>SENSOR</a>
-capability,<wbr/> <a href="#static_android.sensor.info.activeArraySizeMaximumResolution">android.<wbr/>sensor.<wbr/>info.<wbr/>active<wbr/>Array<wbr/>Size<wbr/>Maximum<wbr/>Resolution</a> /<wbr/>
+capability or devices where
+<a href="https://developer.android.com/reference/CameraCharacteristics.html#getAvailableCaptureRequestKeys">CameraCharacteristics#getAvailableCaptureRequestKeys</a>
+lists <a href="https://developer.android.com/reference/CaptureRequest.html#SENSOR_PIXEL_MODE"><a href="#controls_android.sensor.pixelMode">android.<wbr/>sensor.<wbr/>pixel<wbr/>Mode</a></a>,<wbr/>
+<a href="#static_android.sensor.info.activeArraySizeMaximumResolution">android.<wbr/>sensor.<wbr/>info.<wbr/>active<wbr/>Array<wbr/>Size<wbr/>Maximum<wbr/>Resolution</a> /<wbr/>
 <a href="#static_android.sensor.info.preCorrectionActiveArraySizeMaximumResolution">android.<wbr/>sensor.<wbr/>info.<wbr/>pre<wbr/>Correction<wbr/>Active<wbr/>Array<wbr/>Size<wbr/>Maximum<wbr/>Resolution</a> must be used as the
 coordinate system for requests where <a href="#controls_android.sensor.pixelMode">android.<wbr/>sensor.<wbr/>pixel<wbr/>Mode</a> is set to
 <a href="https://developer.android.com/reference/android/hardware/camera2/CameraMetadata.html#SENSOR_PIXEL_MODE_MAXIMUM_RESOLUTION">Camera<wbr/>Metadata#SENSOR_<wbr/>PIXEL_<wbr/>MODE_<wbr/>MAXIMUM_<wbr/>RESOLUTION</a>.<wbr/></p>
@@ -3947,7 +3952,10 @@ activeArraySize or preCorrectionActiveArraySize still depends on distortion corr
 mode.<wbr/></p>
 <p>For camera devices with the
 <a href="https://developer.android.com/reference/android/hardware/camera2/CameraMetadata.html#REQUEST_AVAILABLE_CAPABILITIES_ULTRA_HIGH_RESOLUTION_SENSOR">Camera<wbr/>Metadata#REQUEST_<wbr/>AVAILABLE_<wbr/>CAPABILITIES_<wbr/>ULTRA_<wbr/>HIGH_<wbr/>RESOLUTION_<wbr/>SENSOR</a>
-capability,<wbr/> <a href="#static_android.sensor.info.activeArraySizeMaximumResolution">android.<wbr/>sensor.<wbr/>info.<wbr/>active<wbr/>Array<wbr/>Size<wbr/>Maximum<wbr/>Resolution</a> /<wbr/>
+capability or devices where
+<a href="https://developer.android.com/reference/CameraCharacteristics.html#getAvailableCaptureRequestKeys">CameraCharacteristics#getAvailableCaptureRequestKeys</a>
+lists <a href="https://developer.android.com/reference/CaptureRequest.html#SENSOR_PIXEL_MODE"><a href="#controls_android.sensor.pixelMode">android.<wbr/>sensor.<wbr/>pixel<wbr/>Mode</a></a>,<wbr/>
+<a href="#static_android.sensor.info.activeArraySizeMaximumResolution">android.<wbr/>sensor.<wbr/>info.<wbr/>active<wbr/>Array<wbr/>Size<wbr/>Maximum<wbr/>Resolution</a> /<wbr/>
 <a href="#static_android.sensor.info.preCorrectionActiveArraySizeMaximumResolution">android.<wbr/>sensor.<wbr/>info.<wbr/>pre<wbr/>Correction<wbr/>Active<wbr/>Array<wbr/>Size<wbr/>Maximum<wbr/>Resolution</a> must be used as the
 coordinate system for requests where <a href="#controls_android.sensor.pixelMode">android.<wbr/>sensor.<wbr/>pixel<wbr/>Mode</a> is set to
 <a href="https://developer.android.com/reference/android/hardware/camera2/CameraMetadata.html#SENSOR_PIXEL_MODE_MAXIMUM_RESOLUTION">Camera<wbr/>Metadata#SENSOR_<wbr/>PIXEL_<wbr/>MODE_<wbr/>MAXIMUM_<wbr/>RESOLUTION</a>.<wbr/></p>
@@ -8182,7 +8190,9 @@ activeArraySize or preCorrectionActiveArraySize still depends on distortion corr
 mode.<wbr/></p>
 <p>For camera devices with the
 <a href="https://developer.android.com/reference/android/hardware/camera2/CameraMetadata.html#REQUEST_AVAILABLE_CAPABILITIES_ULTRA_HIGH_RESOLUTION_SENSOR">Camera<wbr/>Metadata#REQUEST_<wbr/>AVAILABLE_<wbr/>CAPABILITIES_<wbr/>ULTRA_<wbr/>HIGH_<wbr/>RESOLUTION_<wbr/>SENSOR</a>
-capability,<wbr/>
+capability or devices where
+<a href="https://developer.android.com/reference/CameraCharacteristics.html#getAvailableCaptureRequestKeys">CameraCharacteristics#getAvailableCaptureRequestKeys</a>
+lists <a href="https://developer.android.com/reference/CaptureRequest.html#SENSOR_PIXEL_MODE"><a href="#controls_android.sensor.pixelMode">android.<wbr/>sensor.<wbr/>pixel<wbr/>Mode</a></a>
 <a href="#static_android.sensor.info.activeArraySizeMaximumResolution">android.<wbr/>sensor.<wbr/>info.<wbr/>active<wbr/>Array<wbr/>Size<wbr/>Maximum<wbr/>Resolution</a> /<wbr/>
 <a href="#static_android.sensor.info.preCorrectionActiveArraySizeMaximumResolution">android.<wbr/>sensor.<wbr/>info.<wbr/>pre<wbr/>Correction<wbr/>Active<wbr/>Array<wbr/>Size<wbr/>Maximum<wbr/>Resolution</a> must be used as the
 coordinate system for requests where <a href="#controls_android.sensor.pixelMode">android.<wbr/>sensor.<wbr/>pixel<wbr/>Mode</a> is set to
@@ -8996,7 +9006,10 @@ activeArraySize or preCorrectionActiveArraySize still depends on distortion corr
 mode.<wbr/></p>
 <p>For camera devices with the
 <a href="https://developer.android.com/reference/android/hardware/camera2/CameraMetadata.html#REQUEST_AVAILABLE_CAPABILITIES_ULTRA_HIGH_RESOLUTION_SENSOR">Camera<wbr/>Metadata#REQUEST_<wbr/>AVAILABLE_<wbr/>CAPABILITIES_<wbr/>ULTRA_<wbr/>HIGH_<wbr/>RESOLUTION_<wbr/>SENSOR</a>
-capability,<wbr/> <a href="#static_android.sensor.info.activeArraySizeMaximumResolution">android.<wbr/>sensor.<wbr/>info.<wbr/>active<wbr/>Array<wbr/>Size<wbr/>Maximum<wbr/>Resolution</a> /<wbr/>
+capability or devices where
+<a href="https://developer.android.com/reference/CameraCharacteristics.html#getAvailableCaptureRequestKeys">CameraCharacteristics#getAvailableCaptureRequestKeys</a>
+lists <a href="https://developer.android.com/reference/CaptureRequest.html#SENSOR_PIXEL_MODE"><a href="#controls_android.sensor.pixelMode">android.<wbr/>sensor.<wbr/>pixel<wbr/>Mode</a></a>,<wbr/>
+<a href="#static_android.sensor.info.activeArraySizeMaximumResolution">android.<wbr/>sensor.<wbr/>info.<wbr/>active<wbr/>Array<wbr/>Size<wbr/>Maximum<wbr/>Resolution</a> /<wbr/>
 <a href="#static_android.sensor.info.preCorrectionActiveArraySizeMaximumResolution">android.<wbr/>sensor.<wbr/>info.<wbr/>pre<wbr/>Correction<wbr/>Active<wbr/>Array<wbr/>Size<wbr/>Maximum<wbr/>Resolution</a> must be used as the
 coordinate system for requests where <a href="#controls_android.sensor.pixelMode">android.<wbr/>sensor.<wbr/>pixel<wbr/>Mode</a> is set to
 <a href="https://developer.android.com/reference/android/hardware/camera2/CameraMetadata.html#SENSOR_PIXEL_MODE_MAXIMUM_RESOLUTION">Camera<wbr/>Metadata#SENSOR_<wbr/>PIXEL_<wbr/>MODE_<wbr/>MAXIMUM_<wbr/>RESOLUTION</a>.<wbr/></p>
@@ -10046,7 +10059,10 @@ activeArraySize or preCorrectionActiveArraySize still depends on distortion corr
 mode.<wbr/></p>
 <p>For camera devices with the
 <a href="https://developer.android.com/reference/android/hardware/camera2/CameraMetadata.html#REQUEST_AVAILABLE_CAPABILITIES_ULTRA_HIGH_RESOLUTION_SENSOR">Camera<wbr/>Metadata#REQUEST_<wbr/>AVAILABLE_<wbr/>CAPABILITIES_<wbr/>ULTRA_<wbr/>HIGH_<wbr/>RESOLUTION_<wbr/>SENSOR</a>
-capability,<wbr/> <a href="#static_android.sensor.info.activeArraySizeMaximumResolution">android.<wbr/>sensor.<wbr/>info.<wbr/>active<wbr/>Array<wbr/>Size<wbr/>Maximum<wbr/>Resolution</a> /<wbr/>
+capability or devices where
+<a href="https://developer.android.com/reference/CameraCharacteristics.html#getAvailableCaptureRequestKeys">CameraCharacteristics#getAvailableCaptureRequestKeys</a>
+lists <a href="https://developer.android.com/reference/CaptureRequest.html#SENSOR_PIXEL_MODE"><a href="#controls_android.sensor.pixelMode">android.<wbr/>sensor.<wbr/>pixel<wbr/>Mode</a></a>,<wbr/>
+<a href="#static_android.sensor.info.activeArraySizeMaximumResolution">android.<wbr/>sensor.<wbr/>info.<wbr/>active<wbr/>Array<wbr/>Size<wbr/>Maximum<wbr/>Resolution</a> /<wbr/>
 <a href="#static_android.sensor.info.preCorrectionActiveArraySizeMaximumResolution">android.<wbr/>sensor.<wbr/>info.<wbr/>pre<wbr/>Correction<wbr/>Active<wbr/>Array<wbr/>Size<wbr/>Maximum<wbr/>Resolution</a> must be used as the
 coordinate system for requests where <a href="#controls_android.sensor.pixelMode">android.<wbr/>sensor.<wbr/>pixel<wbr/>Mode</a> is set to
 <a href="https://developer.android.com/reference/android/hardware/camera2/CameraMetadata.html#SENSOR_PIXEL_MODE_MAXIMUM_RESOLUTION">Camera<wbr/>Metadata#SENSOR_<wbr/>PIXEL_<wbr/>MODE_<wbr/>MAXIMUM_<wbr/>RESOLUTION</a>.<wbr/></p>
@@ -21989,7 +22005,9 @@ preCorrectionActiveArraySize covers the camera device's field of view "after" zo
 <a href="#controls_android.control.zoomRatio">android.<wbr/>control.<wbr/>zoom<wbr/>Ratio</a> for details.<wbr/></p>
 <p>For camera devices with the
 <a href="https://developer.android.com/reference/android/hardware/camera2/CameraMetadata.html#REQUEST_AVAILABLE_CAPABILITIES_ULTRA_HIGH_RESOLUTION_SENSOR">Camera<wbr/>Metadata#REQUEST_<wbr/>AVAILABLE_<wbr/>CAPABILITIES_<wbr/>ULTRA_<wbr/>HIGH_<wbr/>RESOLUTION_<wbr/>SENSOR</a>
-capability,<wbr/> <a href="#static_android.sensor.info.activeArraySizeMaximumResolution">android.<wbr/>sensor.<wbr/>info.<wbr/>active<wbr/>Array<wbr/>Size<wbr/>Maximum<wbr/>Resolution</a> /<wbr/>
+capability or devices where <a href="https://developer.android.com/reference/CameraCharacteristics.html#getAvailableCaptureRequestKeys">CameraCharacteristics#getAvailableCaptureRequestKeys</a>
+lists <a href="https://developer.android.com/reference/CaptureRequest.html#SENSOR_PIXEL_MODE"><a href="#controls_android.sensor.pixelMode">android.<wbr/>sensor.<wbr/>pixel<wbr/>Mode</a></a></p>
+<p><a href="#static_android.sensor.info.activeArraySizeMaximumResolution">android.<wbr/>sensor.<wbr/>info.<wbr/>active<wbr/>Array<wbr/>Size<wbr/>Maximum<wbr/>Resolution</a> /<wbr/>
 <a href="#static_android.sensor.info.preCorrectionActiveArraySizeMaximumResolution">android.<wbr/>sensor.<wbr/>info.<wbr/>pre<wbr/>Correction<wbr/>Active<wbr/>Array<wbr/>Size<wbr/>Maximum<wbr/>Resolution</a> must be used as the
 coordinate system for requests where <a href="#controls_android.sensor.pixelMode">android.<wbr/>sensor.<wbr/>pixel<wbr/>Mode</a> is set to
 <a href="https://developer.android.com/reference/android/hardware/camera2/CameraMetadata.html#SENSOR_PIXEL_MODE_MAXIMUM_RESOLUTION">Camera<wbr/>Metadata#SENSOR_<wbr/>PIXEL_<wbr/>MODE_<wbr/>MAXIMUM_<wbr/>RESOLUTION</a>.<wbr/></p>
@@ -25776,7 +25794,9 @@ preCorrectionActiveArraySize covers the camera device's field of view "after" zo
 <a href="#controls_android.control.zoomRatio">android.<wbr/>control.<wbr/>zoom<wbr/>Ratio</a> for details.<wbr/></p>
 <p>For camera devices with the
 <a href="https://developer.android.com/reference/android/hardware/camera2/CameraMetadata.html#REQUEST_AVAILABLE_CAPABILITIES_ULTRA_HIGH_RESOLUTION_SENSOR">Camera<wbr/>Metadata#REQUEST_<wbr/>AVAILABLE_<wbr/>CAPABILITIES_<wbr/>ULTRA_<wbr/>HIGH_<wbr/>RESOLUTION_<wbr/>SENSOR</a>
-capability,<wbr/> <a href="#static_android.sensor.info.activeArraySizeMaximumResolution">android.<wbr/>sensor.<wbr/>info.<wbr/>active<wbr/>Array<wbr/>Size<wbr/>Maximum<wbr/>Resolution</a> /<wbr/>
+capability or devices where <a href="https://developer.android.com/reference/CameraCharacteristics.html#getAvailableCaptureRequestKeys">CameraCharacteristics#getAvailableCaptureRequestKeys</a>
+lists <a href="https://developer.android.com/reference/CaptureRequest.html#SENSOR_PIXEL_MODE"><a href="#controls_android.sensor.pixelMode">android.<wbr/>sensor.<wbr/>pixel<wbr/>Mode</a></a></p>
+<p><a href="#static_android.sensor.info.activeArraySizeMaximumResolution">android.<wbr/>sensor.<wbr/>info.<wbr/>active<wbr/>Array<wbr/>Size<wbr/>Maximum<wbr/>Resolution</a> /<wbr/>
 <a href="#static_android.sensor.info.preCorrectionActiveArraySizeMaximumResolution">android.<wbr/>sensor.<wbr/>info.<wbr/>pre<wbr/>Correction<wbr/>Active<wbr/>Array<wbr/>Size<wbr/>Maximum<wbr/>Resolution</a> must be used as the
 coordinate system for requests where <a href="#controls_android.sensor.pixelMode">android.<wbr/>sensor.<wbr/>pixel<wbr/>Mode</a> is set to
 <a href="https://developer.android.com/reference/android/hardware/camera2/CameraMetadata.html#SENSOR_PIXEL_MODE_MAXIMUM_RESOLUTION">Camera<wbr/>Metadata#SENSOR_<wbr/>PIXEL_<wbr/>MODE_<wbr/>MAXIMUM_<wbr/>RESOLUTION</a>.<wbr/></p>
@@ -26619,15 +26639,11 @@ as the logical camera.<wbr/></p>
                 <ul class="entry_type_enum">
                   <li>
                     <span class="entry_type_enum_name">DEFAULT (v3.6)</span>
-                    <span class="entry_type_enum_notes"><p>This is the default sensor pixel mode.<wbr/> This is the only sensor pixel mode
-supported unless a camera device advertises
-<a href="https://developer.android.com/reference/android/hardware/camera2/CameraMetadata.html#REQUEST_AVAILABLE_CAPABILITIES_ULTRA_HIGH_RESOLUTION_SENSOR">Camera<wbr/>Metadata#REQUEST_<wbr/>AVAILABLE_<wbr/>CAPABILITIES_<wbr/>ULTRA_<wbr/>HIGH_<wbr/>RESOLUTION_<wbr/>SENSOR</a>.<wbr/></p></span>
+                    <span class="entry_type_enum_notes"><p>This is the default sensor pixel mode.<wbr/></p></span>
                   </li>
                   <li>
                     <span class="entry_type_enum_name">MAXIMUM_RESOLUTION (v3.6)</span>
-                    <span class="entry_type_enum_notes"><p>This sensor pixel mode is offered by devices with capability
-<a href="https://developer.android.com/reference/android/hardware/camera2/CameraMetadata.html#REQUEST_AVAILABLE_CAPABILITIES_ULTRA_HIGH_RESOLUTION_SENSOR">Camera<wbr/>Metadata#REQUEST_<wbr/>AVAILABLE_<wbr/>CAPABILITIES_<wbr/>ULTRA_<wbr/>HIGH_<wbr/>RESOLUTION_<wbr/>SENSOR</a>.<wbr/>
-In this mode,<wbr/> sensors typically do not bin pixels,<wbr/> as a result can offer larger
+                    <span class="entry_type_enum_notes"><p>In this mode,<wbr/> sensors typically do not bin pixels,<wbr/> as a result can offer larger
 image sizes.<wbr/></p></span>
                   </li>
                 </ul>
@@ -26663,13 +26679,10 @@ mode or not.<wbr/> By default,<wbr/> all camera devices operate in
 <a href="https://developer.android.com/reference/android/hardware/camera2/CameraMetadata.html#SENSOR_PIXEL_MODE_DEFAULT">Camera<wbr/>Metadata#SENSOR_<wbr/>PIXEL_<wbr/>MODE_<wbr/>DEFAULT</a> mode.<wbr/>
 When operating in
 <a href="https://developer.android.com/reference/android/hardware/camera2/CameraMetadata.html#SENSOR_PIXEL_MODE_DEFAULT">Camera<wbr/>Metadata#SENSOR_<wbr/>PIXEL_<wbr/>MODE_<wbr/>DEFAULT</a> mode,<wbr/> sensors
-with <a href="https://developer.android.com/reference/android/hardware/camera2/CameraMetadata.html#REQUEST_AVAILABLE_CAPABILITIES_ULTRA_HIGH_RESOLUTION_SENSOR">Camera<wbr/>Metadata#REQUEST_<wbr/>AVAILABLE_<wbr/>CAPABILITIES_<wbr/>ULTRA_<wbr/>HIGH_<wbr/>RESOLUTION_<wbr/>SENSOR</a>
-capability would typically perform pixel binning in order to improve low light
+would typically perform pixel binning in order to improve low light
 performance,<wbr/> noise reduction etc.<wbr/> However,<wbr/> in
 <a href="https://developer.android.com/reference/android/hardware/camera2/CameraMetadata.html#SENSOR_PIXEL_MODE_MAXIMUM_RESOLUTION">Camera<wbr/>Metadata#SENSOR_<wbr/>PIXEL_<wbr/>MODE_<wbr/>MAXIMUM_<wbr/>RESOLUTION</a>
-mode (supported only
-by <a href="https://developer.android.com/reference/android/hardware/camera2/CameraMetadata.html#REQUEST_AVAILABLE_CAPABILITIES_ULTRA_HIGH_RESOLUTION_SENSOR">Camera<wbr/>Metadata#REQUEST_<wbr/>AVAILABLE_<wbr/>CAPABILITIES_<wbr/>ULTRA_<wbr/>HIGH_<wbr/>RESOLUTION_<wbr/>SENSOR</a>
-sensors),<wbr/> sensors typically operate in unbinned mode allowing for a larger image size.<wbr/>
+mode,<wbr/> sensors typically operate in unbinned mode allowing for a larger image size.<wbr/>
 The stream configurations supported in
 <a href="https://developer.android.com/reference/android/hardware/camera2/CameraMetadata.html#SENSOR_PIXEL_MODE_MAXIMUM_RESOLUTION">Camera<wbr/>Metadata#SENSOR_<wbr/>PIXEL_<wbr/>MODE_<wbr/>MAXIMUM_<wbr/>RESOLUTION</a>
 mode are also different from those of
@@ -26683,7 +26696,32 @@ Unless reported by both
 <code><a href="#static_android.scaler.streamConfigurationMap">android.<wbr/>scaler.<wbr/>stream<wbr/>Configuration<wbr/>Map</a></code>
 must not be mixed in the same CaptureRequest.<wbr/> In other words,<wbr/> these outputs are
 exclusive to each other.<wbr/>
-This key does not need to be set for reprocess requests.<wbr/></p>
+This key does not need to be set for reprocess requests.<wbr/>
+This key will be be present on devices supporting the
+<a href="https://developer.android.com/reference/android/hardware/camera2/CameraMetadata.html#REQUEST_AVAILABLE_CAPABILITIES_ULTRA_HIGH_RESOLUTION_SENSOR">Camera<wbr/>Metadata#REQUEST_<wbr/>AVAILABLE_<wbr/>CAPABILITIES_<wbr/>ULTRA_<wbr/>HIGH_<wbr/>RESOLUTION_<wbr/>SENSOR</a>
+capability.<wbr/> It may also be present on devices which do not support the aforementioned
+capability.<wbr/> In that case:</p>
+<ul>
+<li>
+<p>The mandatory stream combinations listed in
+  <a href="https://developer.android.com/reference/android/hardware/camera2/CameraCharacteristics/mandatoryMaximumResolutionStreamCombinations.html">mandatoryMaximumResolutionStreamCombinations</a>
+  would not apply.<wbr/></p>
+</li>
+<li>
+<p>The bayer pattern of {@code RAW} streams when
+  <a href="https://developer.android.com/reference/android/hardware/camera2/CameraMetadata.html#SENSOR_PIXEL_MODE_MAXIMUM_RESOLUTION">Camera<wbr/>Metadata#SENSOR_<wbr/>PIXEL_<wbr/>MODE_<wbr/>MAXIMUM_<wbr/>RESOLUTION</a>
+  is selected will be the one listed in <a href="https://developer.android.com/reference/android/sensor/info/binningFactor.html">binningFactor</a>.<wbr/></p>
+</li>
+<li>
+<p>The following keys will always be present:</p>
+<ul>
+<li><a href="#static_android.scaler.streamConfigurationMapMaximumResolution">android.<wbr/>scaler.<wbr/>stream<wbr/>Configuration<wbr/>Map<wbr/>Maximum<wbr/>Resolution</a></li>
+<li><a href="#static_android.sensor.info.activeArraySizeMaximumResolution">android.<wbr/>sensor.<wbr/>info.<wbr/>active<wbr/>Array<wbr/>Size<wbr/>Maximum<wbr/>Resolution</a></li>
+<li><a href="#static_android.sensor.info.pixelArraySizeMaximumResolution">android.<wbr/>sensor.<wbr/>info.<wbr/>pixel<wbr/>Array<wbr/>Size<wbr/>Maximum<wbr/>Resolution</a></li>
+<li><a href="#static_android.sensor.info.preCorrectionActiveArraySizeMaximumResolution">android.<wbr/>sensor.<wbr/>info.<wbr/>pre<wbr/>Correction<wbr/>Active<wbr/>Array<wbr/>Size<wbr/>Maximum<wbr/>Resolution</a></li>
+</ul>
+</li>
+</ul>
             </td>
           </tr>
 
@@ -27673,7 +27711,8 @@ replaced with their
 counterparts.<wbr/>
 This key will only be present for devices which advertise the
 <a href="https://developer.android.com/reference/android/hardware/camera2/CameraMetadata.html#REQUEST_AVAILABLE_CAPABILITIES_ULTRA_HIGH_RESOLUTION_SENSOR">Camera<wbr/>Metadata#REQUEST_<wbr/>AVAILABLE_<wbr/>CAPABILITIES_<wbr/>ULTRA_<wbr/>HIGH_<wbr/>RESOLUTION_<wbr/>SENSOR</a>
-capability.<wbr/></p>
+capability or devices where <a href="https://developer.android.com/reference/CameraCharacteristics.html#getAvailableCaptureRequestKeys">CameraCharacteristics#getAvailableCaptureRequestKeys</a>
+lists <a href="https://developer.android.com/reference/CaptureRequest.html#SENSOR_PIXEL_MODE"><a href="#controls_android.sensor.pixelMode">android.<wbr/>sensor.<wbr/>pixel<wbr/>Mode</a></a></p>
             </td>
           </tr>
 
@@ -27751,7 +27790,8 @@ is,<wbr/> when <a href="#controls_android.sensor.pixelMode">android.<wbr/>sensor
 <a href="https://developer.android.com/reference/android/hardware/camera2/CameraMetadata.html#SENSOR_PIXEL_MODE_MAXIMUM_RESOLUTION">Camera<wbr/>Metadata#SENSOR_<wbr/>PIXEL_<wbr/>MODE_<wbr/>MAXIMUM_<wbr/>RESOLUTION</a>.<wbr/>
 This key will only be present for devices which advertise the
 <a href="https://developer.android.com/reference/android/hardware/camera2/CameraMetadata.html#REQUEST_AVAILABLE_CAPABILITIES_ULTRA_HIGH_RESOLUTION_SENSOR">Camera<wbr/>Metadata#REQUEST_<wbr/>AVAILABLE_<wbr/>CAPABILITIES_<wbr/>ULTRA_<wbr/>HIGH_<wbr/>RESOLUTION_<wbr/>SENSOR</a>
-capability.<wbr/></p>
+capability or devices where <a href="https://developer.android.com/reference/CameraCharacteristics.html#getAvailableCaptureRequestKeys">CameraCharacteristics#getAvailableCaptureRequestKeys</a>
+lists <a href="https://developer.android.com/reference/CaptureRequest.html#SENSOR_PIXEL_MODE"><a href="#controls_android.sensor.pixelMode">android.<wbr/>sensor.<wbr/>pixel<wbr/>Mode</a></a></p>
             </td>
           </tr>
 
@@ -27818,7 +27858,8 @@ when <a href="#controls_android.sensor.pixelMode">android.<wbr/>sensor.<wbr/>pix
 <a href="https://developer.android.com/reference/android/hardware/camera2/CameraMetadata.html#SENSOR_PIXEL_MODE_MAXIMUM_RESOLUTION">Camera<wbr/>Metadata#SENSOR_<wbr/>PIXEL_<wbr/>MODE_<wbr/>MAXIMUM_<wbr/>RESOLUTION</a>.<wbr/>
 This key will only be present for devices which advertise the
 <a href="https://developer.android.com/reference/android/hardware/camera2/CameraMetadata.html#REQUEST_AVAILABLE_CAPABILITIES_ULTRA_HIGH_RESOLUTION_SENSOR">Camera<wbr/>Metadata#REQUEST_<wbr/>AVAILABLE_<wbr/>CAPABILITIES_<wbr/>ULTRA_<wbr/>HIGH_<wbr/>RESOLUTION_<wbr/>SENSOR</a>
-capability.<wbr/></p>
+capability or devices where <a href="https://developer.android.com/reference/CameraCharacteristics.html#getAvailableCaptureRequestKeys">CameraCharacteristics#getAvailableCaptureRequestKeys</a>
+lists <a href="https://developer.android.com/reference/CaptureRequest.html#SENSOR_PIXEL_MODE"><a href="#controls_android.sensor.pixelMode">android.<wbr/>sensor.<wbr/>pixel<wbr/>Mode</a></a></p>
             </td>
           </tr>
 
@@ -27891,12 +27932,25 @@ under the same color filter for ULTRA_<wbr/>HIGH_<wbr/>RESOLUTION sensors.<wbr/>
 to improve various aspects of imaging such as noise reduction,<wbr/> low light
 performance etc.<wbr/> These groups can be of various sizes such as 2X2 (quad bayer),<wbr/>
 3X3 (nona-bayer).<wbr/> This key specifies the length and width of the pixels grouped under
-the same color filter.<wbr/></p>
-<p>This key will not be present if REMOSAIC_<wbr/>REPROCESSING is not supported,<wbr/> since RAW images
-will have a regular bayer pattern.<wbr/></p>
-<p>This key will not be present for sensors which don't have the
-<a href="https://developer.android.com/reference/android/hardware/camera2/CameraMetadata.html#REQUEST_AVAILABLE_CAPABILITIES_ULTRA_HIGH_RESOLUTION_SENSOR">Camera<wbr/>Metadata#REQUEST_<wbr/>AVAILABLE_<wbr/>CAPABILITIES_<wbr/>ULTRA_<wbr/>HIGH_<wbr/>RESOLUTION_<wbr/>SENSOR</a>
-capability.<wbr/></p>
+the same color filter.<wbr/>
+In case the device has the
+<a href="https://developer.android.com/reference/CameraMetadata.html#REQUEST_AVAILABLE_CAPABILITIES_ULTRA_HIGH_RESOLUTION_SENSOR">Camera<wbr/>Metadata#REQUEST_<wbr/>AVAILABLE_<wbr/>CAPABILITIES_<wbr/>ULTRA_<wbr/>HIGH_<wbr/>RESOLUTION_<wbr/>SENSOR</a>
+capability :</p>
+<ul>
+<li>This key will not be present if REMOSAIC_<wbr/>REPROCESSING is not supported,<wbr/> since RAW
+  images will have a regular bayer pattern.<wbr/></li>
+</ul>
+<p>In case the device does not have the
+<a href="https://developer.android.com/reference/CameraMetadata.html#REQUEST_AVAILABLE_CAPABILITIES_ULTRA_HIGH_RESOLUTION_SENSOR">Camera<wbr/>Metadata#REQUEST_<wbr/>AVAILABLE_<wbr/>CAPABILITIES_<wbr/>ULTRA_<wbr/>HIGH_<wbr/>RESOLUTION_<wbr/>SENSOR</a>
+capability :</p>
+<ul>
+<li>This key will be present if
+  <a href="https://developer.android.com/reference/CameraCharacteristics.html#getAvailableCaptureRequestKeys">CameraCharacteristics#getAvailableCaptureRequestKeys</a>
+  lists <a href="https://developer.android.com/reference/CaptureRequest.html#SENSOR_PIXEL_MODE"><a href="#controls_android.sensor.pixelMode">android.<wbr/>sensor.<wbr/>pixel<wbr/>Mode</a></a>,<wbr/> since RAW
+  images may not necessarily have a regular bayer pattern when
+  <a href="https://developer.android.com/reference/CaptureRequest.html#SENSOR_PIXEL_MODE"><a href="#controls_android.sensor.pixelMode">android.<wbr/>sensor.<wbr/>pixel<wbr/>Mode</a></a> is set to
+  <a href="https://developer.android.com/reference/android/hardware/camera2/CameraMetadata.html#SENSOR_PIXEL_MODE_MAXIMUM_RESOLUTION">Camera<wbr/>Metadata#SENSOR_<wbr/>PIXEL_<wbr/>MODE_<wbr/>MAXIMUM_<wbr/>RESOLUTION</a>.<wbr/></li>
+</ul>
             </td>
           </tr>
 
@@ -30572,15 +30626,11 @@ than maximum raw value supported,<wbr/> i.<wbr/>e.<wbr/> 2^(sensor bits per pixe
                 <ul class="entry_type_enum">
                   <li>
                     <span class="entry_type_enum_name">DEFAULT (v3.6)</span>
-                    <span class="entry_type_enum_notes"><p>This is the default sensor pixel mode.<wbr/> This is the only sensor pixel mode
-supported unless a camera device advertises
-<a href="https://developer.android.com/reference/android/hardware/camera2/CameraMetadata.html#REQUEST_AVAILABLE_CAPABILITIES_ULTRA_HIGH_RESOLUTION_SENSOR">Camera<wbr/>Metadata#REQUEST_<wbr/>AVAILABLE_<wbr/>CAPABILITIES_<wbr/>ULTRA_<wbr/>HIGH_<wbr/>RESOLUTION_<wbr/>SENSOR</a>.<wbr/></p></span>
+                    <span class="entry_type_enum_notes"><p>This is the default sensor pixel mode.<wbr/></p></span>
                   </li>
                   <li>
                     <span class="entry_type_enum_name">MAXIMUM_RESOLUTION (v3.6)</span>
-                    <span class="entry_type_enum_notes"><p>This sensor pixel mode is offered by devices with capability
-<a href="https://developer.android.com/reference/android/hardware/camera2/CameraMetadata.html#REQUEST_AVAILABLE_CAPABILITIES_ULTRA_HIGH_RESOLUTION_SENSOR">Camera<wbr/>Metadata#REQUEST_<wbr/>AVAILABLE_<wbr/>CAPABILITIES_<wbr/>ULTRA_<wbr/>HIGH_<wbr/>RESOLUTION_<wbr/>SENSOR</a>.<wbr/>
-In this mode,<wbr/> sensors typically do not bin pixels,<wbr/> as a result can offer larger
+                    <span class="entry_type_enum_notes"><p>In this mode,<wbr/> sensors typically do not bin pixels,<wbr/> as a result can offer larger
 image sizes.<wbr/></p></span>
                   </li>
                 </ul>
@@ -30616,13 +30666,10 @@ mode or not.<wbr/> By default,<wbr/> all camera devices operate in
 <a href="https://developer.android.com/reference/android/hardware/camera2/CameraMetadata.html#SENSOR_PIXEL_MODE_DEFAULT">Camera<wbr/>Metadata#SENSOR_<wbr/>PIXEL_<wbr/>MODE_<wbr/>DEFAULT</a> mode.<wbr/>
 When operating in
 <a href="https://developer.android.com/reference/android/hardware/camera2/CameraMetadata.html#SENSOR_PIXEL_MODE_DEFAULT">Camera<wbr/>Metadata#SENSOR_<wbr/>PIXEL_<wbr/>MODE_<wbr/>DEFAULT</a> mode,<wbr/> sensors
-with <a href="https://developer.android.com/reference/android/hardware/camera2/CameraMetadata.html#REQUEST_AVAILABLE_CAPABILITIES_ULTRA_HIGH_RESOLUTION_SENSOR">Camera<wbr/>Metadata#REQUEST_<wbr/>AVAILABLE_<wbr/>CAPABILITIES_<wbr/>ULTRA_<wbr/>HIGH_<wbr/>RESOLUTION_<wbr/>SENSOR</a>
-capability would typically perform pixel binning in order to improve low light
+would typically perform pixel binning in order to improve low light
 performance,<wbr/> noise reduction etc.<wbr/> However,<wbr/> in
 <a href="https://developer.android.com/reference/android/hardware/camera2/CameraMetadata.html#SENSOR_PIXEL_MODE_MAXIMUM_RESOLUTION">Camera<wbr/>Metadata#SENSOR_<wbr/>PIXEL_<wbr/>MODE_<wbr/>MAXIMUM_<wbr/>RESOLUTION</a>
-mode (supported only
-by <a href="https://developer.android.com/reference/android/hardware/camera2/CameraMetadata.html#REQUEST_AVAILABLE_CAPABILITIES_ULTRA_HIGH_RESOLUTION_SENSOR">Camera<wbr/>Metadata#REQUEST_<wbr/>AVAILABLE_<wbr/>CAPABILITIES_<wbr/>ULTRA_<wbr/>HIGH_<wbr/>RESOLUTION_<wbr/>SENSOR</a>
-sensors),<wbr/> sensors typically operate in unbinned mode allowing for a larger image size.<wbr/>
+mode,<wbr/> sensors typically operate in unbinned mode allowing for a larger image size.<wbr/>
 The stream configurations supported in
 <a href="https://developer.android.com/reference/android/hardware/camera2/CameraMetadata.html#SENSOR_PIXEL_MODE_MAXIMUM_RESOLUTION">Camera<wbr/>Metadata#SENSOR_<wbr/>PIXEL_<wbr/>MODE_<wbr/>MAXIMUM_<wbr/>RESOLUTION</a>
 mode are also different from those of
@@ -30636,7 +30683,32 @@ Unless reported by both
 <code><a href="#static_android.scaler.streamConfigurationMap">android.<wbr/>scaler.<wbr/>stream<wbr/>Configuration<wbr/>Map</a></code>
 must not be mixed in the same CaptureRequest.<wbr/> In other words,<wbr/> these outputs are
 exclusive to each other.<wbr/>
-This key does not need to be set for reprocess requests.<wbr/></p>
+This key does not need to be set for reprocess requests.<wbr/>
+This key will be be present on devices supporting the
+<a href="https://developer.android.com/reference/android/hardware/camera2/CameraMetadata.html#REQUEST_AVAILABLE_CAPABILITIES_ULTRA_HIGH_RESOLUTION_SENSOR">Camera<wbr/>Metadata#REQUEST_<wbr/>AVAILABLE_<wbr/>CAPABILITIES_<wbr/>ULTRA_<wbr/>HIGH_<wbr/>RESOLUTION_<wbr/>SENSOR</a>
+capability.<wbr/> It may also be present on devices which do not support the aforementioned
+capability.<wbr/> In that case:</p>
+<ul>
+<li>
+<p>The mandatory stream combinations listed in
+  <a href="https://developer.android.com/reference/android/hardware/camera2/CameraCharacteristics/mandatoryMaximumResolutionStreamCombinations.html">mandatoryMaximumResolutionStreamCombinations</a>
+  would not apply.<wbr/></p>
+</li>
+<li>
+<p>The bayer pattern of {@code RAW} streams when
+  <a href="https://developer.android.com/reference/android/hardware/camera2/CameraMetadata.html#SENSOR_PIXEL_MODE_MAXIMUM_RESOLUTION">Camera<wbr/>Metadata#SENSOR_<wbr/>PIXEL_<wbr/>MODE_<wbr/>MAXIMUM_<wbr/>RESOLUTION</a>
+  is selected will be the one listed in <a href="https://developer.android.com/reference/android/sensor/info/binningFactor.html">binningFactor</a>.<wbr/></p>
+</li>
+<li>
+<p>The following keys will always be present:</p>
+<ul>
+<li><a href="#static_android.scaler.streamConfigurationMapMaximumResolution">android.<wbr/>scaler.<wbr/>stream<wbr/>Configuration<wbr/>Map<wbr/>Maximum<wbr/>Resolution</a></li>
+<li><a href="#static_android.sensor.info.activeArraySizeMaximumResolution">android.<wbr/>sensor.<wbr/>info.<wbr/>active<wbr/>Array<wbr/>Size<wbr/>Maximum<wbr/>Resolution</a></li>
+<li><a href="#static_android.sensor.info.pixelArraySizeMaximumResolution">android.<wbr/>sensor.<wbr/>info.<wbr/>pixel<wbr/>Array<wbr/>Size<wbr/>Maximum<wbr/>Resolution</a></li>
+<li><a href="#static_android.sensor.info.preCorrectionActiveArraySizeMaximumResolution">android.<wbr/>sensor.<wbr/>info.<wbr/>pre<wbr/>Correction<wbr/>Active<wbr/>Array<wbr/>Size<wbr/>Maximum<wbr/>Resolution</a></li>
+</ul>
+</li>
+</ul>
             </td>
           </tr>
 
