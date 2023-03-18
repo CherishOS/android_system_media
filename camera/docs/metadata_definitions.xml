@@ -7202,81 +7202,14 @@ xsi:schemaLocation="http://schemas.android.com/service/camera/metadata/ metadata
               RGB color space sRGB standardized as IEC 61966-2.1:1999.
             </notes>
             </value>
-            <value visibility="system" id="1">LINEAR_SRGB
-            <notes>
-              RGB color space sRGB standardized as IEC 61966-2.1:1999.
-            </notes>
-            </value>
-            <value visibility="system" id="2">EXTENDED_SRGB
-            <notes>
-              RGB color space scRGB-nl standardized as IEC 61966-2-2:2003.
-            </notes>
-            </value>
-            <value visibility="system" id="3">LINEAR_EXTENDED_SRGB
-            <notes>
-              RGB color space scRGB standardized as IEC 61966-2-2:2003.
-            </notes>
-            </value>
-            <value visibility="system" id="4">BT709
-            <notes>
-              RGB color space BT.709 standardized as Rec. ITU-R BT.709-5.
-            </notes>
-            </value>
-            <value visibility="system" id="5">BT2020
-            <notes>
-              RGB color space BT.2020 standardized as Rec. ITU-R BT.2020-1.
-            </notes>
-            </value>
-            <value visibility="system" id="6">DCI_P3
-            <notes>
-              RGB color space DCI-P3 standardized as SMPTE RP 431-2-2007.
-            </notes>
-            </value>
             <value visibility="system" id="7">DISPLAY_P3
             <notes>
               RGB color space Display P3 based on SMPTE RP 431-2-2007 and IEC 61966-2.1:1999.
             </notes>
             </value>
-            <value visibility="system" id="8">NTSC_1953
+            <value visibility="system" id="16">BT2020_HLG
             <notes>
-              RGB color space NTSC, 1953 standard.
-            </notes>
-            </value>
-            <value visibility="system" id="9">SMPTE_C
-            <notes>
-              RGB color space SMPTE C.
-            </notes>
-            </value>
-            <value visibility="system" id="10">ADOBE_RGB
-            <notes>
-              RGB color space Adobe RGB (1998).
-            </notes>
-            </value>
-            <value visibility="system" id="11">PRO_PHOTO_RGB
-            <notes>
-              RGB color space ProPhoto RGB standardized as ROMM RGB ISO 22028-2:2013.
-            </notes>
-            </value>
-            <value visibility="system" id="12">ACES
-            <notes>
-              RGB color space ACES standardized as SMPTE ST 2065-1:2012.
-            </notes>
-            </value>
-            <value visibility="system" id="13">ACESCG
-            <notes>
-              RGB color space ACEScg standardized as Academy S-2014-004.
-            </notes>
-            </value>
-            <value visibility="system" id="14">CIE_XYZ
-            <notes>
-              XYZ color space CIE XYZ. This color space assumes standard illuminant D50 as its white
-              point.
-            </notes>
-            </value>
-            <value visibility="system" id="15">CIE_LAB
-            <notes>
-              Lab color space CIE L*a*b*. This color space uses CIE XYZ D50 as a profile conversion
-              space.
+              RGB color space BT.2100 standardized as Hybrid Log Gamma encoding.
             </notes>
             </value>
           </enum>
@@ -7302,7 +7235,9 @@ xsi:schemaLocation="http://schemas.android.com/service/camera/metadata/ metadata
             The possible values for #1 are the positive values of the
             ANDROID_REQUEST_AVAILABLE_COLOR_SPACE_PROFILES_MAP_* enum, which is equivalent to
             {@link android.graphics.ColorSpace.Named} and its ordinals. UNSPECIFIED should not be
-            used here.
+            used here. It should be noted that not all {@link android.graphics.ColorSpace.Named}
+            values are supported, only those in the
+            ANDROID_REQUEST_AVAILABLE_COLOR_SPACE_PROFILES_MAP_* enum.
 
             The possible values for #2 consist of the public-facing image/pixel formats, found at
             {@link android.graphics.ImageFormat} and {@link android.graphics.PixelFormat}. Each map
@@ -7316,11 +7251,6 @@ xsi:schemaLocation="http://schemas.android.com/service/camera/metadata/ metadata
             If the device is not HDR-capable, #3 should always be
             ANDROID_REQUEST_AVAILABLE_DYNAMIC_RANGE_PROFILES_STANDARD. Otherwise, #3 should be a
             bitmap of the compatible ANDROID_REQUEST_AVAILABLE_DYNAMIC_RANGE_PROFILES_* values.
-
-            For devices that support P3 color, it is highly recommended to advertise
-            {@link android.graphics.ColorSpace.Named.DISPLAY_P3}
-            unless the profile is specifically designed for playback in a theater environment
-            ({@link android.graphics.ColorSpace.Named.DCI_P3}).
           </hal_details>
         </entry>
       </static>
