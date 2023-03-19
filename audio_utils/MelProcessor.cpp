@@ -124,6 +124,16 @@ audio_port_handle_t MelProcessor::getDeviceId() {
     return mDeviceId;
 }
 
+void MelProcessor::pause()
+{
+    mPaused = true;
+}
+
+void MelProcessor::resume()
+{
+    mPaused = false;
+}
+
 void MelProcessor::updateAudioFormat(uint32_t sampleRate,
                                      uint32_t channelCount,
                                      audio_format_t format) {
@@ -215,6 +225,10 @@ void MelProcessor::addMelValue_l(float mel) {
 }
 
 int32_t MelProcessor::process(const void* buffer, size_t bytes) {
+    if (mPaused) {
+        return 0;
+    }
+
     // should be uncontested and not block if process method is called from a single thread
     std::lock_guard<std::mutex> guard(mLock);
 

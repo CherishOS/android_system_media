@@ -123,9 +123,18 @@ public:
      * \param bytes            buffer size in bytes.
      *
      * \return the number of bytes that were processed. Note: the method will
-     *   output 0 for sample rates that are not supported.
+     *   output 0 if the processor is paused or the sample rate is not supported.
      */
     int32_t process(const void* buffer, size_t bytes);
+
+    /**
+     * Pauses the processing of MEL values. Process calls after this will be
+     * ignored until resume.
+     */
+    void pause();
+
+    /** Resumes the processing of MEL values. */
+    void resume();
 
     /**
      * Sets the given attenuation for the MEL calculation. This can be used when
@@ -232,6 +241,7 @@ private:
     std::atomic<float> mRs2UpperBound;
     // number of samples in the energy
     std::atomic_size_t mCurrentSamples;
+    std::atomic_bool mPaused;
 };
 
 }  // namespace android::audio_utils

@@ -663,7 +663,7 @@ xsi:schemaLocation="http://schemas.android.com/service/camera/metadata/ metadata
                 An external flash has been turned on.
 
                 It informs the camera device that an external flash has been turned on, and that
-                metering (and continuous focus if active) should be quickly recaculated to account
+                metering (and continuous focus if active) should be quickly recalculated to account
                 for the external flash. Otherwise, this mode acts like ON.
 
                 When the external flash is turned off, AE mode should be changed to one of the
@@ -3723,7 +3723,7 @@ xsi:schemaLocation="http://schemas.android.com/service/camera/metadata/ metadata
               Enable autoframing to keep people in the frame's field of view.
             </notes>
           </value>
-          <value>AUTO
+          <value visibility="hidden">AUTO
             <notes>
               Automatically select ON or OFF based on the system level preferences.
             </notes>
@@ -3753,9 +3753,6 @@ xsi:schemaLocation="http://schemas.android.com/service/camera/metadata/ metadata
           When auto-framing is turned off, the transition should be immediate, with no panning or
           zooming to transition to the settings requested by the app. When it is turned on, the
           transition can be immediate or smooth.
-          AUTOFRAMING_AUTO will never be sent to the HAL, though it must be set as the default
-          value in all the capture request templates by the HAL. The camera service will translate
-          AUTO to either ON or OFF based on the system wide preferences.
         </hal_details>
       </entry>
     </controls>

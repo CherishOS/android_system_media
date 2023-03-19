@@ -2758,7 +2758,7 @@ sequence.<wbr/></p></span>
                     <span class="entry_type_enum_name">ON_EXTERNAL_FLASH (v3.3)</span>
                     <span class="entry_type_enum_notes"><p>An external flash has been turned on.<wbr/></p>
 <p>It informs the camera device that an external flash has been turned on,<wbr/> and that
-metering (and continuous focus if active) should be quickly recaculated to account
+metering (and continuous focus if active) should be quickly recalculated to account
 for the external flash.<wbr/> Otherwise,<wbr/> this mode acts like ON.<wbr/></p>
 <p>When the external flash is turned off,<wbr/> AE mode should be changed to one of the
 other available AE modes.<wbr/></p>
@@ -5573,6 +5573,7 @@ zoom related settings at least 2 frames ahead.<wbr/></p>
                   </li>
                   <li>
                     <span class="entry_type_enum_name">AUTO (v3.9)</span>
+                    <span class="entry_type_enum_hidden">[hidden]</span>
                     <span class="entry_type_enum_notes"><p>Automatically select ON or OFF based on the system level preferences.<wbr/></p></span>
                   </li>
                 </ul>
@@ -5627,10 +5628,7 @@ actual sensor pixels.<wbr/> In this case,<wbr/> it is acceptable for the returne
 be an approximation of the image sensor region that is actually used.<wbr/>
 When auto-framing is turned off,<wbr/> the transition should be immediate,<wbr/> with no panning or
 zooming to transition to the settings requested by the app.<wbr/> When it is turned on,<wbr/> the
-transition can be immediate or smooth.<wbr/>
-AUTOFRAMING_<wbr/>AUTO will never be sent to the HAL,<wbr/> though it must be set as the default
-value in all the capture request templates by the HAL.<wbr/> The camera service will translate
-AUTO to either ON or OFF based on the system wide preferences.<wbr/></p>
+transition can be immediate or smooth.<wbr/></p>
             </td>
           </tr>
 
@@ -8012,7 +8010,7 @@ sequence.<wbr/></p></span>
                     <span class="entry_type_enum_name">ON_EXTERNAL_FLASH (v3.3)</span>
                     <span class="entry_type_enum_notes"><p>An external flash has been turned on.<wbr/></p>
 <p>It informs the camera device that an external flash has been turned on,<wbr/> and that
-metering (and continuous focus if active) should be quickly recaculated to account
+metering (and continuous focus if active) should be quickly recalculated to account
 for the external flash.<wbr/> Otherwise,<wbr/> this mode acts like ON.<wbr/></p>
 <p>When the external flash is turned off,<wbr/> AE mode should be changed to one of the
 other available AE modes.<wbr/></p>
@@ -11802,6 +11800,7 @@ the capture result.<wbr/></p>
                   </li>
                   <li>
                     <span class="entry_type_enum_name">AUTO (v3.9)</span>
+                    <span class="entry_type_enum_hidden">[hidden]</span>
                     <span class="entry_type_enum_notes"><p>Automatically select ON or OFF based on the system level preferences.<wbr/></p></span>
                   </li>
                 </ul>
@@ -11856,10 +11855,7 @@ actual sensor pixels.<wbr/> In this case,<wbr/> it is acceptable for the returne
 be an approximation of the image sensor region that is actually used.<wbr/>
 When auto-framing is turned off,<wbr/> the transition should be immediate,<wbr/> with no panning or
 zooming to transition to the settings requested by the app.<wbr/> When it is turned on,<wbr/> the
-transition can be immediate or smooth.<wbr/>
-AUTOFRAMING_<wbr/>AUTO will never be sent to the HAL,<wbr/> though it must be set as the default
-value in all the capture request templates by the HAL.<wbr/> The camera service will translate
-AUTO to either ON or OFF based on the system wide preferences.<wbr/></p>
+transition can be immediate or smooth.<wbr/></p>
             </td>
           </tr>
 
