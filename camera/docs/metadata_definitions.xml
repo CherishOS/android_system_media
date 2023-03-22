@@ -3029,7 +3029,7 @@ xsi:schemaLocation="http://schemas.android.com/service/camera/metadata/ metadata
           </details>
         </entry>
         <entry name="postRawSensitivityBoostRange" type="int32" visibility="public"
-            type_notes="Range of supported post RAW sensitivitiy boosts"
+            type_notes="Range of supported post RAW sensitivity boosts"
             container="array" typedef="rangeInt">
           <array>
             <size>2</size>
@@ -8163,7 +8163,7 @@ xsi:schemaLocation="http://schemas.android.com/service/camera/metadata/ metadata
           Note that for Performance Class 12 or higher primary cameras (first rear/front facing
           camera in the camera ID list), camera framework filters out JPEG sizes smaller than
           1080p depending on applications' targetSdkLevel. The camera HAL must still support the
-          smaller JPEG sizes to maintain backward comopatibility.
+          smaller JPEG sizes to maintain backward compatibility.
 
           For LIMITED capability devices
           (`android.info.supportedHardwareLevel == LIMITED`),
