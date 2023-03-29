@@ -16,6 +16,12 @@
 
 // #define LOG_NDEBUG 0
 #define LOG_TAG "audio_utils_MelProcessor"
+// #define VERY_VERY_VERBOSE_LOGGING
+#ifdef VERY_VERY_VERBOSE_LOGGING
+#define ALOGVV ALOGV
+#else
+#define ALOGVV(a...) do { } while(0)
+#endif
 
 #include <audio_utils/MelProcessor.h>
 
@@ -126,11 +132,13 @@ audio_port_handle_t MelProcessor::getDeviceId() {
 
 void MelProcessor::pause()
 {
+    ALOGV("%s", __func__);
     mPaused = true;
 }
 
 void MelProcessor::resume()
 {
+    ALOGV("%s", __func__);
     mPaused = false;
 }
 
@@ -253,7 +261,7 @@ int32_t MelProcessor::process(const void* buffer, size_t bytes) {
                                       mCurrentChannelEnergy.data());
         mCurrentSamples += processSamples;
 
-        ALOGV(
+        ALOGVV(
             "required:%zu, process:%zu, mCurrentChannelEnergy[0]:%f, mCurrentSamples:%zu",
             requiredSamples,
             processSamples,
