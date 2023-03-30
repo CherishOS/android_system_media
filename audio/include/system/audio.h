@@ -196,7 +196,7 @@ static inline audio_unique_id_use_t audio_unique_id_get_use(audio_unique_id_t id
     return (audio_unique_id_use_t) (id & AUDIO_UNIQUE_ID_USE_MASK);
 }
 
-typedef enum {
+typedef enum : int32_t {
     AUDIO_SESSION_DEVICE = HAL_AUDIO_SESSION_DEVICE,
     AUDIO_SESSION_OUTPUT_STAGE = HAL_AUDIO_SESSION_OUTPUT_STAGE,
     AUDIO_SESSION_OUTPUT_MIX = HAL_AUDIO_SESSION_OUTPUT_MIX,
