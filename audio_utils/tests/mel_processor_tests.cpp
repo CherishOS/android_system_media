@@ -47,8 +47,8 @@ const std::unordered_map<int32_t, int32_t> kAWeightDelta1000 =
     {{80, 23}, {100, 19}, {500, 3}, {1000, 0}, {2000, 1}, {3000, 1},
      {8000, 1}};
 
-// TODO: should replace this with proper synchornization
-constexpr size_t kCallbackTimeoutInMs = 10;
+// TODO(b/276849537): should replace this with proper synchornization
+constexpr size_t kCallbackTimeoutInMs = 20;
 
 class MelCallbackMock : public MelProcessor::MelCallback {
 public:
