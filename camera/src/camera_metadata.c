@@ -545,8 +545,8 @@ int validate_camera_metadata_structure(const camera_metadata_t *metadata,
         uint32_t tag_section = entry.tag >> 16;
         int tag_type = get_local_camera_metadata_tag_type(entry.tag, header);
         if (tag_type != (int)entry.type && tag_section < VENDOR_SECTION) {
-            ALOGE("%s: Entry index %zu had tag type %d, but the type was %d",
-                  __FUNCTION__, i, tag_type, entry.type);
+            ALOGE("%s: Entry index %zu (0x%x) had tag type %d, but the type was %d",
+                  __FUNCTION__, i, entry.tag, tag_type, entry.type);
             return CAMERA_METADATA_VALIDATION_ERROR;
         }
 
