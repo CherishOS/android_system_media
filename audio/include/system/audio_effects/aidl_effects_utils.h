@@ -25,6 +25,12 @@
 namespace aidl::android::hardware::audio::effect {
 
 /**
+ * EventFlag to indicate that the client has written data to the FMQ, align with EffectHalAidl.
+ * TODO: b/277900230, Define in future AIDL version.
+ */
+static constexpr uint32_t kEventFlagNotEmpty = 0x1;
+
+/**
  * Check the target Parameter with $Parameter$Range definition in Capability.
  * This method go through the elements in the ranges to find a matching tag for the target
  * parameter, and check if the target parameter is inside range use the default AIDL union
