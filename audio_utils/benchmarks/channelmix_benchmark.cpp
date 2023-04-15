@@ -49,39 +49,40 @@ static constexpr audio_channel_mask_t kChannelPositionMasks[] = {
 
 /*
 $ adb shell /data/benchmarktest64/channelmix_benchmark/channelmix_benchmark
-Pixel 4XL Coral arm64 benchmark
+Pixel 7 arm64 benchmark
 
 -----------------------------------------------------------
 Benchmark                 Time             CPU   Iterations
 -----------------------------------------------------------
-BM_ChannelMix/0        2180 ns         2175 ns       321797 AUDIO_CHANNEL_OUT_MONO
-BM_ChannelMix/1        2180 ns         2175 ns       321901
-BM_ChannelMix/2        3265 ns         3256 ns       214957 AUDIO_CHANNEL_OUT_STEREO
-BM_ChannelMix/3        3987 ns         3978 ns       175964 AUDIO_CHANNEL_OUT_2POINT1
-BM_ChannelMix/4        4713 ns         4700 ns       148922 AUDIO_CHANNEL_OUT_2POINT0POINT2
-BM_ChannelMix/5        1050 ns         1047 ns       668462 AUDIO_CHANNEL_OUT_QUAD
-BM_ChannelMix/6        1052 ns         1049 ns       667155 AUDIO_CHANNEL_OUT_QUAD_SIDE
-BM_ChannelMix/7        4714 ns         4701 ns       148926 AUDIO_CHANNEL_OUT_SURROUND
-BM_ChannelMix/8        5437 ns         5422 ns       129099 AUDIO_CHANNEL_OUT_2POINT1POINT2
-BM_ChannelMix/9        5437 ns         5422 ns       129108 AUDIO_CHANNEL_OUT_3POINT0POINT2
-BM_ChannelMix/10       5435 ns         5422 ns       129083 AUDIO_CHANNEL_OUT_PENTA
-BM_ChannelMix/11       6161 ns         6143 ns       113945 AUDIO_CHANNEL_OUT_3POINT1POINT2
-BM_ChannelMix/12       2511 ns         2504 ns       279645 AUDIO_CHANNEL_OUT_5POINT1
-BM_ChannelMix/13       2511 ns         2503 ns       279621 AUDIO_CHANNEL_OUT_5POINT1_SIDE
-BM_ChannelMix/14       6882 ns         6865 ns       101946 AUDIO_CHANNEL_OUT_6POINT1
-BM_ChannelMix/15       7607 ns         7586 ns        92271 AUDIO_CHANNEL_OUT_5POINT1POINT2
-BM_ChannelMix/16       2812 ns         2804 ns       249729 AUDIO_CHANNEL_OUT_7POINT1
-BM_ChannelMix/17       9055 ns         9032 ns        77517 AUDIO_CHANNEL_OUT_5POINT1POINT4
-BM_ChannelMix/18       9055 ns         9031 ns        77477 AUDIO_CHANNEL_OUT_7POINT1POINT2
-BM_ChannelMix/19      10510 ns        10479 ns        66762 AUDIO_CHANNEL_OUT_7POINT1POINT4
-BM_ChannelMix/20      11293 ns        11262 ns        62135 AUDIO_CHANNEL_OUT_13POINT_360RA
-BM_ChannelMix/21      19886 ns        19829 ns        35265 AUDIO_CHANNEL_OUT_22POINT2
+channelmix_benchmark:
+  #BM_ChannelMix/0     2249 ns    2238 ns       305820
+  #BM_ChannelMix/1     2250 ns    2239 ns       312618
+  #BM_ChannelMix/2      255 ns     254 ns      2752128
+  #BM_ChannelMix/3     2962 ns    2947 ns       237469
+  #BM_ChannelMix/4     3271 ns    3252 ns       215272
+  #BM_ChannelMix/5      814 ns     810 ns       863256
+  #BM_ChannelMix/6      814 ns     810 ns       863196
+  #BM_ChannelMix/7     3264 ns    3249 ns       215351
+  #BM_ChannelMix/8     3714 ns    3698 ns       189533
+  #BM_ChannelMix/9     3746 ns    3715 ns       189286
+  #BM_ChannelMix/10    3692 ns    3674 ns       190043
+  #BM_ChannelMix/11    4092 ns    4074 ns       171760
+  #BM_ChannelMix/12    1209 ns    1203 ns       581577
+  #BM_ChannelMix/13    1207 ns    1201 ns       582529
+  #BM_ChannelMix/14    4673 ns    4655 ns       150373
+  #BM_ChannelMix/15    1308 ns    1301 ns       537770
+  #BM_ChannelMix/16    1307 ns    1301 ns       537788
+  #BM_ChannelMix/17    2059 ns    2049 ns       341548
+  #BM_ChannelMix/18    2046 ns    2036 ns       343601
+  #BM_ChannelMix/19    2442 ns    2430 ns       288046
+  #BM_ChannelMix/20    7889 ns    7854 ns        89054
+  #BM_ChannelMix/21    6134 ns    6104 ns       114691
 */
 
 static void BM_ChannelMix(benchmark::State& state) {
     const audio_channel_mask_t channelMask = kChannelPositionMasks[state.range(0)];
     using namespace ::android::audio_utils::channels;
-    ChannelMix channelMix(channelMask);
+    ChannelMix<AUDIO_CHANNEL_OUT_STEREO> channelMix(channelMask);
     constexpr size_t frameCount = 1024;
     size_t inChannels = audio_channel_count_from_out_mask(channelMask);
     std::vector<float> input(inChannels * frameCount);

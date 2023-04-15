@@ -80,6 +80,10 @@ cc_library {
         "libutils",
     ],
 
+    whole_static_libs: [
+        "libaudioutils_fastmath",
+    ],
+
     target: {
         android: {
             srcs: [
@@ -105,6 +109,42 @@ cc_library {
             "com.android.media.swcodec",
         ],
     },
+}
+
+cc_library_static {
+    name: "libaudioutils_fastmath",
+    vendor_available: true,
+    product_available: true,
+    vndk: {
+        enabled: true,
+    },
+    double_loadable: true,
+    host_supported: true,
+    defaults: ["audio_utils_defaults"],
+
+    srcs: [
+        "ChannelMix.cpp",
+    ],
+
+    header_libs: [
+        "libaudio_system_headers",
+        "libutils_headers",
+    ],
+    min_sdk_version: "29",
+    shared_libs: [
+        "libcutils",
+        "liblog",
+        "libutils",
+    ],
+    cflags: [
+        "-Werror",
+        "-ffast-math",
+    ],
+    apex_available: [
+        "//apex_available:platform",
+        "com.android.media",
+        "com.android.media.swcodec",
+    ],
 }
 
 cc_library_static {
