@@ -146,6 +146,95 @@ constexpr bool fillChannelMatrix(audio_channel_mask_t INPUT_CHANNEL_MASK,
             tmp ^= lowestBit;
         }
         return true;
+    } else if constexpr (OUTPUT_CHANNEL_MASK == AUDIO_CHANNEL_OUT_5POINT1) {
+        //   FL  FR  FC  LFE  BL  BR
+        size_t index = 0;
+        constexpr float MINUS_3_DB_IN_FLOAT = M_SQRT1_2; // -3dB = 0.70710678
+        constexpr float MINUS_4_5_DB_IN_FLOAT = 0.5946035575f;
+
+        constexpr size_t FL = 0;
+        constexpr size_t FR = 1;
+        constexpr size_t FC = 2;
+        constexpr size_t LFE = 3;
+        constexpr size_t BL = 4;
+        constexpr size_t BR = 5;
+        for (unsigned tmp = INPUT_CHANNEL_MASK; tmp != 0; ++index) {
+            if (index >= M) return false;
+            const unsigned lowestBit = tmp & -(signed)tmp;
+            matrix[index][FL] = matrix[index][FR] = matrix[index][FC] = 0.f;
+            matrix[index][LFE] = matrix[index][BL] = matrix[index][BR] = 0.f;
+            switch (lowestBit) {
+                case AUDIO_CHANNEL_OUT_FRONT_LEFT:
+                case AUDIO_CHANNEL_OUT_TOP_FRONT_LEFT:
+                case AUDIO_CHANNEL_OUT_BOTTOM_FRONT_LEFT:
+                    matrix[index][FL] = 1.f;
+                    break;
+                case AUDIO_CHANNEL_OUT_FRONT_RIGHT:
+                case AUDIO_CHANNEL_OUT_TOP_FRONT_RIGHT:
+                case AUDIO_CHANNEL_OUT_BOTTOM_FRONT_RIGHT:
+                    matrix[index][FR] = 1.f;
+                    break;
+
+                case AUDIO_CHANNEL_OUT_FRONT_CENTER:
+                case AUDIO_CHANNEL_OUT_TOP_FRONT_CENTER:
+                case AUDIO_CHANNEL_OUT_BOTTOM_FRONT_CENTER:
+                    matrix[index][FC] = 1.f;
+                    break;
+
+                // ADJUST
+                case AUDIO_CHANNEL_OUT_FRONT_WIDE_LEFT: // FRONT_WIDE closer to SIDE.
+                    matrix[index][FL] = MINUS_3_DB_IN_FLOAT;
+                    matrix[index][BL] = MINUS_4_5_DB_IN_FLOAT;
+                    break;
+                case AUDIO_CHANNEL_OUT_FRONT_WIDE_RIGHT: // FRONT_WIDE closer to SIDE.
+                    matrix[index][FR] = MINUS_3_DB_IN_FLOAT;
+                    matrix[index][BR] = MINUS_4_5_DB_IN_FLOAT;
+                    break;
+
+                case AUDIO_CHANNEL_OUT_FRONT_LEFT_OF_CENTER:
+                    matrix[index][FL] = MINUS_4_5_DB_IN_FLOAT;
+                    matrix[index][FC] = MINUS_3_DB_IN_FLOAT;
+                    break;
+                case AUDIO_CHANNEL_OUT_FRONT_RIGHT_OF_CENTER:
+                    matrix[index][FR] = MINUS_4_5_DB_IN_FLOAT;
+                    matrix[index][FC] = MINUS_3_DB_IN_FLOAT;
+                    break;
+
+                case AUDIO_CHANNEL_OUT_SIDE_LEFT:
+                case AUDIO_CHANNEL_OUT_BACK_LEFT:
+                case AUDIO_CHANNEL_OUT_TOP_BACK_LEFT:
+                    matrix[index][BL] = 1.f;
+                    break;
+                case AUDIO_CHANNEL_OUT_SIDE_RIGHT:
+                case AUDIO_CHANNEL_OUT_BACK_RIGHT:
+                case AUDIO_CHANNEL_OUT_TOP_BACK_RIGHT:
+                    matrix[index][BR] = 1.f;
+                    break;
+
+                case AUDIO_CHANNEL_OUT_TOP_SIDE_LEFT:
+                    matrix[index][BL] = 1.f;
+                    break;
+                case AUDIO_CHANNEL_OUT_TOP_SIDE_RIGHT:
+                    matrix[index][BR] = 1.f;
+                    break;
+
+                case AUDIO_CHANNEL_OUT_TOP_BACK_CENTER:
+                case AUDIO_CHANNEL_OUT_BACK_CENTER:
+                    matrix[index][BL] = matrix[index][BR] = MINUS_3_DB_IN_FLOAT;
+                    break;
+
+                case AUDIO_CHANNEL_OUT_TOP_CENTER:
+                    matrix[index][FC] = matrix[index][BL] = matrix[index][BR] = 0.5f;
+                    break;
+
+                case AUDIO_CHANNEL_OUT_LOW_FREQUENCY:
+                case AUDIO_CHANNEL_OUT_LOW_FREQUENCY_2:
+                    matrix[index][LFE] = 1.f;
+                    break;
+            }
+            tmp ^= lowestBit;
+        }
+        return true;
     } else /* constexpr */ {
         // We only accept NONE here as we don't do anything in that case.
         static_assert(OUTPUT_CHANNEL_MASK==AUDIO_CHANNEL_NONE);
@@ -274,7 +363,8 @@ private:
     bool processSwitch(const float *src, float *dst, size_t frameCount) const {
         constexpr bool ANDROID_SPECIFIC = true;  // change for testing.
         if constexpr (ANDROID_SPECIFIC) {
-            if constexpr (OUTPUT_CHANNEL_MASK == AUDIO_CHANNEL_OUT_STEREO) {
+            if constexpr (OUTPUT_CHANNEL_MASK == AUDIO_CHANNEL_OUT_STEREO
+                    || OUTPUT_CHANNEL_MASK == AUDIO_CHANNEL_OUT_5POINT1) {
                 switch (mInputChannelMask) {
                 case AUDIO_CHANNEL_OUT_STEREO:
                     return sparseChannelMatrixMultiply<AUDIO_CHANNEL_OUT_STEREO,
