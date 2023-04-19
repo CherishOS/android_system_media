@@ -243,6 +243,60 @@ constexpr bool fillChannelMatrix(audio_channel_mask_t INPUT_CHANNEL_MASK,
     return false;
 }
 
+class IChannelMix {
+public:
+    virtual ~IChannelMix() = default;
+
+    /**
+     * Set the input channel mask.
+     *
+     * \param inputChannelMask channel position mask for input data.
+     *
+     * \return false if the channel mask is not supported.
+     */
+    virtual bool setInputChannelMask(audio_channel_mask_t inputChannelMask) = 0;
+
+    /**
+     * Returns the input channel mask.
+     */
+    virtual audio_channel_mask_t getInputChannelMask() const = 0;
+
+    /**
+     * Remixes audio data in src to dst.
+     *
+     * \param src          input audio buffer to remix
+     * \param dst          remixed audio samples
+     * \param frameCount   number of frames to remix
+     * \param accumulate   is true if the remix is added to the destination or
+     *                     false if the remix replaces the destination.
+     *
+     * \return false if the channel mask set is not supported.
+     */
+    virtual bool process(
+            const float *src, float *dst, size_t frameCount, bool accumulate) const = 0;
+
+    /**
+     * Remixes audio data in src to dst.
+     *
+     * \param src          input audio buffer to remix
+     * \param dst          remixed audio samples
+     * \param frameCount   number of frames to remix
+     * \param accumulate   is true if the remix is added to the destination or
+     *                     false if the remix replaces the destination.
+     * \param inputChannelMask channel position mask for input data.
+     *
+     * \return false if the channel mask set is not supported.
+     */
+    virtual bool process(const float *src, float *dst, size_t frameCount, bool accumulate,
+            audio_channel_mask_t inputChannelMask) = 0;
+
+    /** Built in ChannelMix factory. */
+    static std::shared_ptr<IChannelMix> create(audio_channel_mask_t outputChannelMask);
+
+    /** Returns true if the Built-in factory supports the outputChannelMask */
+    static bool isOutputChannelMaskSupported(audio_channel_mask_t outputChannelMask);
+};
+
 /**
  * ChannelMix
  *
@@ -250,9 +304,8 @@ constexpr bool fillChannelMatrix(audio_channel_mask_t INPUT_CHANNEL_MASK,
  *
  */
 template <audio_channel_mask_t OUTPUT_CHANNEL_MASK>
-class ChannelMix {
+class ChannelMix : public IChannelMix {
 public:
-
     /**
      * Creates a ChannelMix object
      *
@@ -267,14 +320,7 @@ public:
 
     ChannelMix() = default;
 
-    /**
-     * Set the input channel mask.
-     *
-     * \param inputChannelMask channel position mask for input data.
-     *
-     * \return false if the channel mask is not supported.
-     */
-    bool setInputChannelMask(audio_channel_mask_t inputChannelMask) {
+    bool setInputChannelMask(audio_channel_mask_t inputChannelMask) override {
         if (mInputChannelMask != inputChannelMask) {
             if (inputChannelMask & ~((1 << MAX_INPUT_CHANNELS_SUPPORTED) - 1)) {
                 return false;  // not channel position mask, or has unknown channels.
@@ -288,43 +334,18 @@ public:
         return true;
     }
 
-    /**
-     * Returns the input channel mask.
-     */
-    audio_channel_mask_t getInputChannelMask() const {
+    audio_channel_mask_t getInputChannelMask() const override {
         return mInputChannelMask;
     }
 
-    /**
-     * Remixes audio data in src to dst.
-     *
-     * \param src          input audio buffer to remix
-     * \param dst          remixed audio samples
-     * \param frameCount   number of frames to remix
-     * \param accumulate   is true if the remix is added to the destination or
-     *                     false if the remix replaces the destination.
-     *
-     * \return false if the channel mask set is not supported.
-     */
-    bool process(const float *src, float *dst, size_t frameCount, bool accumulate) const {
+    bool process(const float *src, float *dst, size_t frameCount,
+            bool accumulate) const override {
         return accumulate ? processSwitch<true>(src, dst, frameCount)
                 : processSwitch<false>(src, dst, frameCount);
     }
 
-    /**
-     * Remixes audio data in src to dst.
-     *
-     * \param src          input audio buffer to remix
-     * \param dst          remixed audio samples
-     * \param frameCount   number of frames to remix
-     * \param accumulate   is true if the remix is added to the destination or
-     *                     false if the remix replaces the destination.
-     * \param inputChannelMask channel position mask for input data.
-     *
-     * \return false if the channel mask set is not supported.
-     */
-    bool process(const float *src, float *dst, size_t frameCount, bool accumulate,
-            audio_channel_mask_t inputChannelMask) {
+    bool process(const float *src, float *dst, size_t frameCount,
+            bool accumulate, audio_channel_mask_t inputChannelMask) override {
         return setInputChannelMask(inputChannelMask) && process(src, dst, frameCount, accumulate);
     }
 

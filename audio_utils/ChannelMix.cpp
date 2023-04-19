@@ -133,4 +133,27 @@ INSTANTIATE(AUDIO_CHANNEL_OUT_7POINT1POINT2, AUDIO_CHANNEL_OUT_5POINT1)
 INSTANTIATE(AUDIO_CHANNEL_OUT_7POINT1POINT4, AUDIO_CHANNEL_OUT_5POINT1)
 INSTANTIATE(AUDIO_CHANNEL_OUT_22POINT2, AUDIO_CHANNEL_OUT_5POINT1)
 
+/* static */
+std::shared_ptr<IChannelMix> IChannelMix::create(audio_channel_mask_t outputChannelMask) {
+     switch (outputChannelMask) {
+     case AUDIO_CHANNEL_OUT_STEREO:
+         return std::make_shared<ChannelMix<AUDIO_CHANNEL_OUT_STEREO>>();
+     case AUDIO_CHANNEL_OUT_5POINT1:
+         return std::make_shared<ChannelMix<AUDIO_CHANNEL_OUT_5POINT1>>();
+     default:
+         return {};
+     }
+}
+
+/* static */
+bool IChannelMix::isOutputChannelMaskSupported(audio_channel_mask_t outputChannelMask) {
+    switch (outputChannelMask) {
+    case AUDIO_CHANNEL_OUT_STEREO:
+    case AUDIO_CHANNEL_OUT_5POINT1:
+        return true;
+    default:
+        return false;
+    }
+}
+
 } // android::audio_utils::channels

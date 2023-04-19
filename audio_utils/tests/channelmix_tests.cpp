@@ -149,6 +149,25 @@ public:
         std::vector<float> output(frames * outChannels);
 
         double savedPower[32][outChannels]{};
+
+        // Precompute output channel geometry.
+        AUDIO_GEOMETRY_SIDE outSide[outChannels];  // what side that channel index is on
+        int outIndexToOffset[32] = {[0 ... 31] = -1};
+        int outPair[outChannels];  // is there a matching pair channel?
+        for (unsigned i = 0, channel = OUTPUT_CHANNEL_MASK; channel != 0; ++i) {
+            const int index = __builtin_ctz(channel);
+            outIndexToOffset[index] = i;
+            outSide[i] = sideFromChannelIdx(index);
+            outPair[i] = pairIdxFromChannelIdx(index);
+
+            const int channelBit = 1 << index;
+            channel &= ~channelBit;
+        }
+        for (unsigned i = 0; i < outChannels; ++i) {
+            if (outPair[i] >= 0 && outPair[i] < (signed)std::size(outIndexToOffset)) {
+                outPair[i] = outIndexToOffset[outPair[i]];
+            }
+        }
         for (unsigned i = 0, channel = channelMask; channel != 0; ++i) {
             const int index = __builtin_ctz(channel);
             ASSERT_LT((size_t)index, Remix::MAX_INPUT_CHANNELS_SUPPORTED);
@@ -205,52 +224,84 @@ public:
             // Check symmetric power for pair channels on exchange of front left/right position.
             // to do this, we save previous power measurements.
             if (pairIndex >= 0 && pairIndex < index) {
-                EXPECT_NEAR_EPSILON(power[0], savedPower[pairIndex][1]);
-                EXPECT_NEAR_EPSILON(power[1], savedPower[pairIndex][0]);
-            }
-            savedPower[index][0] = power[0];
-            savedPower[index][1] = power[1];
 
-            if constexpr (OUTPUT_CHANNEL_MASK != AUDIO_CHANNEL_OUT_STEREO) return;
+                for (unsigned j = 0; j < outChannels; ++j) {
+                    if (outPair[j] >= 0) {
+                        EXPECT_NEAR_EPSILON(power[j], savedPower[pairIndex][outPair[j]]);
+                        EXPECT_NEAR_EPSILON(power[outPair[j]], savedPower[pairIndex][j]);
+                    }
+                }
+            }
+            for (unsigned j = 0; j < outChannels; ++j) {
+                savedPower[index][j] = power[j];
+            }
+
+            // For downmix to stereo, we compare exact values to a predefined matrix.
+            constexpr bool checkExpectedPower = OUTPUT_CHANNEL_MASK == AUDIO_CHANNEL_OUT_STEREO;
+            constexpr size_t FL = 0;
+            constexpr size_t FR = 1;
 
             // Confirm exactly the mix amount prescribed by the existing ChannelMix effect.
             // For future changes to the ChannelMix effect, the nearness needs to be relaxed
             // to compare behavior S or earlier.
 
             constexpr float POWER_TOLERANCE = 0.001;
-            const float expectedPower =
+            const float expectedPower = checkExpectedPower ?
                     kScaleFromChannelIdxLeft[index] * kScaleFromChannelIdxLeft[index]
-                    + kScaleFromChannelIdxRight[index] * kScaleFromChannelIdxRight[index];
-            EXPECT_NEAR(expectedPower, power[0] + power[1], POWER_TOLERANCE);
+                    + kScaleFromChannelIdxRight[index] * kScaleFromChannelIdxRight[index] : 0;
+
+            if (checkExpectedPower) {
+                EXPECT_NEAR(expectedPower, power[FL] + power[FR], POWER_TOLERANCE);
+            }
             switch (side) {
             case AUDIO_GEOMETRY_SIDE_LEFT:
                 if (channelBit == AUDIO_CHANNEL_OUT_FRONT_LEFT_OF_CENTER) {
                     break;
                 }
-                EXPECT_EQ(0.f, power[1]);
+                for (unsigned j = 0; j < outChannels; ++j) {
+                    if (outSide[j] == AUDIO_GEOMETRY_SIDE_RIGHT) {
+                        EXPECT_EQ(0.f, power[j]);
+                    }
+                }
                 break;
             case AUDIO_GEOMETRY_SIDE_RIGHT:
                 if (channelBit == AUDIO_CHANNEL_OUT_FRONT_RIGHT_OF_CENTER) {
                     break;
                 }
-                EXPECT_EQ(0.f, power[0]);
+                for (unsigned j = 0; j < outChannels; ++j) {
+                    if (outSide[j] == AUDIO_GEOMETRY_SIDE_LEFT) {
+                        EXPECT_EQ(0.f, power[j]);
+                    }
+                }
                 break;
             case AUDIO_GEOMETRY_SIDE_CENTER:
                 if (channelBit == AUDIO_CHANNEL_OUT_LOW_FREQUENCY) {
                     if (channelMask & AUDIO_CHANNEL_OUT_LOW_FREQUENCY_2) {
-                        EXPECT_EQ(0.f, power[1]);
+                        EXPECT_EQ(0.f, power[FR]);
                         break;
                     } else {
-                        EXPECT_NEAR_EPSILON(power[0], power[1]); // always true
-                        EXPECT_NEAR(expectedPower, power[0] + power[1], POWER_TOLERANCE);
+                        for (unsigned j = 0; j < outChannels; ++j) {
+                            if (outPair[j] >= 0) {
+                                EXPECT_NEAR_EPSILON(power[j], power[outPair[j]]);
+                            }
+                        }
+                        if (checkExpectedPower) {
+                            EXPECT_NEAR(expectedPower, power[FL] + power[FR], POWER_TOLERANCE);
+                        }
                         break;
                     }
                 } else if (channelBit == AUDIO_CHANNEL_OUT_LOW_FREQUENCY_2) {
-                    EXPECT_EQ(0.f, power[0]);
-                    EXPECT_NEAR(expectedPower, power[1], POWER_TOLERANCE);
+                    EXPECT_EQ(0.f, power[FL]);
+                    if (checkExpectedPower) {
+                        EXPECT_NEAR(expectedPower, power[FR], POWER_TOLERANCE);
+                    }
                     break;
                 }
-                EXPECT_NEAR_EPSILON(power[0], power[1]);
+                for (unsigned j = 0; j < outChannels; ++j) {
+                    if (outPair[j] >= 0) {
+                        EXPECT_NEAR_EPSILON(power[j], power[outPair[j]]);
+                    }
+                }
                 break;
             }
         }
