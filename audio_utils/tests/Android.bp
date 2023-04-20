@@ -553,6 +553,22 @@ cc_test {
 }
 
 cc_test {
+    name: "spatializer_utils_tests",
+    host_supported: true,
+
+    shared_libs: [
+        "libaudioutils",
+        "libcutils",
+        "liblog",
+    ],
+    srcs: ["spatializer_utils_tests.cpp"],
+    cflags: [
+        "-Wall",
+        "-Werror",
+    ],
+}
+
+cc_test {
     name: "spdif_tests",
     host_supported: true,
 

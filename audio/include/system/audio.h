@@ -332,7 +332,8 @@ static inline CONSTEXPR audio_channel_mask_t audio_channel_mask_from_representat
 }
 
 /*
- * Returns true so long as Quadraphonic channels (FL, FR, BL, BR) are completely specified
+ * Returns true so long as Quadraphonic channels (FL, FR, BL, BR)
+ * or (FL, FR, SL, SR) are completely specified
  * in the channel mask. We expect these 4 channels to be the minimum for
  * reasonable spatializer effect quality.
  *
@@ -350,7 +351,8 @@ static inline CONSTEXPR audio_channel_mask_t audio_channel_mask_from_representat
 static inline CONSTEXPR bool audio_is_channel_mask_spatialized(audio_channel_mask_t channelMask) {
     return audio_channel_mask_get_representation(channelMask)
                 == AUDIO_CHANNEL_REPRESENTATION_POSITION
-            && (channelMask & AUDIO_CHANNEL_OUT_QUAD) == AUDIO_CHANNEL_OUT_QUAD;
+            && ((channelMask & AUDIO_CHANNEL_OUT_QUAD) == AUDIO_CHANNEL_OUT_QUAD
+                || (channelMask & AUDIO_CHANNEL_OUT_QUAD_SIDE) == AUDIO_CHANNEL_OUT_QUAD_SIDE);
 }
 
 /*
