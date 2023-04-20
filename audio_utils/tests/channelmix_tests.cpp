@@ -19,7 +19,14 @@
 #include <gtest/gtest.h>
 #include <log/log.h>
 
-static constexpr audio_channel_mask_t kChannelPositionMasks[] = {
+static constexpr audio_channel_mask_t kOutputChannelMasks[] = {
+    AUDIO_CHANNEL_OUT_STEREO,
+    AUDIO_CHANNEL_OUT_5POINT1, // AUDIO_CHANNEL_OUT_5POINT1_BACK
+    AUDIO_CHANNEL_OUT_7POINT1,
+    AUDIO_CHANNEL_OUT_7POINT1POINT4,
+};
+
+static constexpr audio_channel_mask_t kInputChannelMasks[] = {
     AUDIO_CHANNEL_OUT_FRONT_LEFT, // Legacy: the ChannelMix effect treats MONO as FRONT_LEFT only.
                                   // The AudioMixer interprets MONO as a special case requiring
                                   // channel replication, bypassing the ChannelMix effect.
@@ -132,29 +139,35 @@ static auto channelStatistics(const std::vector<T>& input, size_t channels) {
     return result;
 }
 
-using ChannelMixParam = std::tuple<int /* channel mask */, int /* 0 = replace, 1 = accumulate */>;
+using ChannelMixParam = std::tuple<int /* output channel mask */,
+        int /* input channel mask */,
+        bool /* accumulate */>;
 
-template <audio_channel_mask_t OUTPUT_CHANNEL_MASK>
-class ChannelMixTestTemplate : public ::testing::TestWithParam<ChannelMixParam> {
+// For ChannelMixParam tuple get.
+constexpr size_t OUTPUT_CHANNEL_MASK_POSITION = 0;
+constexpr size_t INPUT_CHANNEL_MASK_POSITION = 1;
+constexpr size_t ACCUMULATE_POSITION = 2;
+
+class ChannelMixTest : public ::testing::TestWithParam<ChannelMixParam> {
 public:
-    using Remix = android::audio_utils::channels::ChannelMix<OUTPUT_CHANNEL_MASK>;
 
-    void testBalance(audio_channel_mask_t channelMask, bool accumulate) {
+    void testBalance(audio_channel_mask_t outputChannelMask,
+            audio_channel_mask_t inputChannelMask, bool accumulate) {
         using namespace ::android::audio_utils::channels;
 
         size_t frames = 100; // set to an even number (2, 4, 6 ... ) stream alternates +1, -1.
-        constexpr unsigned outChannels = audio_channel_count_from_out_mask(OUTPUT_CHANNEL_MASK);
-        unsigned inChannels = audio_channel_count_from_out_mask(channelMask);
+        const unsigned outChannels = audio_channel_count_from_out_mask(outputChannelMask);
+        const unsigned inChannels = audio_channel_count_from_out_mask(inputChannelMask);
         std::vector<float> input(frames * inChannels);
         std::vector<float> output(frames * outChannels);
 
-        double savedPower[32][outChannels]{};
+        double savedPower[32 /* inChannels */][32 /* outChannels */]{};
 
         // Precompute output channel geometry.
         AUDIO_GEOMETRY_SIDE outSide[outChannels];  // what side that channel index is on
         int outIndexToOffset[32] = {[0 ... 31] = -1};
         int outPair[outChannels];  // is there a matching pair channel?
-        for (unsigned i = 0, channel = OUTPUT_CHANNEL_MASK; channel != 0; ++i) {
+        for (unsigned i = 0, channel = outputChannelMask; channel != 0; ++i) {
             const int index = __builtin_ctz(channel);
             outIndexToOffset[index] = i;
             outSide[i] = sideFromChannelIdx(index);
@@ -168,9 +181,11 @@ public:
                 outPair[i] = outIndexToOffset[outPair[i]];
             }
         }
-        for (unsigned i = 0, channel = channelMask; channel != 0; ++i) {
+
+        auto remix = IChannelMix::create(outputChannelMask);
+
+        for (unsigned i = 0, channel = inputChannelMask; channel != 0; ++i) {
             const int index = __builtin_ctz(channel);
-            ASSERT_LT((size_t)index, Remix::MAX_INPUT_CHANNELS_SUPPORTED);
             const int pairIndex = pairIdxFromChannelIdx(index);
             const AUDIO_GEOMETRY_SIDE side = sideFromChannelIdx(index);
             const int channelBit = 1 << index;
@@ -194,7 +209,7 @@ public:
             }
 
             // Do the channel mix
-            Remix(channelMask).process(input.data(), output.data(), frames, accumulate);
+            remix->process(input.data(), output.data(), frames, accumulate, inputChannelMask);
 
             // if we accumulate, we need to subtract the initial data offset.
             if (accumulate) {
@@ -237,7 +252,7 @@ public:
             }
 
             // For downmix to stereo, we compare exact values to a predefined matrix.
-            constexpr bool checkExpectedPower = OUTPUT_CHANNEL_MASK == AUDIO_CHANNEL_OUT_STEREO;
+            const bool checkExpectedPower = outputChannelMask == AUDIO_CHANNEL_OUT_STEREO;
             constexpr size_t FL = 0;
             constexpr size_t FR = 1;
 
@@ -276,7 +291,7 @@ public:
                 break;
             case AUDIO_GEOMETRY_SIDE_CENTER:
                 if (channelBit == AUDIO_CHANNEL_OUT_LOW_FREQUENCY) {
-                    if (channelMask & AUDIO_CHANNEL_OUT_LOW_FREQUENCY_2) {
+                    if (inputChannelMask & AUDIO_CHANNEL_OUT_LOW_FREQUENCY_2) {
                         EXPECT_EQ(0.f, power[FR]);
                         break;
                     } else {
@@ -310,62 +325,35 @@ public:
 
 static constexpr const char *kName1[] = {"_replace_", "_accumulate_"};
 
-// Stereo
-using ChannelMixStereoTest = ChannelMixTestTemplate<AUDIO_CHANNEL_OUT_STEREO>;
-using StereoDownMix = android::audio_utils::channels::ChannelMix<AUDIO_CHANNEL_OUT_STEREO>;
-
-TEST_P(ChannelMixStereoTest, basic) {
-    testBalance(kChannelPositionMasks[std::get<0>(GetParam())], (bool)std::get<1>(GetParam()));
+TEST_P(ChannelMixTest, balance) {
+    testBalance(kOutputChannelMasks[std::get<OUTPUT_CHANNEL_MASK_POSITION>(GetParam())],
+            kInputChannelMasks[std::get<INPUT_CHANNEL_MASK_POSITION>(GetParam())],
+            std::get<ACCUMULATE_POSITION>(GetParam()));
 }
 
 INSTANTIATE_TEST_SUITE_P(
-        ChannelMixStereoTestAll, ChannelMixStereoTest,
+        ChannelMixTestAll, ChannelMixTest,
         ::testing::Combine(
-                ::testing::Range(0, (int)std::size(kChannelPositionMasks)),
-                ::testing::Range(0, 2) // accumulate off, on
+                ::testing::Range(0, (int)std::size(kOutputChannelMasks)),
+                ::testing::Range(0, (int)std::size(kInputChannelMasks)),
+                ::testing::Bool() // accumulate off, on
                 ),
-        [](const testing::TestParamInfo<ChannelMixStereoTest::ParamType>& info) {
-            const int index = std::get<0>(info.param);
-            const audio_channel_mask_t channelMask = kChannelPositionMasks[index];
-            const std::string name = std::string(audio_channel_out_mask_to_string(channelMask)) +
-                    kName1[std::get<1>(info.param)] + std::to_string(index);
+        [](const testing::TestParamInfo<ChannelMixTest::ParamType>& info) {
+            const int out_index = std::get<OUTPUT_CHANNEL_MASK_POSITION>(info.param);
+            const audio_channel_mask_t outputChannelMask = kOutputChannelMasks[out_index];
+            const int in_index = std::get<INPUT_CHANNEL_MASK_POSITION>(info.param);
+            const audio_channel_mask_t inputChannelMask = kInputChannelMasks[in_index];
+            const std::string name =
+                    std::string(audio_channel_out_mask_to_string(outputChannelMask)) +
+                    "_" + std::string(audio_channel_out_mask_to_string(inputChannelMask)) +
+                    kName1[std::get<ACCUMULATE_POSITION>(info.param)] + std::to_string(in_index);
             return name;
         });
 
+using StereoDownMix = android::audio_utils::channels::ChannelMix<AUDIO_CHANNEL_OUT_STEREO>;
 TEST(channelmix, input_channel_mask) {
     using namespace ::android::audio_utils::channels;
     StereoDownMix channelMix(AUDIO_CHANNEL_NONE);
-
-    ASSERT_EQ(AUDIO_CHANNEL_NONE, channelMix.getInputChannelMask());
-    ASSERT_TRUE(channelMix.setInputChannelMask(AUDIO_CHANNEL_OUT_STEREO));
-    ASSERT_EQ(AUDIO_CHANNEL_OUT_STEREO, channelMix.getInputChannelMask());
-}
-
-// 5.1
-using ChannelMix5Point1Test = ChannelMixTestTemplate<AUDIO_CHANNEL_OUT_5POINT1>;
-using FiveOneMix = android::audio_utils::channels::ChannelMix<AUDIO_CHANNEL_OUT_5POINT1>;
-
-TEST_P(ChannelMix5Point1Test, basic) {
-    testBalance(kChannelPositionMasks[std::get<0>(GetParam())], (bool)std::get<1>(GetParam()));
-}
-
-INSTANTIATE_TEST_SUITE_P(
-        ChannelMix5Point1TestAll, ChannelMix5Point1Test,
-        ::testing::Combine(
-                ::testing::Range(0, (int)std::size(kChannelPositionMasks)),
-                ::testing::Range(0, 2) // accumulate off, on
-                ),
-        [](const testing::TestParamInfo<ChannelMix5Point1Test::ParamType>& info) {
-            const int index = std::get<0>(info.param);
-            const audio_channel_mask_t channelMask = kChannelPositionMasks[index];
-            const std::string name = std::string(audio_channel_out_mask_to_string(channelMask)) +
-                    kName1[std::get<1>(info.param)] + std::to_string(index);
-            return name;
-        });
-
-TEST(channelmix, input_5_1) {
-    using namespace ::android::audio_utils::channels;
-    FiveOneMix channelMix(AUDIO_CHANNEL_NONE);
 
     ASSERT_EQ(AUDIO_CHANNEL_NONE, channelMix.getInputChannelMask());
     ASSERT_TRUE(channelMix.setInputChannelMask(AUDIO_CHANNEL_OUT_STEREO));

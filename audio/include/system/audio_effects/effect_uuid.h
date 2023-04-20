@@ -105,6 +105,7 @@ constexpr char kEffectImplUuidVirtualizerBundle[] = "1d4033c0-8557-11df-9f2d-000
 constexpr char kEffectImplUuidVirtualizerProxy[] = "d3467faa-acc7-4d34-acaf-0002a5d5c51b";
 constexpr char kEffectImplUuidVisualizerSw[] = "fa81a0f6-588b-11ed-9b6a-0242ac120002";
 constexpr char kEffectImplUuidVisualizer[] = "d069d9e0-8329-11df-9168-0002a5d5c51b";
+constexpr char kEffectImplUuidVisualizerProxy[] = "1d0a1a53-7d5d-48f2-8e71-27fbd10d842c";
 constexpr char kEffectImplUuidVolumeSw[] = "fa81a718-588b-11ed-9b6a-0242ac120002";
 constexpr char kEffectImplUuidVolumeBundle[] = "119341a0-8469-11df-81f9-0002a5d5c51b";
 
@@ -161,6 +162,7 @@ constexpr char kEffectUuidExtensionImpl[] = "fa81dd00-588b-11ed-9b6a-0242ac12000
     V(ImplUuidVirtualizerProxy)         \
     V(ImplUuidVisualizerSw)             \
     V(ImplUuidVisualizer)               \
+    V(ImplUuidVisualizerProxy)          \
     V(ImplUuidVolumeSw)                 \
     V(ImplUuidVolumeBundle)
 
