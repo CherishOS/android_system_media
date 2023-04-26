@@ -2337,6 +2337,18 @@ __END_DECLS
  * used to select a specific language presentation for next generation audio codecs. */
 #define AUDIO_PARAMETER_KEY_AUDIO_LANGUAGE_PREFERRED "audio_language_preferred"
 
+/* Set to "true" when the AudioOutputDescriptor is closing.
+ * This notification is used by A2DP HAL.
+ * TODO(b/73175392) unify with exiting in the AIDL interface.
+ */
+#define AUDIO_PARAMETER_KEY_CLOSING "closing"
+
+/* Set to "1" on AudioFlinger preExit() for the thread.
+ * This notification is used by the remote submix and A2DP HAL.
+ * TODO(b/73175392) unify with closing in the AIDL interface.
+ */
+#define AUDIO_PARAMETER_KEY_EXITING "exiting"
+
 /**
  *  audio stream parameters
  */
