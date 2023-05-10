@@ -2317,13 +2317,24 @@ __END_DECLS
 
 #define AUDIO_PARAMETER_VALUE_ON "on"
 #define AUDIO_PARAMETER_VALUE_OFF "off"
+#define AUDIO_PARAMETER_VALUE_TRUE "true"
+#define AUDIO_PARAMETER_VALUE_FALSE "false"
 
 /**
  *  audio device parameters
  */
 
+/* Used to enable or disable BT SCO */
+#define AUDIO_PARAMETER_KEY_BT_SCO "BT_SCO"
+
 /* BT SCO Noise Reduction + Echo Cancellation parameters */
 #define AUDIO_PARAMETER_KEY_BT_NREC "bt_headset_nrec"
+
+/* Used to enable or disable BT A2DP */
+#define AUDIO_PARAMETER_KEY_BT_A2DP_SUSPENDED "A2dpSuspended"
+
+/* Used to enable or disable BT LE */
+#define AUDIO_PARAMETER_KEY_BT_LE_SUSPENDED "LeAudioSuspended"
 
 /* Get a new HW synchronization source identifier.
  * Return a valid source (positive integer) or AUDIO_HW_SYNC_INVALID if an error occurs
