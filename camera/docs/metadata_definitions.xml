@@ -3665,7 +3665,7 @@ xsi:schemaLocation="http://schemas.android.com/service/camera/metadata/ metadata
             called, rather than when it's unblocked.
 
             If zoom settings override is on, when zooming in, the HAL must be able to apply the
-            zoom related settings at least 2 frames ahead.
+            zoom related settings at least 1 frame ahead.
           </hal_details>
         </entry>
     </controls>
