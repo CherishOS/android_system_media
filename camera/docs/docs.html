@@ -20214,7 +20214,8 @@ Cameras that enable this capability must also support the following:</p>
 <ul>
 <li>Profile <a href="https://developer.android.com/reference/android/hardware/camera2/params/DynamicRangeProfiles.html#HLG10">DynamicRangeProfiles#HLG10</a></li>
 <li>All mandatory stream combinations for this specific capability as per
-  documentation <a href="https://developer.android.com/reference/android/hardware/camera2/CameraDevice.html#createCaptureSession">CameraDevice#createCaptureSession</a></li>
+  documentation
+  <a href="https://developer.android.com/reference/android/hardware/camera2/CameraDevice.html#10-bit-output-additional-guaranteed-configurations">CameraDevice#10-bit-output-additional-guaranteed-configurations</a></li>
 <li>In case the device is not able to capture some combination of supported
   standard 8-bit and/<wbr/>or 10-bit dynamic range profiles within the same capture request,<wbr/>
   then those constraints must be listed in
@@ -20252,9 +20253,10 @@ stream use cases:</p>
 </ul>
 <p><a href="https://developer.android.com/reference/android/hardware/camera2/CameraCharacteristics.html#SCALER_AVAILABLE_STREAM_USE_CASES">Camera<wbr/>Characteristics#SCALER_<wbr/>AVAILABLE_<wbr/>STREAM_<wbr/>USE_<wbr/>CASES</a>
 lists all of the supported stream use cases.<wbr/></p>
-<p>Refer to <a href="https://developer.android.com/reference/android/hardware/camera2/CameraDevice.html#createCaptureSession">CameraDevice#createCaptureSession</a> for the
-mandatory stream combinations involving stream use cases,<wbr/> which can also be queried
-via <a href="https://developer.android.com/reference/android/hardware/camera2/params/MandatoryStreamCombination.html">MandatoryStreamCombination</a>.<wbr/></p></span>
+<p>Refer to
+<a href="https://developer.android.com/reference/android/hardware/camera2/CameraDevice.html#stream-use-case-capability-additional-guaranteed-configurations">CameraDevice#stream-use-case-capability-additional-guaranteed-configurations</a>
+for the mandatory stream combinations involving stream use cases,<wbr/> which can also be
+queried via <a href="https://developer.android.com/reference/android/hardware/camera2/params/MandatoryStreamCombination.html">MandatoryStreamCombination</a>.<wbr/></p></span>
                   </li>
                   <li>
                     <span class="entry_type_enum_name">COLOR_SPACE_PROFILES (v3.9)</span>
@@ -23709,8 +23711,9 @@ to be media performance class 12 or better by setting
 or if the camera device isn't a primary rear/<wbr/>front camera,<wbr/> the minimum required output
 stream configurations are the same as for applications targeting SDK version older than
 31.<wbr/></p>
-<p>Refer to <a href="#static_android.request.availableCapabilities">android.<wbr/>request.<wbr/>available<wbr/>Capabilities</a> and <a href="https://developer.android.com/reference/android/hardware/camera2/CameraDevice.html#createCaptureSession">CameraDevice#createCaptureSession</a> for additional mandatory
-stream configurations on a per-capability basis.<wbr/></p>
+<p>Refer to <a href="#static_android.request.availableCapabilities">android.<wbr/>request.<wbr/>available<wbr/>Capabilities</a> and
+<a href="https://developer.android.com/reference/android/hardware/camera2/CameraDevice.html#legacy-level-guaranteed-configurations">CameraDevice#legacy-level-guaranteed-configurations</a>
+for additional mandatory stream configurations on a per-capability basis.<wbr/></p>
 <p>*1: For JPEG format,<wbr/> the sizes may be restricted by below conditions:</p>
 <ul>
 <li>The HAL may choose the aspect ratio of each Jpeg size to be one of well known ones
@@ -24147,7 +24150,7 @@ configuration see
 <a href="https://developer.android.com/reference/android/hardware/camera2/CameraCharacteristics.html#INFO_SUPPORTED_HARDWARE_LEVEL">Camera<wbr/>Characteristics#INFO_<wbr/>SUPPORTED_<wbr/>HARDWARE_<wbr/>LEVEL</a>
 and <a href="https://developer.android.com/reference/android/hardware/camera2/CameraCharacteristics.html#REQUEST_AVAILABLE_CAPABILITIES">Camera<wbr/>Characteristics#REQUEST_<wbr/>AVAILABLE_<wbr/>CAPABILITIES</a>.<wbr/>
 This is an app-readable conversion of the mandatory stream combination
-<a href="https://developer.android.com/reference/android/hardware/camera2/CameraDevice.html#createCaptureSession">tables</a>.<wbr/></p>
+<a href="https://developer.android.com/reference/android/hardware/camera2/CameraDevice.html#legacy-level-guaranteed-configurations">tables</a>.<wbr/></p>
             </td>
 
             <td class="entry_units">
@@ -24172,8 +24175,7 @@ This is an app-readable conversion of the mandatory stream combination
               <p>The array of
 <a href="https://developer.android.com/reference/android/hardware/camera2/params/MandatoryStreamCombination.html">combinations</a> is
 generated according to the documented
-<a href="https://developer.android.com/reference/android/hardware/camera2/CameraDevice.html#createCaptureSession">guideline</a> based on
-specific device level and capabilities.<wbr/>
+<a href="https://developer.android.com/reference/android/hardware/camera2/CameraDevice.html#legacy-level-guaranteed-configurations">guideline</a> based on specific device level and capabilities.<wbr/>
 Clients can use the array as a quick reference to find an appropriate camera stream
 combination.<wbr/>
 As per documentation,<wbr/> the stream combinations with given PREVIEW,<wbr/> RECORD and
@@ -24228,7 +24230,7 @@ backward compatible.<wbr/></p>
             <td class="entry_description">
               <p>An array of mandatory concurrent stream combinations.<wbr/>
 This is an app-readable conversion of the concurrent mandatory stream combination
-<a href="https://developer.android.com/reference/android/hardware/camera2/CameraDevice.html#createCaptureSession">tables</a>.<wbr/></p>
+<a href="https://developer.android.com/reference/android/hardware/camera2/CameraDevice.html#concurrent-stream-guaranteed-configurations">tables</a>.<wbr/></p>
             </td>
 
             <td class="entry_units">
@@ -24253,8 +24255,7 @@ This is an app-readable conversion of the concurrent mandatory stream combinatio
               <p>The array of
 <a href="https://developer.android.com/reference/android/hardware/camera2/params/MandatoryStreamCombination.html">combinations</a> is
 generated according to the documented
-<a href="https://developer.android.com/reference/android/hardware/camera2/CameraDevice.html#createCaptureSession">guideline</a> for each
-device which has its Id present in the set returned by
+<a href="https://developer.android.com/reference/android/hardware/camera2/CameraDevice.html#concurrent-stream-guaranteed-configurations">guideline</a> for each device which has its Id present in the set returned by
 <a href="https://developer.android.com/reference/android/hardware/camera2/CameraManager.html#getConcurrentCameraIds">CameraManager#getConcurrentCameraIds</a>.<wbr/>
 Clients can use the array as a quick reference to find an appropriate camera stream
 combination.<wbr/>
@@ -24553,7 +24554,8 @@ supported format with the MultiResolutionStreamInfo group queried by <a href="ht
 <p>If a camera device supports multi-resolution output streams for a particular format,<wbr/> for
 each of its mandatory stream combinations,<wbr/> the camera device will support using a
 MultiResolutionImageReader for the MAXIMUM stream of supported formats.<wbr/> Refer to
-<a href="https://developer.android.com/reference/android/hardware/camera2/CameraDevice.html#createCaptureSession">CameraDevice#createCaptureSession</a> for additional details.<wbr/></p>
+<a href="https://developer.android.com/reference/android/hardware/camera2/CameraDevice.html#legacy-level-additional-guaranteed-combinations-with-multiresolutionoutputs">CameraDevice#legacy-level-additional-guaranteed-combinations-with-multiresolutionoutputs</a>
+for additional details.<wbr/></p>
 <p>To use multi-resolution input streams,<wbr/> the supported formats can be queried by <a href="https://developer.android.com/reference/android/hardware/camera2/params/MultiResolutionStreamConfigurationMap.html#getInputFormats">MultiResolutionStreamConfigurationMap#getInputFormats</a>.<wbr/>
 A reprocessable CameraCaptureSession can then be created using an <a href="https://developer.android.com/reference/android/hardware/camera2/params/InputConfiguration.html">InputConfiguration</a> constructed with
 the input MultiResolutionStreamInfo group,<wbr/> queried by <a href="https://developer.android.com/reference/android/hardware/camera2/params/MultiResolutionStreamConfigurationMap.html#getInputInfo">MultiResolutionStreamConfigurationMap#getInputInfo</a>.<wbr/></p>
@@ -24561,8 +24563,8 @@ the input MultiResolutionStreamInfo group,<wbr/> queried by <a href="https://dev
 {@code YUV} output,<wbr/> or multi-resolution {@code PRIVATE} input and multi-resolution
 {@code PRIVATE} output,<wbr/> {@code JPEG} and {@code YUV} are guaranteed to be supported
 multi-resolution output stream formats.<wbr/> Refer to
-<a href="https://developer.android.com/reference/android/hardware/camera2/CameraDevice.html#createCaptureSession">CameraDevice#createCaptureSession</a> for
-details about the additional mandatory stream combinations in this case.<wbr/></p>
+<a href="https://developer.android.com/reference/android/hardware/camera2/CameraDevice.html#legacy-level-additional-guaranteed-combinations-with-multiresolutionoutputs">CameraDevice#legacy-level-additional-guaranteed-combinations-with-multiresolutionoutputs</a>}
+for details about the additional mandatory stream combinations in this case.<wbr/></p>
             </td>
           </tr>
 
@@ -24954,7 +24956,7 @@ camera device for input streams,<wbr/> to their corresponding output formats,<wb
 <a href="https://developer.android.com/reference/android/hardware/camera2/CaptureRequest.html">CaptureRequest</a> has <a href="#controls_android.sensor.pixelMode">android.<wbr/>sensor.<wbr/>pixel<wbr/>Mode</a> set
 to <a href="https://developer.android.com/reference/android/hardware/camera2/CameraMetadata.html#SENSOR_PIXEL_MODE_MAXIMUM_RESOLUTION">Camera<wbr/>Metadata#SENSOR_<wbr/>PIXEL_<wbr/>MODE_<wbr/>MAXIMUM_<wbr/>RESOLUTION</a>.<wbr/>
 This is an app-readable conversion of the maximum resolution mandatory stream combination
-<a href="https://developer.android.com/reference/android/hardware/camera2/CameraDevice.html#createCaptureSession">tables</a>.<wbr/></p>
+<a href="https://developer.android.com/reference/android/hardware/camera2/CameraDevice.html#additional-guaranteed-combinations-for-ultra-high-resolution-sensors">tables</a>.<wbr/></p>
             </td>
 
             <td class="entry_units">
@@ -24979,8 +24981,7 @@ This is an app-readable conversion of the maximum resolution mandatory stream co
               <p>The array of
 <a href="https://developer.android.com/reference/android/hardware/camera2/params/MandatoryStreamCombination.html">combinations</a> is
 generated according to the documented
-<a href="https://developer.android.com/reference/android/hardware/camera2/CameraDevice.html#createCaptureSession">guideline</a> for each
-device which has the
+<a href="https://developer.android.com/reference/android/hardware/camera2/CameraDevice.html#additional-guaranteed-combinations-for-ultra-high-resolution-sensors">guideline</a> for each device which has the
 <a href="https://developer.android.com/reference/android/hardware/camera2/CameraMetadata.html#REQUEST_AVAILABLE_CAPABILITIES_ULTRA_HIGH_RESOLUTION_SENSOR">Camera<wbr/>Metadata#REQUEST_<wbr/>AVAILABLE_<wbr/>CAPABILITIES_<wbr/>ULTRA_<wbr/>HIGH_<wbr/>RESOLUTION_<wbr/>SENSOR</a>
 capability.<wbr/>
 Clients can use the array as a quick reference to find an appropriate camera stream
@@ -25032,7 +25033,7 @@ device.<wbr/></p>
 10-bit output capability
 <a href="https://developer.android.com/reference/android/hardware/camera2/CameraCharacteristics.html#REQUEST_AVAILABLE_CAPABILITIES_DYNAMIC_RANGE_TEN_BIT">Camera<wbr/>Characteristics#REQUEST_<wbr/>AVAILABLE_<wbr/>CAPABILITIES_<wbr/>DYNAMIC_<wbr/>RANGE_<wbr/>TEN_<wbr/>BIT</a>
 This is an app-readable conversion of the 10 bit output mandatory stream combination
-<a href="https://developer.android.com/reference/android/hardware/camera2/CameraDevice.html#createCaptureSession">tables</a>.<wbr/></p>
+<a href="https://developer.android.com/reference/android/hardware/camera2/CameraDevice.html#10-bit-output-additional-guaranteed-configurations">tables</a>.<wbr/></p>
             </td>
 
             <td class="entry_units">
@@ -25057,8 +25058,7 @@ This is an app-readable conversion of the 10 bit output mandatory stream combina
               <p>The array of
 <a href="https://developer.android.com/reference/android/hardware/camera2/params/MandatoryStreamCombination.html">combinations</a> is
 generated according to the documented
-<a href="https://developer.android.com/reference/android/hardware/camera2/CameraDevice.html#createCaptureSession">guideline</a> for each
-device which has the
+<a href="https://developer.android.com/reference/android/hardware/camera2/CameraDevice.html#10-bit-output-additional-guaranteed-configurations">guideline</a> for each device which has the
 <a href="https://developer.android.com/reference/android/hardware/camera2/CameraCharacteristics.html#REQUEST_AVAILABLE_CAPABILITIES_DYNAMIC_RANGE_TEN_BIT">Camera<wbr/>Characteristics#REQUEST_<wbr/>AVAILABLE_<wbr/>CAPABILITIES_<wbr/>DYNAMIC_<wbr/>RANGE_<wbr/>TEN_<wbr/>BIT</a>
 capability.<wbr/>
 Clients can use the array as a quick reference to find an appropriate camera stream
@@ -25109,7 +25109,8 @@ device.<wbr/></p>
               <p>An array of mandatory stream combinations which are applicable when device lists
 {@code PREVIEW_<wbr/>STABILIZATION} in <a href="#static_android.control.availableVideoStabilizationModes">android.<wbr/>control.<wbr/>available<wbr/>Video<wbr/>Stabilization<wbr/>Modes</a>.<wbr/>
 This is an app-readable conversion of the preview stabilization mandatory stream
-combination <a href="https://developer.android.com/reference/android/hardware/camera2/CameraDevice.html#createCaptureSession">tables</a>.<wbr/></p>
+combination
+<a href="https://developer.android.com/reference/android/hardware/camera2/CameraDevice.html#preview-stabilization-guaranteed-stream-configurations">tables</a>.<wbr/></p>
             </td>
 
             <td class="entry_units">
@@ -25134,8 +25135,7 @@ combination <a href="https://developer.android.com/reference/android/hardware/ca
               <p>The array of
 <a href="https://developer.android.com/reference/android/hardware/camera2/params/MandatoryStreamCombination.html">combinations</a> is
 generated according to the documented
-<a href="https://developer.android.com/reference/android/hardware/camera2/CameraDevice.html#createCaptureSession">guideline</a> for each
-device which supports {@code PREVIEW_<wbr/>STABILIZATION}
+<a href="https://developer.android.com/reference/android/hardware/camera2/CameraDevice.html#preview-stabilization-guaranteed-stream-configurations">guideline</a> for each device which supports {@code PREVIEW_<wbr/>STABILIZATION}
 Clients can use the array as a quick reference to find an appropriate camera stream
 combination.<wbr/>
 The mandatory stream combination array will be {@code null} in case the device does not
@@ -25429,8 +25429,8 @@ capability must support the following stream use cases:</p>
 <p>The guaranteed stream combinations related to stream use case for a camera device with
 <a href="https://developer.android.com/reference/android/hardware/camera2/CameraCharacteristics.html#REQUEST_AVAILABLE_CAPABILITIES_STREAM_USE_CASE">Camera<wbr/>Characteristics#REQUEST_<wbr/>AVAILABLE_<wbr/>CAPABILITIES_<wbr/>STREAM_<wbr/>USE_<wbr/>CASE</a>
 capability is documented in the camera device
-<a href="https://developer.android.com/reference/android/hardware/camera2/CameraDevice.html#createCaptureSession">guideline</a>.<wbr/> The
-application is strongly recommended to use one of the guaranteed stream combinations.<wbr/>
+<a href="https://developer.android.com/reference/android/hardware/camera2/CameraDevice.html#stream-use-case-capability-additional-guaranteed-configurations">guideline</a>.<wbr/> The application is strongly recommended to use one of the guaranteed stream
+combinations.<wbr/>
 If the application creates a session with a stream combination not in the guaranteed
 list,<wbr/> or with mixed DEFAULT and non-DEFAULT use cases within the same session,<wbr/>
 the camera device may ignore some stream use cases due to hardware constraints
@@ -25481,8 +25481,7 @@ framework sets it to DEFAULT.<wbr/></p>
             <td class="entry_description">
               <p>An array of mandatory stream combinations with stream use cases.<wbr/>
 This is an app-readable conversion of the mandatory stream combination
-<a href="https://developer.android.com/reference/android/hardware/camera2/CameraDevice.html#createCaptureSession">tables</a> with
-each stream's use case being set.<wbr/></p>
+<a href="https://developer.android.com/reference/android/hardware/camera2/CameraDevice.html#stream-use-case-capability-additional-guaranteed-configurations">tables</a> with each stream's use case being set.<wbr/></p>
             </td>
 
             <td class="entry_units">
@@ -25507,8 +25506,7 @@ each stream's use case being set.<wbr/></p>
               <p>The array of
 <a href="https://developer.android.com/reference/android/hardware/camera2/params/MandatoryStreamCombination.html">combinations</a> is
 generated according to the documented
-<a href="https://developer.android.com/reference/android/hardware/camera2/CameraDevice.html#createCaptureSession">guideline</a> for a
-camera device with
+<a href="https://developer.android.com/reference/android/hardware/camera2/CameraDevice.html#stream-use-case-capability-additional-guaranteed-configurations">guideline</a> for a camera device with
 <a href="https://developer.android.com/reference/android/hardware/camera2/CameraCharacteristics.html#REQUEST_AVAILABLE_CAPABILITIES_STREAM_USE_CASE">Camera<wbr/>Characteristics#REQUEST_<wbr/>AVAILABLE_<wbr/>CAPABILITIES_<wbr/>STREAM_<wbr/>USE_<wbr/>CASE</a>
 capability.<wbr/>
 The mandatory stream combination array will be {@code null} in case the device doesn't
@@ -35372,7 +35370,8 @@ doesn't violate the above rules.<wbr/></p>
                     <span class="entry_type_enum_notes"><p>This camera device does not have enough capabilities to qualify as a <code>FULL</code> device or
 better.<wbr/></p>
 <p>Only the stream configurations listed in the <code>LEGACY</code> and <code>LIMITED</code> tables in the
-<a href="https://developer.android.com/reference/android/hardware/camera2/CameraDevice.html#createCaptureSession">createCaptureSession</a> documentation are guaranteed to be supported.<wbr/></p>
+<a href="https://developer.android.com/reference/android/hardware/camera2/CameraDevice.html#limited-level-additional-guaranteed-configurations">CameraDevice#limited-level-additional-guaranteed-configurations</a>
+documentation are guaranteed to be supported.<wbr/></p>
 <p>All <code>LIMITED</code> devices support the <code>BACKWARDS_<wbr/>COMPATIBLE</code> capability,<wbr/> indicating basic
 support for color image capture.<wbr/> The only exception is that the device may
 alternatively support only the <code>DEPTH_<wbr/>OUTPUT</code> capability,<wbr/> if it can only output depth
@@ -35391,7 +35390,8 @@ can be checked for in <a href="#static_android.request.availableCapabilities">an
                     <span class="entry_type_enum_name">FULL (v3.2)</span>
                     <span class="entry_type_enum_notes"><p>This camera device is capable of supporting advanced imaging applications.<wbr/></p>
 <p>The stream configurations listed in the <code>FULL</code>,<wbr/> <code>LEGACY</code> and <code>LIMITED</code> tables in the
-<a href="https://developer.android.com/reference/android/hardware/camera2/CameraDevice.html#createCaptureSession">createCaptureSession</a> documentation are guaranteed to be supported.<wbr/></p>
+<a href="https://developer.android.com/reference/android/hardware/camera2/CameraDevice.html#full-level-additional-guaranteed-configurations">CameraDevice#full-level-additional-guaranteed-configurations</a>
+documentation are guaranteed to be supported.<wbr/></p>
 <p>A <code>FULL</code> device will support below capabilities:</p>
 <ul>
 <li><code>BURST_<wbr/>CAPTURE</code> capability (<a href="#static_android.request.availableCapabilities">android.<wbr/>request.<wbr/>available<wbr/>Capabilities</a> contains
@@ -35411,7 +35411,9 @@ Pre-API level 23,<wbr/> FULL devices also supported arbitrary cropping region
                   <li>
                     <span class="entry_type_enum_name">LEGACY (v3.2)</span>
                     <span class="entry_type_enum_notes"><p>This camera device is running in backward compatibility mode.<wbr/></p>
-<p>Only the stream configurations listed in the <code>LEGACY</code> table in the <a href="https://developer.android.com/reference/android/hardware/camera2/CameraDevice.html#createCaptureSession">createCaptureSession</a> documentation are supported.<wbr/></p>
+<p>Only the stream configurations listed in the <code>LEGACY</code> table in the
+<a href="https://developer.android.com/reference/android/hardware/camera2/CameraDevice.html#legacy-level-guaranteed-configurations">CameraDevice#legacy-level-guaranteed-configurations</a>
+documentation are supported.<wbr/></p>
 <p>A <code>LEGACY</code> device does not support per-frame control,<wbr/> manual sensor control,<wbr/> manual
 post-processing,<wbr/> arbitrary cropping regions,<wbr/> and has relaxed performance constraints.<wbr/>
 No additional capabilities beyond <code>BACKWARD_<wbr/>COMPATIBLE</code> will ever be listed by a
@@ -35429,7 +35431,9 @@ enable the flash.<wbr/></p>
                     <span class="entry_type_enum_notes"><p>This camera device is capable of YUV reprocessing and RAW data capture,<wbr/> in addition to
 FULL-level capabilities.<wbr/></p>
 <p>The stream configurations listed in the <code>LEVEL_<wbr/>3</code>,<wbr/> <code>RAW</code>,<wbr/> <code>FULL</code>,<wbr/> <code>LEGACY</code> and
-<code>LIMITED</code> tables in the <a href="https://developer.android.com/reference/android/hardware/camera2/CameraDevice.html#createCaptureSession">createCaptureSession</a> documentation are guaranteed to be supported.<wbr/></p>
+<code>LIMITED</code> tables in the
+<a href="https://developer.android.com/reference/android/hardware/camera2/CameraDevice.html#level-3-additional-guaranteed-configurations">CameraDevice#level-3-additional-guaranteed-configurations</a>
+documentation are guaranteed to be supported.<wbr/></p>
 <p>The following additional capabilities are guaranteed to be supported:</p>
 <ul>
 <li><code>YUV_<wbr/>REPROCESSING</code> capability (<a href="#static_android.request.availableCapabilities">android.<wbr/>request.<wbr/>available<wbr/>Capabilities</a> contains
@@ -38498,8 +38502,8 @@ own requirements.<wbr/></p>
             <td class="entry_description">
               <p>Whether this camera device can support identical set of stream combinations
 involving HEIC image format,<wbr/> compared to the
-<a href="https://developer.android.com/reference/android/hardware/camera2/CameraDevice.html#createCaptureSession">table of combinations</a>
-involving JPEG image format required for the device's hardware level and capabilities.<wbr/></p>
+<a href="https://developer.android.com/reference/android/hardware/camera2/CameraDevice.html#legacy-level-guaranteed-configurations">table of combinations</a> involving JPEG image format required for the device's hardware
+level and capabilities.<wbr/></p>
             </td>
 
             <td class="entry_units">
@@ -38530,9 +38534,8 @@ used to control the orientation and quality of the HEIC image.<wbr/> Configuring
 HEIC streams at the same time is not supported.<wbr/></p>
 <p>If a camera device supports HEIC format (ISO/<wbr/>IEC 23008-12),<wbr/> not only does it
 support the existing mandatory stream
-<a href="https://developer.android.com/reference/android/hardware/camera2/CameraDevice.html#createCaptureSession">combinations</a>
-required for the device's hardware level and capabilities,<wbr/> it also supports swapping
-each JPEG stream with HEIC stream in all guaranteed combinations.<wbr/></p>
+<a href="https://developer.android.com/reference/android/hardware/camera2/CameraDevice.html#legacy-level-guaranteed-configurations">combinations</a> required for the device's hardware level and capabilities,<wbr/> it also
+supports swapping each JPEG stream with HEIC stream in all guaranteed combinations.<wbr/></p>
 <p>For every HEIC stream configured by the application,<wbr/> the camera framework sets up 2
 internal streams with camera HAL:</p>
 <ul>

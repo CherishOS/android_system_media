@@ -6564,7 +6564,8 @@ xsi:schemaLocation="http://schemas.android.com/service/camera/metadata/ metadata
 
               * Profile {@link android.hardware.camera2.params.DynamicRangeProfiles#HLG10}
               * All mandatory stream combinations for this specific capability as per
-                documentation {@link android.hardware.camera2.CameraDevice#createCaptureSession}
+                documentation
+                {@link android.hardware.camera2.CameraDevice#10-bit-output-additional-guaranteed-configurations}
               * In case the device is not able to capture some combination of supported
                 standard 8-bit and/or 10-bit dynamic range profiles within the same capture request,
                 then those constraints must be listed in
@@ -6602,9 +6603,10 @@ xsi:schemaLocation="http://schemas.android.com/service/camera/metadata/ metadata
               {@link android.hardware.camera2.CameraCharacteristics#SCALER_AVAILABLE_STREAM_USE_CASES}
               lists all of the supported stream use cases.
 
-              Refer to {@link android.hardware.camera2.CameraDevice#createCaptureSession} for the
-              mandatory stream combinations involving stream use cases, which can also be queried
-              via {@link android.hardware.camera2.params.MandatoryStreamCombination}.
+              Refer to
+              {@link android.hardware.camera2.CameraDevice#stream-use-case-capability-additional-guaranteed-configurations}
+              for the mandatory stream combinations involving stream use cases, which can also be
+              queried via {@link android.hardware.camera2.params.MandatoryStreamCombination}.
               </notes>
             </value>
             <value optional="true" visibility="java_public" hal_version="3.9">COLOR_SPACE_PROFILES
@@ -8101,9 +8103,9 @@ xsi:schemaLocation="http://schemas.android.com/service/camera/metadata/ metadata
           stream configurations are the same as for applications targeting SDK version older than
           31.
 
-          Refer to android.request.availableCapabilities and {@link
-          android.hardware.camera2.CameraDevice#createCaptureSession} for additional mandatory
-          stream configurations on a per-capability basis.
+          Refer to android.request.availableCapabilities and
+          {@link android.hardware.camera2.CameraDevice#legacy-level-guaranteed-configurations}
+          for additional mandatory stream configurations on a per-capability basis.
 
           *1: For JPEG format, the sizes may be restricted by below conditions:
 
@@ -8415,14 +8417,15 @@ xsi:schemaLocation="http://schemas.android.com/service/camera/metadata/ metadata
           {@link android.hardware.camera2.CameraCharacteristics#INFO_SUPPORTED_HARDWARE_LEVEL}
           and {@link android.hardware.camera2.CameraCharacteristics#REQUEST_AVAILABLE_CAPABILITIES}.
           This is an app-readable conversion of the mandatory stream combination
-          {@link android.hardware.camera2.CameraDevice#createCaptureSession tables}.
+          {@link android.hardware.camera2.CameraDevice#legacy-level-guaranteed-configurations
+          tables}.
           </description>
           <details>
           The array of
           {@link android.hardware.camera2.params.MandatoryStreamCombination combinations} is
           generated according to the documented
-          {@link android.hardware.camera2.CameraDevice#createCaptureSession guideline} based on
-          specific device level and capabilities.
+          {@link android.hardware.camera2.CameraDevice#legacy-level-guaranteed-configurations
+          guideline} based on specific device level and capabilities.
           Clients can use the array as a quick reference to find an appropriate camera stream
           combination.
           As per documentation, the stream combinations with given PREVIEW, RECORD and
@@ -8449,14 +8452,15 @@ xsi:schemaLocation="http://schemas.android.com/service/camera/metadata/ metadata
           <description>
           An array of mandatory concurrent stream combinations.
           This is an app-readable conversion of the concurrent mandatory stream combination
-          {@link android.hardware.camera2.CameraDevice#createCaptureSession tables}.
+          {@link android.hardware.camera2.CameraDevice#concurrent-stream-guaranteed-configurations
+          tables}.
           </description>
           <details>
           The array of
           {@link android.hardware.camera2.params.MandatoryStreamCombination combinations} is
           generated according to the documented
-          {@link android.hardware.camera2.CameraDevice#createCaptureSession guideline} for each
-          device which has its Id present in the set returned by
+          {@link android.hardware.camera2.CameraDevice#concurrent-stream-guaranteed-configurations
+          guideline} for each device which has its Id present in the set returned by
           {@link android.hardware.camera2.CameraManager#getConcurrentCameraIds}.
           Clients can use the array as a quick reference to find an appropriate camera stream
           combination.
@@ -8716,7 +8720,8 @@ xsi:schemaLocation="http://schemas.android.com/service/camera/metadata/ metadata
           If a camera device supports multi-resolution output streams for a particular format, for
           each of its mandatory stream combinations, the camera device will support using a
           MultiResolutionImageReader for the MAXIMUM stream of supported formats. Refer to
-          {@link android.hardware.camera2.CameraDevice#createCaptureSession} for additional details.
+          {@link android.hardware.camera2.CameraDevice#legacy-level-additional-guaranteed-combinations-with-multiresolutionoutputs}
+          for additional details.
 
           To use multi-resolution input streams, the supported formats can be queried by {@link
           android.hardware.camera2.params.MultiResolutionStreamConfigurationMap#getInputFormats}.
@@ -8729,8 +8734,8 @@ xsi:schemaLocation="http://schemas.android.com/service/camera/metadata/ metadata
           {@code YUV} output, or multi-resolution {@code PRIVATE} input and multi-resolution
           {@code PRIVATE} output, {@code JPEG} and {@code YUV} are guaranteed to be supported
           multi-resolution output stream formats. Refer to
-          {@link android.hardware.camera2.CameraDevice#createCaptureSession} for
-          details about the additional mandatory stream combinations in this case.
+          {@link android.hardware.camera2.CameraDevice#legacy-level-additional-guaranteed-combinations-with-multiresolutionoutputs}}
+          for details about the additional mandatory stream combinations in this case.
           </details>
           <hal_details>
           Do not set this property directly
@@ -8868,14 +8873,15 @@ xsi:schemaLocation="http://schemas.android.com/service/camera/metadata/ metadata
           {@link android.hardware.camera2.CaptureRequest} has android.sensor.pixelMode set
           to {@link android.hardware.camera2.CameraMetadata#SENSOR_PIXEL_MODE_MAXIMUM_RESOLUTION}.
           This is an app-readable conversion of the maximum resolution mandatory stream combination
-          {@link android.hardware.camera2.CameraDevice#createCaptureSession tables}.
+          {@link android.hardware.camera2.CameraDevice#additional-guaranteed-combinations-for-ultra-high-resolution-sensors
+          tables}.
           </description>
           <details>
           The array of
           {@link android.hardware.camera2.params.MandatoryStreamCombination combinations} is
           generated according to the documented
-          {@link android.hardware.camera2.CameraDevice#createCaptureSession guideline} for each
-          device which has the
+          {@link android.hardware.camera2.CameraDevice#additional-guaranteed-combinations-for-ultra-high-resolution-sensors
+          guideline} for each device which has the
           {@link android.hardware.camera2.CameraMetadata#REQUEST_AVAILABLE_CAPABILITIES_ULTRA_HIGH_RESOLUTION_SENSOR}
           capability.
           Clients can use the array as a quick reference to find an appropriate camera stream
@@ -8900,14 +8906,15 @@ xsi:schemaLocation="http://schemas.android.com/service/camera/metadata/ metadata
           10-bit output capability
           {@link android.hardware.camera2.CameraCharacteristics#REQUEST_AVAILABLE_CAPABILITIES_DYNAMIC_RANGE_TEN_BIT}
           This is an app-readable conversion of the 10 bit output mandatory stream combination
-          {@link android.hardware.camera2.CameraDevice#createCaptureSession tables}.
+          {@link android.hardware.camera2.CameraDevice#10-bit-output-additional-guaranteed-configurations
+          tables}.
           </description>
           <details>
           The array of
           {@link android.hardware.camera2.params.MandatoryStreamCombination combinations} is
           generated according to the documented
-          {@link android.hardware.camera2.CameraDevice#createCaptureSession guideline} for each
-          device which has the
+          {@link android.hardware.camera2.CameraDevice#10-bit-output-additional-guaranteed-configurations
+          guideline} for each device which has the
           {@link android.hardware.camera2.CameraCharacteristics#REQUEST_AVAILABLE_CAPABILITIES_DYNAMIC_RANGE_TEN_BIT}
           capability.
           Clients can use the array as a quick reference to find an appropriate camera stream
@@ -8931,14 +8938,16 @@ xsi:schemaLocation="http://schemas.android.com/service/camera/metadata/ metadata
           An array of mandatory stream combinations which are applicable when device lists
           {@code PREVIEW_STABILIZATION} in android.control.availableVideoStabilizationModes.
           This is an app-readable conversion of the preview stabilization mandatory stream
-          combination {@link android.hardware.camera2.CameraDevice#createCaptureSession tables}.
+          combination
+          {@link android.hardware.camera2.CameraDevice#preview-stabilization-guaranteed-stream-configurations
+          tables}.
           </description>
           <details>
           The array of
           {@link android.hardware.camera2.params.MandatoryStreamCombination combinations} is
           generated according to the documented
-          {@link android.hardware.camera2.CameraDevice#createCaptureSession guideline} for each
-          device which supports {@code PREVIEW_STABILIZATION}
+          {@link android.hardware.camera2.CameraDevice#preview-stabilization-guaranteed-stream-configurations
+          guideline} for each device which supports {@code PREVIEW_STABILIZATION}
           Clients can use the array as a quick reference to find an appropriate camera stream
           combination.
           The mandatory stream combination array will be {@code null} in case the device does not
@@ -9170,8 +9179,9 @@ xsi:schemaLocation="http://schemas.android.com/service/camera/metadata/ metadata
             The guaranteed stream combinations related to stream use case for a camera device with
             {@link android.hardware.camera2.CameraCharacteristics#REQUEST_AVAILABLE_CAPABILITIES_STREAM_USE_CASE}
             capability is documented in the camera device
-            {@link android.hardware.camera2.CameraDevice#createCaptureSession guideline}. The
-            application is strongly recommended to use one of the guaranteed stream combinations.
+            {@link android.hardware.camera2.CameraDevice#stream-use-case-capability-additional-guaranteed-configurations
+            guideline}. The application is strongly recommended to use one of the guaranteed stream
+            combinations.
             If the application creates a session with a stream combination not in the guaranteed
             list, or with mixed DEFAULT and non-DEFAULT use cases within the same session,
             the camera device may ignore some stream use cases due to hardware constraints
@@ -9195,15 +9205,15 @@ xsi:schemaLocation="http://schemas.android.com/service/camera/metadata/ metadata
           <description>
           An array of mandatory stream combinations with stream use cases.
           This is an app-readable conversion of the mandatory stream combination
-          {@link android.hardware.camera2.CameraDevice#createCaptureSession tables} with
-          each stream's use case being set.
+          {@link android.hardware.camera2.CameraDevice#stream-use-case-capability-additional-guaranteed-configurations
+          tables} with each stream's use case being set.
           </description>
           <details>
           The array of
           {@link android.hardware.camera2.params.MandatoryStreamCombination combinations} is
           generated according to the documented
-          {@link android.hardware.camera2.CameraDevice#createCaptureSession guideline} for a
-          camera device with
+          {@link android.hardware.camera2.CameraDevice#stream-use-case-capability-additional-guaranteed-configurations
+          guideline} for a camera device with
           {@link android.hardware.camera2.CameraCharacteristics#REQUEST_AVAILABLE_CAPABILITIES_STREAM_USE_CASE}
           capability.
           The mandatory stream combination array will be {@code null} in case the device doesn't
@@ -12423,8 +12433,8 @@ xsi:schemaLocation="http://schemas.android.com/service/camera/metadata/ metadata
               better.
 
               Only the stream configurations listed in the `LEGACY` and `LIMITED` tables in the
-              {@link android.hardware.camera2.CameraDevice#createCaptureSession|ACameraDevice_createCaptureSession
-              createCaptureSession} documentation are guaranteed to be supported.
+              {@link android.hardware.camera2.CameraDevice#limited-level-additional-guaranteed-configurations|ACameraDevice_createCaptureSession}
+              documentation are guaranteed to be supported.
 
               All `LIMITED` devices support the `BACKWARDS_COMPATIBLE` capability, indicating basic
               support for color image capture. The only exception is that the device may
@@ -12450,8 +12460,8 @@ xsi:schemaLocation="http://schemas.android.com/service/camera/metadata/ metadata
               This camera device is capable of supporting advanced imaging applications.
 
               The stream configurations listed in the `FULL`, `LEGACY` and `LIMITED` tables in the
-              {@link android.hardware.camera2.CameraDevice#createCaptureSession|ACameraDevice_createCaptureSession
-              createCaptureSession} documentation are guaranteed to be supported.
+              {@link android.hardware.camera2.CameraDevice#full-level-additional-guaranteed-configurations|ACameraDevice_createCaptureSession}
+              documentation are guaranteed to be supported.
 
               A `FULL` device will support below capabilities:
 
@@ -12475,9 +12485,9 @@ xsi:schemaLocation="http://schemas.android.com/service/camera/metadata/ metadata
               <notes>
               This camera device is running in backward compatibility mode.
 
-              Only the stream configurations listed in the `LEGACY` table in the {@link
-              android.hardware.camera2.CameraDevice#createCaptureSession|ACameraDevice_createCaptureSession
-              createCaptureSession} documentation are supported.
+              Only the stream configurations listed in the `LEGACY` table in the
+              {@link android.hardware.camera2.CameraDevice#legacy-level-guaranteed-configurations|ACameraDevice_createCaptureSession}
+              documentation are supported.
 
               A `LEGACY` device does not support per-frame control, manual sensor control, manual
               post-processing, arbitrary cropping regions, and has relaxed performance constraints.
@@ -12502,9 +12512,9 @@ xsi:schemaLocation="http://schemas.android.com/service/camera/metadata/ metadata
               FULL-level capabilities.
 
               The stream configurations listed in the `LEVEL_3`, `RAW`, `FULL`, `LEGACY` and
-              `LIMITED` tables in the {@link
-              android.hardware.camera2.CameraDevice#createCaptureSession|ACameraDevice_createCaptureSession
-              createCaptureSession} documentation are guaranteed to be supported.
+              `LIMITED` tables in the
+              {@link android.hardware.camera2.CameraDevice#level-3-additional-guaranteed-configurations|ACameraDevice_createCaptureSession}
+              documentation are guaranteed to be supported.
 
               The following additional capabilities are guaranteed to be supported:
 
@@ -13611,8 +13621,9 @@ xsi:schemaLocation="http://schemas.android.com/service/camera/metadata/ metadata
             </enum>
             <description>Whether this camera device can support identical set of stream combinations
             involving HEIC image format, compared to the
-            {@link android.hardware.camera2.CameraDevice#createCaptureSession table of combinations}
-            involving JPEG image format required for the device's hardware level and capabilities.
+            {@link android.hardware.camera2.CameraDevice#legacy-level-guaranteed-configurations
+            table of combinations} involving JPEG image format required for the device's hardware
+            level and capabilities.
             </description>
             <details>
             All the static, control and dynamic metadata tags related to JPEG apply to HEIC formats
@@ -13622,9 +13633,9 @@ xsi:schemaLocation="http://schemas.android.com/service/camera/metadata/ metadata
 
             If a camera device supports HEIC format (ISO/IEC 23008-12), not only does it
             support the existing mandatory stream
-            {@link android.hardware.camera2.CameraDevice#createCaptureSession combinations}
-            required for the device's hardware level and capabilities, it also supports swapping
-            each JPEG stream with HEIC stream in all guaranteed combinations.
+            {@link android.hardware.camera2.CameraDevice#legacy-level-guaranteed-configurations
+            combinations} required for the device's hardware level and capabilities, it also
+            supports swapping each JPEG stream with HEIC stream in all guaranteed combinations.
 
             For every HEIC stream configured by the application, the camera framework sets up 2
             internal streams with camera HAL:
