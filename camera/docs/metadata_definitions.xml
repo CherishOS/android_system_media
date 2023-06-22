@@ -6122,24 +6122,25 @@ xsi:schemaLocation="http://schemas.android.com/service/camera/metadata/ metadata
               ultrawide lens will be the same as the logical stream, by making the crop region
               smaller than its active array size to compensate for the smaller focal length.
 
-              There are two ways for the application to capture RAW images from a logical camera
-              with RAW capability:
+              For a logical camera, typically the underlying physical cameras have different RAW
+              capabilities (such as resolution or CFA pattern). There are two ways for the
+              application to capture RAW images from the logical camera:
 
-              * Because the underlying physical cameras may have different RAW capabilities (such
-              as resolution or CFA pattern), to maintain backward compatibility, when a RAW stream
-              is configured, the camera device makes sure the default active physical camera remains
-              active and does not switch to other physical cameras. (One exception is that, if the
-              logical camera consists of identical image sensors and advertises multiple focalLength
-              due to different lenses, the camera device may generate RAW images from different
-              physical cameras based on the focalLength being set by the application.) This
-              backward-compatible approach usually results in loss of optical zoom, to telephoto
-              lens or to ultrawide lens.
-              * Alternatively, to take advantage of the full zoomRatio range of the logical camera,
-              the application should use {@link android.hardware.camera2.MultiResolutionImageReader}
-              to capture RAW images from the currently active physical camera. Because different
-              physical camera may have different RAW characteristics, the application needs to use
-              the characteristics and result metadata of the active physical camera for the
-              relevant RAW metadata.
+              * If the logical camera has RAW capability, the application can create and use RAW
+              streams in the same way as before. In case a RAW stream is configured, to maintain
+              backward compatibility, the camera device makes sure the default active physical
+              camera remains active and does not switch to other physical cameras. (One exception
+              is that, if the logical camera consists of identical image sensors and advertises
+              multiple focalLength due to different lenses, the camera device may generate RAW
+              images from different physical cameras based on the focalLength being set by the
+              application.) This backward-compatible approach usually results in loss of optical
+              zoom, to telephoto lens or to ultrawide lens.
+              * Alternatively, if supported by the device,
+              {@link android.hardware.camera2.MultiResolutionImageReader}
+              can be used to capture RAW images from one of the underlying physical cameras (
+              depending on current zoom level). Because different physical cameras may have
+              different RAW characteristics, the application needs to use the characteristics
+              and result metadata of the active physical camera for the relevant RAW metadata.
 
               The capture request and result metadata tags required for backward compatible camera
               functionalities will be solely based on the logical camera capability. On the other
@@ -8520,7 +8521,7 @@ xsi:schemaLocation="http://schemas.android.com/service/camera/metadata/ metadata
           An array of mandatory stream combinations which are applicable when device support the
           10-bit output capability
           {@link android.hardware.camera2.CameraCharacteristics#REQUEST_AVAILABLE_CAPABILITIES_DYNAMIC_RANGE_TEN_BIT}
-          This is an app-readable conversion of the maximum resolution mandatory stream combination
+          This is an app-readable conversion of the 10 bit output mandatory stream combination
           {@link android.hardware.camera2.CameraDevice#createCaptureSession tables}.
           </description>
           <details>
@@ -8551,8 +8552,8 @@ xsi:schemaLocation="http://schemas.android.com/service/camera/metadata/ metadata
           <description>
           An array of mandatory stream combinations which are applicable when device lists
           {@code PREVIEW_STABILIZATION} in android.control.availableVideoStabilizationModes.
-          This is an app-readable conversion of the maximum resolution mandatory stream combination
-          {@link android.hardware.camera2.CameraDevice#createCaptureSession tables}.
+          This is an app-readable conversion of the preview stabilization mandatory stream
+          combination {@link android.hardware.camera2.CameraDevice#createCaptureSession tables}.
           </description>
           <details>
           The array of
