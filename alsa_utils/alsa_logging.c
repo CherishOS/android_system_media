@@ -56,7 +56,7 @@ void log_pcm_mask(const char* mask_name, const struct pcm_mask* mask)
     ALOGV("%s: mask:%s", mask_name, buff);
 }
 
-void log_pcm_params(struct pcm_params * alsa_hw_params)
+void log_pcm_params(const struct pcm_params * alsa_hw_params)
 {
     ALOGV("usb:audio_hw - PCM_PARAM_SAMPLE_BITS min:%u, max:%u",
           pcm_params_get_min(alsa_hw_params, PCM_PARAM_SAMPLE_BITS),
@@ -100,7 +100,7 @@ void log_pcm_params(struct pcm_params * alsa_hw_params)
           pcm_params_get_max(alsa_hw_params, PCM_PARAM_TICK_TIME));
 }
 
-void log_pcm_config(struct pcm_config * config, const char* label) {
+void log_pcm_config(const struct pcm_config * config, const char* label) {
     ALOGV("log_pcm_config() - %s", label);
     ALOGV("  channels:%d", config->channels);
     ALOGV("  rate:%d", config->rate);

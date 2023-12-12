@@ -111,8 +111,8 @@ constexpr char kEffectImplUuidVolumeBundle[] = "119341a0-8469-11df-81f9-0002a5d5
 
 constexpr char kEffectUuidNull[] = "ec7178ec-e5e1-4432-a3f4-4657e6795210";
 constexpr char kEffectUuidZero[] = "00000000-0000-0000-0000-000000000000";
-constexpr char kEffectUuidExtensionType[] = "fa81dbde-588b-11ed-9b6a-0242ac120002";
-constexpr char kEffectUuidExtensionImpl[] = "fa81dd00-588b-11ed-9b6a-0242ac120002";
+constexpr char kEffectTypeUuidExtension[] = "fa81dbde-588b-11ed-9b6a-0242ac120002";
+constexpr char kEffectImplUuidExtension[] = "fa81dd00-588b-11ed-9b6a-0242ac120002";
 
 #define EFFECT_TYPE_UUID_LIST_DEF(V)  \
     V(TypeUuidAcousticEchoCanceler)   \
@@ -122,6 +122,7 @@ constexpr char kEffectUuidExtensionImpl[] = "fa81dd00-588b-11ed-9b6a-0242ac12000
     V(TypeUuidDownmix)                \
     V(TypeUuidDynamicsProcessing)     \
     V(TypeUuidEqualizer)              \
+    V(TypeUuidExtension)              \
     V(TypeUuidHapticGenerator)        \
     V(TypeUuidLoudnessEnhancer)       \
     V(TypeUuidEnvReverb)              \
@@ -146,6 +147,7 @@ constexpr char kEffectUuidExtensionImpl[] = "fa81dd00-588b-11ed-9b6a-0242ac12000
     V(ImplUuidEqualizerSw)              \
     V(ImplUuidEqualizerBundle)          \
     V(ImplUuidEqualizerProxy)           \
+    V(ImplUuidExtension)                \
     V(ImplUuidHapticGeneratorSw)        \
     V(ImplUuidHapticGenerator)          \
     V(ImplUuidLoudnessEnhancerSw)       \
@@ -169,8 +171,6 @@ constexpr char kEffectUuidExtensionImpl[] = "fa81dd00-588b-11ed-9b6a-0242ac12000
 #define EFFECT_OTHER_UUID_LIST_DEF(V) \
     V(UuidNull)                           \
     V(UuidZero)                           \
-    V(UuidExtensionType)                  \
-    V(UuidExtensionImpl)
 
 #define GENERATE_UUID_GETTER_V(symbol)                            \
     inline const AudioUuid& getEffect##symbol() {                 \

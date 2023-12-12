@@ -29,6 +29,7 @@
 #include <audio_utils/power.h>
 #include <log/log.h>
 #include <sstream>
+#include <unordered_map>
 #include <utils/threads.h>
 
 namespace android::audio_utils {
@@ -46,16 +47,67 @@ constexpr float kRs2LowerBound = 80.f;  // dBA
 constexpr float kRs2UpperBound = 100.f;  // dBA
 
 // The following arrays contain the IIR biquad filter coefficients for performing A-weighting as
-// described in IEC 61672:2003 for samples with 44.1kHz and 48kHz.
-constexpr std::array<std::array<float, kBiquadNumCoefs>, 2> kBiquadCoefs1 =
-    {{/* 44.1kHz= */{0.95616638497, -1.31960414122, 0.36343775625, -1.31861375911, 0.32059452332},
-      /* 48kHz= */{0.96525096525, -1.34730163086, 0.38205066561, -1.34730722798, 0.34905752979}}};
-constexpr std::array<std::array<float, kBiquadNumCoefs>, 2> kBiquadCoefs2 =
-    {{/* 44.1kHz= */{0.94317138580, -1.88634277160, 0.94317138580, -1.88558607420, 0.88709946900},
-      /* 48kHz= */{0.94696969696, -1.89393939393, 0.94696969696, -1.89387049481, 0.89515976917}}};
-constexpr std::array<std::array<float, kBiquadNumCoefs>, 2> kBiquadCoefs3 =
-    {{/* 44.1kHz= */{0.69736775447, -0.42552769920, -0.27184005527, -1.31859445445, 0.32058831623},
-      /* 48kHz= */{0.64666542810, -0.38362237137, -0.26304305672, -1.34730722798, 0.34905752979}}};
+// described in IEC 61672:2003 for multiple sample rates. The format is b0, b1, b2, a1, a2
+constexpr std::array<std::array<float, kBiquadNumCoefs>, MelProcessor::kCascadeBiquadNumber>
+    kBqCoeffs8000 = {{{0.630301, 0.000000, -0.630301, 0.103818, -0.360417},
+                      {1.000000, 0.000000, -1.000000, -0.264382, -0.601403},
+                      {1.000000, -2.000000, 1.000000, -1.967903, 0.968160}}};
+constexpr std::array<std::array<float, kBiquadNumCoefs>, MelProcessor::kCascadeBiquadNumber>
+    kBqCoeffs11025 = {{{0.601164, 1.202327, 0.601164, 1.106098, 0.305863},
+                       {1.000000, -2.000000, 1.000000, -1.593019, 0.613701},
+                       {1.000000, -2.000000, 1.000000, -1.976658, 0.976794}}};
+constexpr std::array<std::array<float, kBiquadNumCoefs>, MelProcessor::kCascadeBiquadNumber>
+    kBqCoeffs12000 = {{{0.588344, 1.176688, 0.588344, 1.045901, 0.273477},
+                       {1.000000, -2.000000, 1.000000, -1.621383, 0.639134},
+                       {1.000000, -2.000000, 1.000000, -1.978544, 0.978660}}};
+constexpr std::array<std::array<float, kBiquadNumCoefs>, MelProcessor::kCascadeBiquadNumber>
+    kBqCoeffs16000 = {{{0.531220, 1.062441, 0.531220, 0.821564, 0.168742},
+                       {1.000000, -2.000000, 1.000000, -1.705510, 0.715988},
+                       {1.000000, -2.000000, 1.000000, -1.983887, 0.983952}}};
+constexpr std::array<std::array<float, kBiquadNumCoefs>, MelProcessor::kCascadeBiquadNumber>
+    kBqCoeffs22050 = {{{0.449072, 0.898144, 0.449072, 0.538750, 0.072563},
+                       {1.000000, -2.000000, 1.000000, -1.779533, 0.785281},
+                       {1.000000, -2.000000, 1.000000, -1.988295, 0.988329}}};
+constexpr std::array<std::array<float, kBiquadNumCoefs>, MelProcessor::kCascadeBiquadNumber>
+    kBqCoeffs24000 = {{{0.425411, 0.850821, 0.425411, 0.459298, 0.052739},
+                       {1.000000, -2.000000, 1.000000, -1.796051, 0.800946},
+                       {1.000000, -2.000000, 1.000000, -1.989243, 0.989272}}};
+constexpr std::array<std::array<float, kBiquadNumCoefs>, MelProcessor::kCascadeBiquadNumber>
+    kBqCoeffs32000 = {{{0.343284, 0.686569, 0.343284, 0.179472, 0.008053},
+                       {1.000000, -2.000000, 1.000000, -1.843991, 0.846816},
+                       {1.000000, -2.000000, 1.000000, -1.991927, 0.991943}}};
+constexpr std::array<std::array<float, kBiquadNumCoefs>, MelProcessor::kCascadeBiquadNumber>
+    kBqCoeffs44100 = {{{0.255612, 0.511223, 0.255612, -0.140536, 0.004938},
+                       {1.000000, -2.000000, 1.000000, -1.884901, 0.886421},
+                       {1.000000, -2.000000, 1.000000, -1.994139, 0.994147}}};
+constexpr std::array<std::array<float, kBiquadNumCoefs>, MelProcessor::kCascadeBiquadNumber>
+    kBqCoeffs48000 = {{{0.234183, 0.468366, 0.234183, -0.224558, 0.012607},
+                       {1.000000, -2.000000, 1.000000, -1.893870, 0.895160},
+                       {1.000000, -2.000000, 1.000000, -1.994614, 0.994622}}};
+constexpr std::array<std::array<float, kBiquadNumCoefs>, MelProcessor::kCascadeBiquadNumber>
+    kBqCoeffs64000 = {{{0.169014, 0.338029, 0.169014, -0.502217, 0.063056},
+                       {1.000000, -2.000000, 1.000000, -1.919579, 0.920314},
+                       {1.000000, -2.000000, 1.000000, -1.995959, 0.995964}}};
+constexpr std::array<std::array<float, kBiquadNumCoefs>, MelProcessor::kCascadeBiquadNumber>
+    kBqCoeffs88200 = {{{0.111831, 0.223662, 0.111831, -0.788729, 0.155523},
+                       {1.000000, -2.000000, 1.000000, -1.941143, 0.941534},
+                       {1.000000, -2.000000, 1.000000, -1.997067, 0.997069}}};
+constexpr std::array<std::array<float, kBiquadNumCoefs>, MelProcessor::kCascadeBiquadNumber>
+    kBqCoeffs96000 = {{{0.099469, 0.198937, 0.099469, -0.859073, 0.184502},
+                       {1.000000, -2.000000, 1.000000, -1.945825, 0.946156},
+                       {1.000000, -2.000000, 1.000000, -1.997305, 0.997307}}};
+constexpr std::array<std::array<float, kBiquadNumCoefs>, MelProcessor::kCascadeBiquadNumber>
+    kBqCoeffs128000 = {{{0.065337, 0.130674, 0.065337, -1.078602, 0.290845},
+                        {1.000000, -2.000000, 1.000000, -1.959154, 0.959342},
+                        {1.000000, -2.000000, 1.000000, -1.997979, 0.997980}}};
+constexpr std::array<std::array<float, kBiquadNumCoefs>, MelProcessor::kCascadeBiquadNumber>
+    kBqCoeffs176400 = {{{0.039432, 0.078864, 0.039432, -1.286304, 0.413645},
+                        {1.000000, -2.000000, 1.000000, -1.970232, 0.970331},
+                        {1.000000, -2.000000, 1.000000, -1.998533, 0.998534}}};
+constexpr std::array<std::array<float, kBiquadNumCoefs>, MelProcessor::kCascadeBiquadNumber>
+    kBqCoeffs192000 = {{{0.034315, 0.068629, 0.034315, -1.334647, 0.445320},
+                        {1.000000, -2.000000, 1.000000, -1.972625, 0.972709},
+                        {1.000000, -2.000000, 1.000000, -1.998652, 0.998653}}};
 
 MelProcessor::MelProcessor(uint32_t sampleRate,
         uint32_t channelCount,
@@ -84,13 +136,31 @@ MelProcessor::MelProcessor(uint32_t sampleRate,
     mMelWorker.run();
 }
 
-bool MelProcessor::isSampleRateSupported_l() const {
-    // For now only support 44.1 and 48kHz for Mel calculation
-    if (mSampleRate != 44100 && mSampleRate != 48000) {
-        return false;
-    }
+static const std::unordered_map<uint32_t, const std::array<std::array<float, kBiquadNumCoefs>,
+        MelProcessor::kCascadeBiquadNumber>*>& getSampleRateBiquadCoeffs() {
+    static const std::unordered_map<uint32_t, const std::array<std::array<float, kBiquadNumCoefs>,
+                             MelProcessor::kCascadeBiquadNumber>*> sampleRateBiquadCoeffs = {
+            {8000, &kBqCoeffs8000},
+            {11025, &kBqCoeffs11025},
+            {12000, &kBqCoeffs12000},
+            {16000, &kBqCoeffs16000},
+            {22050, &kBqCoeffs22050},
+            {24000, &kBqCoeffs24000},
+            {32000, &kBqCoeffs32000},
+            {44100, &kBqCoeffs44100},
+            {48000, &kBqCoeffs48000},
+            {64000, &kBqCoeffs64000},
+            {88200, &kBqCoeffs88200},
+            {96000, &kBqCoeffs96000},
+            {128000, &kBqCoeffs128000},
+            {176400, &kBqCoeffs176400},
+            {192000, &kBqCoeffs192000},
+        };
+    return sampleRateBiquadCoeffs;
+}
 
-    return true;
+bool MelProcessor::isSampleRateSupported_l() const {
+    return getSampleRateBiquadCoeffs().count(mSampleRate) != 0;
 }
 
 void MelProcessor::createBiquads_l() {
@@ -98,11 +168,11 @@ void MelProcessor::createBiquads_l() {
         return;
     }
 
-    int coefsIndex = mSampleRate == 44100 ? 0 : 1;
+    const auto& biquadCoeffs = getSampleRateBiquadCoeffs().at(mSampleRate); // checked above
     mCascadedBiquads =
-              {std::make_unique<DefaultBiquadFilter>(mChannelCount, kBiquadCoefs1.at(coefsIndex)),
-               std::make_unique<DefaultBiquadFilter>(mChannelCount, kBiquadCoefs2.at(coefsIndex)),
-               std::make_unique<DefaultBiquadFilter>(mChannelCount, kBiquadCoefs3.at(coefsIndex))};
+              {std::make_unique<DefaultBiquadFilter>(mChannelCount, biquadCoeffs->at(0)),
+               std::make_unique<DefaultBiquadFilter>(mChannelCount, biquadCoeffs->at(1)),
+               std::make_unique<DefaultBiquadFilter>(mChannelCount, biquadCoeffs->at(2))};
 }
 
 status_t MelProcessor::setOutputRs2UpperBound(float rs2Value)

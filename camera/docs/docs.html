@@ -3021,6 +3021,19 @@ exposure.<wbr/></p>
               <p>Only constrains auto-exposure (AE) algorithm,<wbr/> not
 manual control of <a href="#controls_android.sensor.exposureTime">android.<wbr/>sensor.<wbr/>exposure<wbr/>Time</a> and
 <a href="#controls_android.sensor.frameDuration">android.<wbr/>sensor.<wbr/>frame<wbr/>Duration</a>.<wbr/></p>
+<p>Note that the actual achievable max framerate also depends on the minimum frame
+duration of the output streams.<wbr/> The max frame rate will be
+<code>min(aeTargetFpsRange.<wbr/>maxFps,<wbr/> 1 /<wbr/> max(individual stream min durations)</code>.<wbr/> For example,<wbr/>
+if the application sets this key to <code>{60,<wbr/> 60}</code>,<wbr/> but the maximum minFrameDuration among
+all configured streams is 33ms,<wbr/> the maximum framerate won't be 60fps,<wbr/> but will be
+30fps.<wbr/></p>
+<p>To start a CaptureSession with a target FPS range different from the
+capture request template's default value,<wbr/> the application
+is strongly recommended to call
+<a href="https://developer.android.com/reference/SessionConfiguration.html#setSessionParameters">SessionConfiguration#setSessionParameters</a>
+with the target fps range before creating the capture session.<wbr/> The aeTargetFpsRange is
+typically a session parameter.<wbr/> Specifying it at session creation time helps avoid
+session reconfiguration delays in cases like 60fps or high speed recording.<wbr/></p>
             </td>
           </tr>
 
@@ -4776,6 +4789,12 @@ frame rate is less than or equal to 30fps.<wbr/>  At other sizes,<wbr/> the Capt
 <a href="#controls_android.control.videoStabilizationMode">android.<wbr/>control.<wbr/>video<wbr/>Stabilization<wbr/>Mode</a> field will return
 OFF if the recording output is not stabilized,<wbr/> or if there are no output
 Surface types that can be stabilized.<wbr/></p>
+<p>The application is strongly recommended to call
+<a href="https://developer.android.com/reference/SessionConfiguration.html#setSessionParameters">SessionConfiguration#setSessionParameters</a>
+with the desired video stabilization mode before creating the capture session.<wbr/>
+Video stabilization mode is a session parameter on many devices.<wbr/> Specifying
+it at session creation time helps avoid reconfiguration delay caused by difference
+between the default value and the first CaptureRequest.<wbr/></p>
 <p>If a camera device supports both this mode and OIS
 (<a href="#controls_android.lens.opticalStabilizationMode">android.<wbr/>lens.<wbr/>optical<wbr/>Stabilization<wbr/>Mode</a>),<wbr/> turning both modes on may
 produce undesirable interaction,<wbr/> so it is recommended not to enable
@@ -5801,7 +5820,7 @@ capability.<wbr/></p>
                 
           <tr class="entry" id="static_android.control.aeAvailableTargetFpsRanges">
             <td class="entry_name
-             " rowspan="3">
+             " rowspan="5">
               android.<wbr/>control.<wbr/>ae<wbr/>Available<wbr/>Target<wbr/>Fps<wbr/>Ranges
             </td>
             <td class="entry_type">
@@ -5885,6 +5904,17 @@ maximum YUV_<wbr/>420_<wbr/>888 output size.<wbr/></li>
             </td>
           </tr>
 
+          <tr class="entries_header">
+            <th class="th_details" colspan="6">HAL Implementation Details</th>
+          </tr>
+          <tr class="entry_cont">
+            <td class="entry_details" colspan="6">
+              <p>HAL must make sure the lower bound and upper bound of each supported targetFpsRange can
+be reached.<wbr/> For example,<wbr/> if HAL supports an aeTargetFpsRange of (15,<wbr/> 30),<wbr/> when set by the
+application,<wbr/> the camera must be able to reach 15fps in sufficient dark scenes.<wbr/> This way
+the application knows the exact range of frame rate it can expect.<wbr/></p>
+            </td>
+          </tr>
 
           <tr class="entry_spacer"><td class="entry_spacer" colspan="7"></td></tr>
            <!-- end of entry -->
@@ -8273,6 +8303,19 @@ exposure.<wbr/></p>
               <p>Only constrains auto-exposure (AE) algorithm,<wbr/> not
 manual control of <a href="#controls_android.sensor.exposureTime">android.<wbr/>sensor.<wbr/>exposure<wbr/>Time</a> and
 <a href="#controls_android.sensor.frameDuration">android.<wbr/>sensor.<wbr/>frame<wbr/>Duration</a>.<wbr/></p>
+<p>Note that the actual achievable max framerate also depends on the minimum frame
+duration of the output streams.<wbr/> The max frame rate will be
+<code>min(aeTargetFpsRange.<wbr/>maxFps,<wbr/> 1 /<wbr/> max(individual stream min durations)</code>.<wbr/> For example,<wbr/>
+if the application sets this key to <code>{60,<wbr/> 60}</code>,<wbr/> but the maximum minFrameDuration among
+all configured streams is 33ms,<wbr/> the maximum framerate won't be 60fps,<wbr/> but will be
+30fps.<wbr/></p>
+<p>To start a CaptureSession with a target FPS range different from the
+capture request template's default value,<wbr/> the application
+is strongly recommended to call
+<a href="https://developer.android.com/reference/SessionConfiguration.html#setSessionParameters">SessionConfiguration#setSessionParameters</a>
+with the target fps range before creating the capture session.<wbr/> The aeTargetFpsRange is
+typically a session parameter.<wbr/> Specifying it at session creation time helps avoid
+session reconfiguration delays in cases like 60fps or high speed recording.<wbr/></p>
             </td>
           </tr>
 
@@ -11071,6 +11114,12 @@ frame rate is less than or equal to 30fps.<wbr/>  At other sizes,<wbr/> the Capt
 <a href="#controls_android.control.videoStabilizationMode">android.<wbr/>control.<wbr/>video<wbr/>Stabilization<wbr/>Mode</a> field will return
 OFF if the recording output is not stabilized,<wbr/> or if there are no output
 Surface types that can be stabilized.<wbr/></p>
+<p>The application is strongly recommended to call
+<a href="https://developer.android.com/reference/SessionConfiguration.html#setSessionParameters">SessionConfiguration#setSessionParameters</a>
+with the desired video stabilization mode before creating the capture session.<wbr/>
+Video stabilization mode is a session parameter on many devices.<wbr/> Specifying
+it at session creation time helps avoid reconfiguration delay caused by difference
+between the default value and the first CaptureRequest.<wbr/></p>
 <p>If a camera device supports both this mode and OIS
 (<a href="#controls_android.lens.opticalStabilizationMode">android.<wbr/>lens.<wbr/>optical<wbr/>Stabilization<wbr/>Mode</a>),<wbr/> turning both modes on may
 produce undesirable interaction,<wbr/> so it is recommended not to enable
@@ -26601,7 +26650,7 @@ mode are also different from those of
 <a href="https://developer.android.com/reference/android/hardware/camera2/CameraMetadata.html#SENSOR_PIXEL_MODE_DEFAULT">Camera<wbr/>Metadata#SENSOR_<wbr/>PIXEL_<wbr/>MODE_<wbr/>DEFAULT</a> mode.<wbr/>
 They can be queried through
 <a href="https://developer.android.com/reference/android/hardware/camera2/CameraCharacteristics.html#get">CameraCharacteristics#get</a> with
-<a href="https://developer.android.com/reference/CameraCharacteristics.html#SCALER_STREAM_CONFIGURATION_MAP_MAXIMUM_RESOLUTION)">Camera<wbr/>Characteristics#SCALER_<wbr/>STREAM_<wbr/>CONFIGURATION_<wbr/>MAP_<wbr/>MAXIMUM_<wbr/>RESOLUTION)</a>.<wbr/>
+<a href="https://developer.android.com/reference/CameraCharacteristics.html#SCALER_STREAM_CONFIGURATION_MAP_MAXIMUM_RESOLUTION">Camera<wbr/>Characteristics#SCALER_<wbr/>STREAM_<wbr/>CONFIGURATION_<wbr/>MAP_<wbr/>MAXIMUM_<wbr/>RESOLUTION</a>.<wbr/>
 Unless reported by both
 <a href="https://developer.android.com/reference/android/hardware/camera2/params/StreamConfigurationMap.html">StreamConfigurationMap</a>s,<wbr/> the outputs from
 <code><a href="#static_android.scaler.streamConfigurationMapMaximumResolution">android.<wbr/>scaler.<wbr/>stream<wbr/>Configuration<wbr/>Map<wbr/>Maximum<wbr/>Resolution</a></code> and
@@ -26616,13 +26665,12 @@ capability.<wbr/> In that case:</p>
 <ul>
 <li>
 <p>The mandatory stream combinations listed in
-  <a href="https://developer.android.com/reference/android/hardware/camera2/CameraCharacteristics/mandatoryMaximumResolutionStreamCombinations.html">mandatoryMaximumResolutionStreamCombinations</a>
-  would not apply.<wbr/></p>
+  <a href="#static_android.scaler.mandatoryMaximumResolutionStreamCombinations">android.<wbr/>scaler.<wbr/>mandatory<wbr/>Maximum<wbr/>Resolution<wbr/>Stream<wbr/>Combinations</a>  would not apply.<wbr/></p>
 </li>
 <li>
 <p>The bayer pattern of {@code RAW} streams when
   <a href="https://developer.android.com/reference/android/hardware/camera2/CameraMetadata.html#SENSOR_PIXEL_MODE_MAXIMUM_RESOLUTION">Camera<wbr/>Metadata#SENSOR_<wbr/>PIXEL_<wbr/>MODE_<wbr/>MAXIMUM_<wbr/>RESOLUTION</a>
-  is selected will be the one listed in <a href="https://developer.android.com/reference/android/sensor/info/binningFactor.html">binningFactor</a>.<wbr/></p>
+  is selected will be the one listed in <a href="#static_android.sensor.info.binningFactor">android.<wbr/>sensor.<wbr/>info.<wbr/>binning<wbr/>Factor</a>.<wbr/></p>
 </li>
 <li>
 <p>The following keys will always be present:</p>
@@ -30588,7 +30636,7 @@ mode are also different from those of
 <a href="https://developer.android.com/reference/android/hardware/camera2/CameraMetadata.html#SENSOR_PIXEL_MODE_DEFAULT">Camera<wbr/>Metadata#SENSOR_<wbr/>PIXEL_<wbr/>MODE_<wbr/>DEFAULT</a> mode.<wbr/>
 They can be queried through
 <a href="https://developer.android.com/reference/android/hardware/camera2/CameraCharacteristics.html#get">CameraCharacteristics#get</a> with
-<a href="https://developer.android.com/reference/CameraCharacteristics.html#SCALER_STREAM_CONFIGURATION_MAP_MAXIMUM_RESOLUTION)">Camera<wbr/>Characteristics#SCALER_<wbr/>STREAM_<wbr/>CONFIGURATION_<wbr/>MAP_<wbr/>MAXIMUM_<wbr/>RESOLUTION)</a>.<wbr/>
+<a href="https://developer.android.com/reference/CameraCharacteristics.html#SCALER_STREAM_CONFIGURATION_MAP_MAXIMUM_RESOLUTION">Camera<wbr/>Characteristics#SCALER_<wbr/>STREAM_<wbr/>CONFIGURATION_<wbr/>MAP_<wbr/>MAXIMUM_<wbr/>RESOLUTION</a>.<wbr/>
 Unless reported by both
 <a href="https://developer.android.com/reference/android/hardware/camera2/params/StreamConfigurationMap.html">StreamConfigurationMap</a>s,<wbr/> the outputs from
 <code><a href="#static_android.scaler.streamConfigurationMapMaximumResolution">android.<wbr/>scaler.<wbr/>stream<wbr/>Configuration<wbr/>Map<wbr/>Maximum<wbr/>Resolution</a></code> and
@@ -30603,13 +30651,12 @@ capability.<wbr/> In that case:</p>
 <ul>
 <li>
 <p>The mandatory stream combinations listed in
-  <a href="https://developer.android.com/reference/android/hardware/camera2/CameraCharacteristics/mandatoryMaximumResolutionStreamCombinations.html">mandatoryMaximumResolutionStreamCombinations</a>
-  would not apply.<wbr/></p>
+  <a href="#static_android.scaler.mandatoryMaximumResolutionStreamCombinations">android.<wbr/>scaler.<wbr/>mandatory<wbr/>Maximum<wbr/>Resolution<wbr/>Stream<wbr/>Combinations</a>  would not apply.<wbr/></p>
 </li>
 <li>
 <p>The bayer pattern of {@code RAW} streams when
   <a href="https://developer.android.com/reference/android/hardware/camera2/CameraMetadata.html#SENSOR_PIXEL_MODE_MAXIMUM_RESOLUTION">Camera<wbr/>Metadata#SENSOR_<wbr/>PIXEL_<wbr/>MODE_<wbr/>MAXIMUM_<wbr/>RESOLUTION</a>
-  is selected will be the one listed in <a href="https://developer.android.com/reference/android/sensor/info/binningFactor.html">binningFactor</a>.<wbr/></p>
+  is selected will be the one listed in <a href="#static_android.sensor.info.binningFactor">android.<wbr/>sensor.<wbr/>info.<wbr/>binning<wbr/>Factor</a>.<wbr/></p>
 </li>
 <li>
 <p>The following keys will always be present:</p>
@@ -39478,9 +39525,8 @@ the following entries,<wbr/> so that applications can determine the camera's exa
               <p>This control allows Camera extension clients to configure the strength of the applied
 extension effect.<wbr/> Strength equal to 0 means that the extension must not apply any
 post-processing and return a regular captured frame.<wbr/> Strength equal to 100 is the
-default level of post-processing applied when the control is not supported or not set
-by the client.<wbr/> Values between 0 and 100 will have different effect depending on the
-extension type as described below:</p>
+maximum level of post-processing.<wbr/> Values between 0 and 100 will have different effect
+depending on the extension type as described below:</p>
 <ul>
 <li><a href="https://developer.android.com/reference/android/hardware/camera2/CameraExtensionCharacteristics.html#EXTENSION_BOKEH">BOKEH</a> -
 the strength is expected to control the amount of blur.<wbr/></li>
@@ -39495,7 +39541,9 @@ smoothing.<wbr/></li>
 <a href="https://developer.android.com/reference/android/hardware/camera2/CameraExtensionCharacteristics.html#getAvailableCaptureRequestKeys">CameraExtensionCharacteristics#getAvailableCaptureRequestKeys</a>.<wbr/>
 The control is only defined and available to clients sending capture requests via
 <a href="https://developer.android.com/reference/android/hardware/camera2/CameraExtensionSession.html">CameraExtensionSession</a>.<wbr/>
-The default value is 100.<wbr/></p>
+If the client doesn't specify the extension strength value,<wbr/> then a default value will
+be set by the extension.<wbr/> Clients can retrieve the default value by checking the
+corresponding capture result.<wbr/></p>
             </td>
           </tr>
 
@@ -39638,9 +39686,8 @@ then the result type will always match with the configured extension type.<wbr/>
               <p>This control allows Camera extension clients to configure the strength of the applied
 extension effect.<wbr/> Strength equal to 0 means that the extension must not apply any
 post-processing and return a regular captured frame.<wbr/> Strength equal to 100 is the
-default level of post-processing applied when the control is not supported or not set
-by the client.<wbr/> Values between 0 and 100 will have different effect depending on the
-extension type as described below:</p>
+maximum level of post-processing.<wbr/> Values between 0 and 100 will have different effect
+depending on the extension type as described below:</p>
 <ul>
 <li><a href="https://developer.android.com/reference/android/hardware/camera2/CameraExtensionCharacteristics.html#EXTENSION_BOKEH">BOKEH</a> -
 the strength is expected to control the amount of blur.<wbr/></li>
@@ -39655,7 +39702,9 @@ smoothing.<wbr/></li>
 <a href="https://developer.android.com/reference/android/hardware/camera2/CameraExtensionCharacteristics.html#getAvailableCaptureRequestKeys">CameraExtensionCharacteristics#getAvailableCaptureRequestKeys</a>.<wbr/>
 The control is only defined and available to clients sending capture requests via
 <a href="https://developer.android.com/reference/android/hardware/camera2/CameraExtensionSession.html">CameraExtensionSession</a>.<wbr/>
-The default value is 100.<wbr/></p>
+If the client doesn't specify the extension strength value,<wbr/> then a default value will
+be set by the extension.<wbr/> Clients can retrieve the default value by checking the
+corresponding capture result.<wbr/></p>
             </td>
           </tr>
 

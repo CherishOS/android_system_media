@@ -128,48 +128,53 @@ TEST(EffectParamWrapperTest, toString) {
 }
 
 TEST(EffectParamWriterTest, writeReadFromData) {
-    constexpr uint16_t testData[8] = {0x200,  0x0,    0xffffu, 0xbead,
-                                      0xfefe, 0x5555, 0xeeee,  0x2};
-    uint16_t targetData[8];
-    char buf[sizeof(effect_param_t) + 8 * sizeof(uint16_t)];
+    constexpr uint32_t dataLength = 8;
+    constexpr uint16_t testData[dataLength] = {0x200,  0x0,    0xffffu, 0xbead,
+                                               0xfefe, 0x5555, 0xeeee,  0x2};
+    uint16_t targetData[dataLength] = {0};
+    char buf[sizeof(effect_param_t) + sizeof(testData)];
     effect_param_t *param = (effect_param_t *)(&buf);
     param->psize = 0;
-    param->vsize = 8 * sizeof(uint16_t);
+    param->vsize = sizeof(testData);
     auto wrapper = EffectParamWriter(*param);
 
     // write testData into effect_param_t data buffer
-    ASSERT_EQ(OK, wrapper.writeToData(&testData, 8 * sizeof(uint16_t) /* len */,
-                                0 /* offset */, 8 * sizeof(uint16_t) /* max */))
+    ASSERT_EQ(OK, wrapper.writeToData(&testData, sizeof(testData) /* len */,
+                                0 /* offset */, sizeof(testData) /* max */))
         << wrapper.toString();
 
     // read first half and compare
-    std::memset(&targetData, 0, 8 * sizeof(uint16_t));
-    EXPECT_EQ(OK, wrapper.readFromData(&targetData, 4 * sizeof(uint16_t) /* len */, 0 /* offset */,
-                                       4 * sizeof(uint16_t) /* max */))
+    EXPECT_EQ(OK,
+              wrapper.readFromData(
+                  &targetData, dataLength * sizeof(uint16_t) >> 1 /* len */,
+                  0 /* offset */, dataLength * sizeof(uint16_t) >> 1 /* max */))
         << wrapper.toString();
-    EXPECT_EQ(0, std::memcmp(&testData, &targetData, 4 * sizeof(uint16_t)));
+    EXPECT_EQ(0, std::memcmp(&testData, &targetData,
+                             dataLength * sizeof(uint16_t) >> 1));
 
     // read second half and compare
-    std::memset(&targetData, 0, 8 * sizeof(uint16_t));
-    EXPECT_EQ(OK, wrapper.readFromData(&targetData, 4 * sizeof(uint16_t) /* len */,
-                                       4 * sizeof(uint16_t) /* offset */,
-                                       8 * sizeof(uint16_t) /* max */))
+    std::memset(&targetData, 0, sizeof(testData));
+    EXPECT_EQ(OK, wrapper.readFromData(
+                      &targetData, dataLength * sizeof(uint16_t) >> 1 /* len */,
+                      dataLength * sizeof(uint16_t) >> 1 /* offset */,
+                      sizeof(testData) /* max */))
         << wrapper.toString();
-    EXPECT_EQ(0, std::memcmp(testData + 4, &targetData, 4 * sizeof(uint16_t)));
+    EXPECT_EQ(0, std::memcmp(testData + dataLength / 2, &targetData,
+                             dataLength * sizeof(uint16_t) >> 1));
 
     // read all and compare
-    std::memset(&targetData, 0, 8 * sizeof(uint16_t));
-    EXPECT_EQ(OK, wrapper.readFromData(&targetData, 8 * sizeof(uint16_t), 0 /* offset */,
-                                       8 * sizeof(uint16_t) /* max */))
+    std::memset(&targetData, 0, sizeof(testData));
+    EXPECT_EQ(OK, wrapper.readFromData(&targetData, sizeof(testData), 0 /* offset */,
+                                       sizeof(testData) /* max */))
         << wrapper.toString();
-    EXPECT_EQ(0, std::memcmp(&testData, &targetData, 8 * sizeof(uint16_t)));
+    EXPECT_EQ(0, std::memcmp(&testData, &targetData, sizeof(testData)));
 }
 
 TEST(EffectParamWriterReaderTest, writeAndReadParameterOneByOne) {
     constexpr uint16_t data[11] = {
         0x0f0f, 0x2020, 0xffff, 0xbead, 0x5e5e, 0x0 /* padding */,
         0xe5e5, 0xeeee, 0x1111, 0x8888, 0xabab};
-    char buf[sizeof(effect_param_t) + 11 * sizeof(uint16_t)] = {};
+    char buf[sizeof(effect_param_t) + sizeof(data)] = {};
     effect_param_t *param = (effect_param_t *)(&buf);
     param->psize = 5 * sizeof(uint16_t);
     param->vsize = 5 * sizeof(uint16_t);
@@ -206,15 +211,15 @@ TEST(EffectParamWriterReaderTest, writeAndReadParameterOneByOne) {
     EXPECT_EQ(OK, reader.readFromValue(&getData[10]));
     EXPECT_NE(OK, reader.readFromValue(&getData[11])); // expect read error
 
-    EXPECT_EQ(0, std::memcmp(&buf[sizeof(effect_param_t)], &data, 11 * sizeof(uint16_t)));
-    EXPECT_EQ(0, std::memcmp(&getData, &data, 11 * sizeof(uint16_t)));
+    EXPECT_EQ(0, std::memcmp(&buf[sizeof(effect_param_t)], &data, sizeof(data)));
+    EXPECT_EQ(0, std::memcmp(&getData, &data, sizeof(data)));
 }
 
 TEST(EffectParamWriterReaderTest, writeAndReadParameterN) {
     constexpr uint16_t data[11] = {
         0x0f0f, 0x2020, 0xffff, 0x1111, 0xabab, 0x0 /* padding */,
         0xe5e5, 0xeeee, 0xbead, 0x8888, 0x5e5e};
-    char buf[sizeof(effect_param_t) + 11 * sizeof(uint16_t)] = {};
+    char buf[sizeof(effect_param_t) + sizeof(data)] = {};
     effect_param_t *param = (effect_param_t *)(&buf);
     param->psize = 5 * sizeof(uint16_t);
     param->vsize = 5 * sizeof(uint16_t);
@@ -242,8 +247,8 @@ TEST(EffectParamWriterReaderTest, writeAndReadParameterN) {
     EXPECT_EQ(OK, reader.readFromValue(&getData[9], 2));
     EXPECT_NE(OK, reader.readFromValue(&getData[11])); // expect read error
 
-    EXPECT_EQ(0, std::memcmp(&buf[sizeof(effect_param_t)], &data, 11 * sizeof(uint16_t)));
-    EXPECT_EQ(0, std::memcmp(&getData, &data, 11 * sizeof(uint16_t)));
+    EXPECT_EQ(0, std::memcmp(&buf[sizeof(effect_param_t)], &data, sizeof(data)));
+    EXPECT_EQ(0, std::memcmp(&getData, &data, sizeof(data)));
 }
 
 TEST(EffectParamWriterReaderTest, writeAndReadParameterBlock) {
@@ -251,7 +256,7 @@ TEST(EffectParamWriterReaderTest, writeAndReadParameterBlock) {
         0xe5e5, 0xeeee, 0x1111, 0x8888, 0xabab, 0x0, /* padding */
         0x0f0f, 0x2020, 0xffff, 0xbead, 0x5e5e,
     };
-    char buf[sizeof(effect_param_t) + 11 * sizeof(uint16_t)] = {};
+    char buf[sizeof(effect_param_t) + sizeof(data)] = {};
     effect_param_t *param = (effect_param_t *)(&buf);
     param->psize = 5 * sizeof(uint16_t);
     param->vsize = 5 * sizeof(uint16_t);
@@ -279,8 +284,8 @@ TEST(EffectParamWriterReaderTest, writeAndReadParameterBlock) {
     EXPECT_EQ(OK, reader.readFromValue(&getData[6], 5));
     EXPECT_NE(OK, reader.readFromValue(&getData[11])); // expect read error
 
-    EXPECT_EQ(0, std::memcmp(&buf[sizeof(effect_param_t)], &data, 11 * sizeof(uint16_t)));
-    EXPECT_EQ(0, std::memcmp(&getData, &data, 11 * sizeof(uint16_t)));
+    EXPECT_EQ(0, std::memcmp(&buf[sizeof(effect_param_t)], &data, sizeof(data)));
+    EXPECT_EQ(0, std::memcmp(&getData, &data, sizeof(data)));
 }
 
 TEST(EffectParamWriterTest, setStatus) {
@@ -299,7 +304,7 @@ TEST(EffectParamWriterReaderTest, writeAndReadParameterDiffSize) {
     constexpr uint16_t data[11] = {
         0xbead, 0x5e5e, 0x0f0f, 0x2020, 0xffff, 0x0 /* padding */,
         0xe5e5, 0xeeee, 0x1111, 0x8888, 0xabab};
-    char buf[sizeof(effect_param_t) + 11 * sizeof(uint16_t)] = {};
+    char buf[sizeof(effect_param_t) + sizeof(data)] = {};
     effect_param_t *param = (effect_param_t *)(&buf);
     param->psize = 5 * sizeof(uint16_t);
     param->vsize = 5 * sizeof(uint16_t);
@@ -315,13 +320,13 @@ TEST(EffectParamWriterReaderTest, writeAndReadParameterDiffSize) {
     EXPECT_EQ(OK, writer.writeToValue(&data[10]));
     writer.finishValueWrite();
     EXPECT_EQ(5 * sizeof(uint16_t), writer.getValueSize());
-    EXPECT_EQ(sizeof(effect_param_t) + 11 * sizeof(uint16_t),
-              writer.getTotalSize()) << writer.toString();
+    EXPECT_EQ(sizeof(effect_param_t) + sizeof(data), writer.getTotalSize())
+        << writer.toString();
     EXPECT_NE(OK, writer.writeToValue(&data[10])); // expect write error
     writer.finishValueWrite();
     EXPECT_EQ(5 * sizeof(uint16_t), writer.getValueSize());
-    EXPECT_EQ(sizeof(effect_param_t) + 11 * sizeof(uint16_t),
-              writer.getTotalSize()) << writer.toString();
+    EXPECT_EQ(sizeof(effect_param_t) + sizeof(data), writer.getTotalSize())
+        << writer.toString();
 
     // read and compare
     uint16_t getData[12] = {};
@@ -334,10 +339,86 @@ TEST(EffectParamWriterReaderTest, writeAndReadParameterDiffSize) {
     EXPECT_EQ(OK, reader.readFromValue((uint32_t *)&getData[9]));
     EXPECT_NE(OK, reader.readFromValue(&getData[11])); // expect read error
 
-    EXPECT_EQ(0, std::memcmp(&buf[sizeof(effect_param_t)], &data, 11 * sizeof(uint16_t)));
-    EXPECT_EQ(0, std::memcmp(&getData, &data, 11 * sizeof(uint16_t)))
-        << "\n"
-        << std::hex << getData[0] << " " << getData[1] << " " << getData[2] << " "
-        << getData[3] << " " << getData[4] << " " << getData[5] << " " << getData[6] << " "
-        << getData[7] << " " << getData[8] << " " << getData[9] << " " << getData[10];
+    EXPECT_EQ(0, std::memcmp(&buf[sizeof(effect_param_t)], &data, sizeof(data)));
+    EXPECT_EQ(0, std::memcmp(&getData, &data, sizeof(data)));
+}
+
+TEST(EffectParamWriterTest, overwriteWithSameSize) {
+    constexpr uint32_t pSizeInShorts = 5, vSizeInShorts = 4;
+    constexpr uint16_t
+        data[EffectParamWrapper::padding(pSizeInShorts) + vSizeInShorts] = {
+            // parameter
+            0xe5e5, 0xeeee, 0x1111, 0x8888, 0xabab, 0x0 /* padding */,
+            // value
+            0x0f0f, 0x2020, 0xffff, 0xbead};
+    char buf[sizeof(effect_param_t) + sizeof(data)] = {};
+    effect_param_t *param = (effect_param_t *)(&buf);
+    param->psize = pSizeInShorts * sizeof(uint16_t); // padded to 6 * sizeof(uint16_t)
+    param->vsize = vSizeInShorts * sizeof(uint16_t);
+    auto writer = EffectParamWriter(*param);
+    EXPECT_EQ(OK, writer.writeToParameter(&data[0], pSizeInShorts));
+    EXPECT_EQ(OK, writer.writeToValue(&data[6], vSizeInShorts));
+    writer.finishValueWrite();
+
+    constexpr uint32_t newPSizeInShorts = 3, newVSizeInShorts = 6;
+    constexpr uint16_t
+        newdata[EffectParamWrapper::padding(newPSizeInShorts) + newVSizeInShorts] = {
+            // parameter
+            0xffff, 0x2020, 0xbead, 0x0 /* padding */,
+            // value
+            0xabab, 0xeeee, 0x0f0f, 0x5e5e, 0x8888, 0xe5e5};
+    char newbuf[sizeof(effect_param_t) + sizeof(newdata)] = {};
+    effect_param_t *newparam = (effect_param_t *)(&newbuf);
+    newparam->psize = newPSizeInShorts * sizeof(uint16_t); // padded to 4 * sizeof(uint16_t)
+    newparam->vsize = newVSizeInShorts * sizeof(uint16_t);
+    auto newwriter = EffectParamWriter(*newparam);
+    EXPECT_EQ(OK, newwriter.writeToParameter(newdata, newPSizeInShorts));
+    EXPECT_EQ(OK, newwriter.writeToValue(
+                      &newdata[EffectParamWrapper::padding(newPSizeInShorts)],
+                      newVSizeInShorts));
+    newwriter.finishValueWrite();
+
+    EXPECT_EQ(OK, writer.overwrite(newwriter.getEffectParam()));
+    EXPECT_EQ(0,
+              std::memcmp(&writer.getEffectParam(), &newwriter.getEffectParam(),
+                          newwriter.getTotalSize()));
+    EXPECT_EQ(newwriter.getParameterSize(), writer.getParameterSize());
+    EXPECT_EQ(newwriter.getValueSize(), writer.getValueSize());
+}
+
+TEST(EffectParamWriterTest, overwriteWithLargerSize) {
+    constexpr uint32_t pSizeInShorts = 5, vSizeInShorts = 4;
+    constexpr uint16_t data[EffectParamWrapper::padding(pSizeInShorts) + vSizeInShorts] = {
+        // parameter
+        0xe5e5, 0xeeee, 0x1111, 0x8888, 0xabab, 0x0 /* padding */,
+        // value
+        0x0f0f, 0x2020, 0xffff, 0xbead};
+    char buf[sizeof(effect_param_t) + sizeof(data)] = {};
+    effect_param_t *param = (effect_param_t *)(&buf);
+    param->psize = pSizeInShorts * sizeof(uint16_t); // padded to 6 * sizeof(uint16_t)
+    param->vsize = vSizeInShorts * sizeof(uint16_t);
+    auto writer = EffectParamWriter(*param);
+    EXPECT_EQ(OK, writer.writeToParameter(&data[0], pSizeInShorts));
+    EXPECT_EQ(OK, writer.writeToValue(&data[6], vSizeInShorts));
+    writer.finishValueWrite();
+
+    constexpr uint32_t newPSizeInShorts = 3, newVSizeInShorts = 8;
+    constexpr uint16_t
+        newdata[EffectParamWrapper::padding(newPSizeInShorts) + newVSizeInShorts] = {
+            // parameter
+            0xffff, 0x2020, 0xbead, 0x0 /* padding */,
+            // value
+            0xabab, 0xeeee, 0x0f0f, 0x5e5e, 0x8888, 0xe5e5, 0x5f5f, 0x1234};
+    char newbuf[sizeof(effect_param_t) + sizeof(newdata)] = {};
+    effect_param_t *newparam = (effect_param_t *)(&newbuf);
+    newparam->psize = newPSizeInShorts * sizeof(uint16_t); // padded to 4 * sizeof(uint16_t)
+    newparam->vsize = newVSizeInShorts * sizeof(uint16_t);
+    auto newwriter = EffectParamWriter(*newparam);
+    EXPECT_EQ(OK, newwriter.writeToParameter(newdata, newPSizeInShorts));
+    EXPECT_EQ(OK, newwriter.writeToValue(
+                      &newdata[EffectParamWrapper::padding(newPSizeInShorts)],
+                      newVSizeInShorts));
+    newwriter.finishValueWrite();
+
+    EXPECT_NE(OK, writer.overwrite(newwriter.getEffectParam()));
 }

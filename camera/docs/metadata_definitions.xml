@@ -825,7 +825,23 @@ xsi:schemaLocation="http://schemas.android.com/service/camera/metadata/ metadata
           <range>Any of the entries in android.control.aeAvailableTargetFpsRanges</range>
           <details>Only constrains auto-exposure (AE) algorithm, not
           manual control of android.sensor.exposureTime and
-          android.sensor.frameDuration.</details>
+          android.sensor.frameDuration.
+
+          Note that the actual achievable max framerate also depends on the minimum frame
+          duration of the output streams. The max frame rate will be
+          `min(aeTargetFpsRange.maxFps, 1 / max(individual stream min durations)`. For example,
+          if the application sets this key to `{60, 60}`, but the maximum minFrameDuration among
+          all configured streams is 33ms, the maximum framerate won't be 60fps, but will be
+          30fps.
+
+          To start a CaptureSession with a target FPS range different from the
+          capture request template's default value, the application
+          is strongly recommended to call
+          {@link SessionConfiguration#setSessionParameters|ACameraDevice_createCaptureSessionWithSessionParameters}
+          with the target fps range before creating the capture session. The aeTargetFpsRange is
+          typically a session parameter. Specifying it at session creation time helps avoid
+          session reconfiguration delays in cases like 60fps or high speed recording.
+          </details>
           <tag id="BC" />
         </entry>
         <entry name="aePrecaptureTrigger" type="byte" visibility="public"
@@ -2096,6 +2112,13 @@ xsi:schemaLocation="http://schemas.android.com/service/camera/metadata/ metadata
           OFF if the recording output is not stabilized, or if there are no output
           Surface types that can be stabilized.
 
+          The application is strongly recommended to call
+          {@link SessionConfiguration#setSessionParameters|ACameraDevice_createCaptureSessionWithSessionParameters}
+          with the desired video stabilization mode before creating the capture session.
+          Video stabilization mode is a session parameter on many devices. Specifying
+          it at session creation time helps avoid reconfiguration delay caused by difference
+          between the default value and the first CaptureRequest.
+
           If a camera device supports both this mode and OIS
           (android.lens.opticalStabilizationMode), turning both modes on may
           produce undesirable interaction, so it is recommended not to enable
@@ -2217,6 +2240,12 @@ xsi:schemaLocation="http://schemas.android.com/service/camera/metadata/ metadata
           maximum YUV_420_888 output size.
 
           </details>
+          <hal_details>
+          HAL must make sure the lower bound and upper bound of each supported targetFpsRange can
+          be reached. For example, if HAL supports an aeTargetFpsRange of (15, 30), when set by the
+          application, the camera must be able to reach 15fps in sufficient dark scenes. This way
+          the application knows the exact range of frame rate it can expect.
+          </hal_details>
           <tag id="BC" />
         </entry>
         <entry name="aeCompensationRange" type="int32" visibility="public"
@@ -11016,7 +11045,7 @@ xsi:schemaLocation="http://schemas.android.com/service/camera/metadata/ metadata
             {@link android.hardware.camera2.CameraMetadata#SENSOR_PIXEL_MODE_DEFAULT} mode.
             They can be queried through
             {@link android.hardware.camera2.CameraCharacteristics#get} with
-            {@link CameraCharacteristics#SCALER_STREAM_CONFIGURATION_MAP_MAXIMUM_RESOLUTION)}.
+            {@link CameraCharacteristics#SCALER_STREAM_CONFIGURATION_MAP_MAXIMUM_RESOLUTION}.
             Unless reported by both
             {@link android.hardware.camera2.params.StreamConfigurationMap}s, the outputs from
             `android.scaler.streamConfigurationMapMaximumResolution` and
@@ -11030,12 +11059,12 @@ xsi:schemaLocation="http://schemas.android.com/service/camera/metadata/ metadata
             capability. In that case:
 
             * The mandatory stream combinations listed in
-              {@link android.hardware.camera2.CameraCharacteristics.mandatoryMaximumResolutionStreamCombinations}
+              android.scaler.mandatoryMaximumResolutionStreamCombinations
               would not apply.
 
             * The bayer pattern of {@code RAW} streams when
               {@link android.hardware.camera2.CameraMetadata#SENSOR_PIXEL_MODE_MAXIMUM_RESOLUTION}
-              is selected will be the one listed in {@link android.sensor.info.binningFactor}.
+              is selected will be the one listed in android.sensor.info.binningFactor.
 
             * The following keys will always be present:
 
@@ -14105,9 +14134,8 @@ xsi:schemaLocation="http://schemas.android.com/service/camera/metadata/ metadata
           This control allows Camera extension clients to configure the strength of the applied
           extension effect. Strength equal to 0 means that the extension must not apply any
           post-processing and return a regular captured frame. Strength equal to 100 is the
-          default level of post-processing applied when the control is not supported or not set
-          by the client. Values between 0 and 100 will have different effect depending on the
-          extension type as described below:
+          maximum level of post-processing. Values between 0 and 100 will have different effect
+          depending on the extension type as described below:
 
           * {@link android.hardware.camera2.CameraExtensionCharacteristics#EXTENSION_BOKEH BOKEH} -
           the strength is expected to control the amount of blur.
@@ -14122,7 +14150,9 @@ xsi:schemaLocation="http://schemas.android.com/service/camera/metadata/ metadata
           {@link android.hardware.camera2.CameraExtensionCharacteristics#getAvailableCaptureRequestKeys}.
           The control is only defined and available to clients sending capture requests via
           {@link android.hardware.camera2.CameraExtensionSession}.
-          The default value is 100.
+          If the client doesn't specify the extension strength value, then a default value will
+          be set by the extension. Clients can retrieve the default value by checking the
+          corresponding capture result.
           </details>
         </entry>
       </controls>

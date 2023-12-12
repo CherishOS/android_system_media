@@ -61,6 +61,7 @@ static const unsigned std_sample_rates[] =
 static void profile_reset(alsa_device_profile* profile)
 {
     profile->card = profile->device = -1;
+    profile->extra_latency_ms = 0;
 
     /* terminate the attribute arrays with invalid values */
     profile->formats[0] = PCM_FORMAT_INVALID;
@@ -431,6 +432,37 @@ static int read_alsa_device_config(alsa_device_profile * profile, struct pcm_con
     pcm_params_free(alsa_hw_params);
 
     return ret;
+}
+
+bool profile_fill_builtin_device_info(alsa_device_profile* profile, struct pcm_config* config,
+                                      unsigned buffer_frame_count) {
+    if (!profile_is_initialized(profile)) {
+        return false;
+    }
+    profile->extra_latency_ms = property_get_int32(
+            "ro.hardware.audio.tinyalsa.host_latency_ms", 0);
+    profile->default_config.channels = config->channels;
+    profile->default_config.rate = config->rate;
+    profile->default_config.format = config->format;
+    int period_count = property_get_int32(
+            "ro.hardware.audio.tinyalsa.period_count", DEFAULT_PERIOD_COUNT);
+    if (period_count <= 0) period_count = DEFAULT_PERIOD_COUNT;
+    profile->default_config.period_count = period_count;
+    int period_size_multiplier = property_get_int32(
+            "ro.hardware.audio.tinyalsa.period_size_multiplier", 1);
+    if (period_size_multiplier <= 0) period_size_multiplier = 1;
+    profile->default_config.period_size =
+            period_size_multiplier * buffer_frame_count / period_count;
+    profile->min_period_size = profile->max_period_size = profile->default_config.period_size;
+    profile->formats[0] = config->format;
+    profile->formats[1] = PCM_FORMAT_INVALID;
+    profile->channel_counts[0] = config->channels;
+    profile->channel_counts[1] = 0;
+    profile->min_channel_count = profile->max_channel_count = config->channels;
+    profile->sample_rates[0] = config->rate;
+    profile->sample_rates[1] = 0;
+    profile->is_valid = true;
+    return true;
 }
 
 bool profile_read_device_info(alsa_device_profile* profile)

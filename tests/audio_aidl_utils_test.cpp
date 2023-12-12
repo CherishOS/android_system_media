@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2014 The Android Open Source Project
+ * Copyright (C) 2023 The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,13 +14,17 @@
  * limitations under the License.
  */
 
-#ifndef ANDROID_SYSTEM_MEDIA_ALSA_UTILS_ALSA_LOGGING_H
-#define ANDROID_SYSTEM_MEDIA_ALSA_UTILS_ALSA_LOGGING_H
+#include <gtest/gtest.h>
+#include <string>
 
-#include <tinyalsa/asoundlib.h>
+#define LOG_TAG "AudioAidlUtilTest"
+#include <log/log.h>
+#include <system/audio_aidl_utils.h>
+#include <system/audio_effects/effect_uuid.h>
 
-void log_pcm_mask(const char* mask_name, const struct pcm_mask* mask);
-void log_pcm_params(const struct pcm_params * alsa_hw_params);
-void log_pcm_config(const struct pcm_config * config, const char* label);
-
-#endif /* ANDROID_SYSTEM_MEDIA_ALSA_UTILS_ALSA_LOGGING_H */
+TEST(AudioAidlUtilTest, UuidToString) {
+  const std::string testStr = "7b491460-8d4d-1143-0000-0002a5d5c51b";
+  const auto uuid = ::aidl::android::hardware::audio::effect::stringToUuid(testStr.c_str());
+  const auto targetStr = ::android::audio::utils::toString(uuid);
+  EXPECT_EQ(testStr, targetStr);
+}

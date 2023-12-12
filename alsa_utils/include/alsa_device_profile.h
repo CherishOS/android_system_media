@@ -35,11 +35,13 @@
 #define DEFAULT_SAMPLE_RATE         44100
 #define DEFAULT_SAMPLE_FORMAT       PCM_FORMAT_S16_LE
 #define DEFAULT_CHANNEL_COUNT       2
+#define DEFAULT_PERIOD_COUNT        4
 
 typedef struct  {
     int card;
     int device;
     int direction; /* PCM_OUT or PCM_IN */
+    int extra_latency_ms;  /* any extra latency in addition to the buffer */
 
     enum pcm_format formats[MAX_PROFILE_FORMATS];
 
@@ -66,6 +68,8 @@ bool profile_is_valid(const alsa_device_profile* profile);
 bool profile_is_cached_for(const alsa_device_profile* profile, int card, int device);
 void profile_decache(alsa_device_profile* profile);
 
+bool profile_fill_builtin_device_info(alsa_device_profile* profile, struct pcm_config* config,
+                                      unsigned buffer_frame_count);
 bool profile_read_device_info(alsa_device_profile* profile);
 
 /* Audio Config Strings Methods */

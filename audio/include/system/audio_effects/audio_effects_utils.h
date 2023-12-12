@@ -39,7 +39,7 @@ namespace utils {
  */
 class EffectParamWrapper {
  public:
-  explicit EffectParamWrapper(effect_param_t& param) : mParam(param) {}
+  explicit EffectParamWrapper(const effect_param_t& param) : mParam(param) {}
 
   // validate command size to be at least parameterSize + valueSize after effect_param_t
   bool validateCmdSize(size_t cmdSize) const {
@@ -116,7 +116,7 @@ class EffectParamWrapper {
  */
 class EffectParamReader : public EffectParamWrapper {
  public:
-  explicit EffectParamReader(effect_param_t& param)
+  explicit EffectParamReader(const effect_param_t& param)
       : EffectParamWrapper(param), mValueROffset(getPaddedParameterSize()) {}
 
   /**
@@ -155,6 +155,11 @@ class EffectParamReader : public EffectParamWrapper {
     os << ", paramROffset: " << mParamROffset;
     os << ", valueROffset: " << mValueROffset;
     return os.str();
+  }
+
+  void reset() {
+    mParamROffset = 0;
+    mValueROffset = getPaddedParameterSize();
   }
 
  private:
@@ -211,6 +216,30 @@ class EffectParamWriter : public EffectParamReader {
   void finishValueWrite() { mParam.vsize = mValueWOffset - getPaddedParameterSize(); }
 
   void setStatus(status_t status) { mParam.status = status; }
+
+  /**
+   * Overwrite the entire effect_param_t with input.
+   */
+  status_t overwrite(const effect_param_t& param) {
+    EffectParamReader reader(param);
+    const auto size = reader.getTotalSize();
+    if (size > getTotalSize()) {
+       return BAD_VALUE;
+    }
+    std::memcpy((void *)&mParam, (void *)&reader.getEffectParam(), size);
+    reset();
+    mValueWOffset += reader.getValueSize();
+    return OK;
+  }
+
+  /**
+   * Reset the offsets with underlying effect_param_t.
+   */
+  void reset() {
+    EffectParamReader::reset();
+    mParamWOffset = 0;
+    mValueWOffset = getPaddedParameterSize();
+  }
 
   std::string toString() const {
     std::ostringstream os;

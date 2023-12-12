@@ -36,6 +36,8 @@ typedef struct {
 /* State */
 int proxy_prepare(alsa_device_proxy * proxy, const alsa_device_profile * profile,
                   struct pcm_config * config, bool require_exact_match);
+int proxy_prepare_from_default_config(
+        alsa_device_proxy * proxy, const alsa_device_profile * profile);
 int proxy_open(alsa_device_proxy * proxy);
 void proxy_close(alsa_device_proxy * proxy);
 int proxy_get_presentation_position(const alsa_device_proxy * proxy,
@@ -61,7 +63,11 @@ int proxy_scan_rates(alsa_device_proxy * proxy, const unsigned sample_rates[],
 
 /* I/O */
 int proxy_write(alsa_device_proxy * proxy, const void *data, unsigned int count);
+int proxy_write_with_retries(
+        alsa_device_proxy * proxy, const void *data, unsigned int count, int tries);
 int proxy_read(alsa_device_proxy * proxy, void *data, unsigned int count);
+int proxy_read_with_retries(
+        alsa_device_proxy * proxy, void *data, unsigned int count, int tries);
 
 /* Debugging */
 void proxy_dump(const alsa_device_proxy * proxy, int fd);

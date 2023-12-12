@@ -9,6 +9,57 @@ package {
 }
 
 cc_test {
+    name: "audio_aidl_utils_test",
+
+    defaults: [
+        "latest_android_hardware_audio_effect_ndk_static",
+        "latest_android_media_audio_common_types_ndk_static",
+    ],
+
+    shared_libs: [
+        "libbase",
+        "liblog",
+        "libutils",
+    ],
+
+    header_libs: ["libmedia_headers"],
+
+    srcs: [
+        "audio_aidl_utils_test.cpp",
+    ],
+
+    cflags: [
+        "-Wall",
+        "-Werror",
+    ],
+
+    test_suites: ["device-tests"],
+}
+
+cc_test {
+    name: "EffectParamWrapper_tests",
+
+    shared_libs: [
+        "libbase",
+        "liblog",
+        "libutils",
+    ],
+
+    header_libs: ["libmedia_headers"],
+
+    srcs: [
+        "EffectParamWrapper_tests.cpp",
+    ],
+
+    cflags: [
+        "-Wall",
+        "-Werror",
+    ],
+
+    test_suites: ["device-tests"],
+}
+
+cc_test {
     name: "systemaudio_tests",
 
     shared_libs: [
@@ -34,27 +85,4 @@ cc_test {
 
     test_suites: ["device-tests"],
 
-}
-
-cc_test {
-    name: "EffectParamWrapper_tests",
-
-    shared_libs: [
-        "libbase",
-        "liblog",
-        "libutils",
-    ],
-
-    header_libs: ["libmedia_headers"],
-
-    srcs: [
-        "EffectParamWrapper_tests.cpp",
-    ],
-
-    cflags: [
-        "-Wall",
-        "-Werror",
-    ],
-
-    test_suites: ["device-tests"],
 }
