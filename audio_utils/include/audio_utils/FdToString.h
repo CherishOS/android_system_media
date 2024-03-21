@@ -17,12 +17,18 @@
 #ifndef ANDROID_AUDIO_FD_TO_STRING_H
 #define ANDROID_AUDIO_FD_TO_STRING_H
 
+#include <android-base/unique_fd.h>
 #include <fcntl.h>
-#include <future>
 #include <poll.h>
-#include <sstream>
 #include <unistd.h>
 #include <utils/Timers.h>
+#include <chrono>
+#include <future>
+#include <iostream>
+#include <optional>
+#include <sstream>
+#include <string>
+#include <string_view>
 
 #include "clock.h"
 
@@ -30,22 +36,20 @@ namespace android {
 namespace audio_utils {
 
 /**
- * FdToString
+ * FdToStringOldImpl
  *
  * Captures string data written to a file descriptor.
  * The class will furnish a writable file descriptor by fd().
- * The string may be read through getStringAndClose().
+ * The string may be read through closeAndGetString().
  */
-
-class FdToString {
-public:
+class FdToStringOldImpl {
+  public:
     /**
      * \param prefix is the prefix string prepended to each new line.
      * \param timeoutMs is the total timeout to wait for obtaining data in milliseconds.
      */
-    explicit FdToString(const std::string &prefix = "- ", int timeoutMs = 200)
-            : mPrefix(prefix)
-            , mTimeoutTimeNs(systemTime() + timeoutMs * NANOS_PER_MILLISECOND) {
+    explicit FdToStringOldImpl(const std::string& prefix = "- ", int timeoutMs = 200)
+        : mPrefix(prefix), mTimeoutTimeNs(systemTime() + timeoutMs * NANOS_PER_MILLISECOND) {
         const int status = pipe2(mPipeFd, O_CLOEXEC);
         if (status == 0) {
             mOutput = std::async(std::launch::async, reader, mPipeFd[0], mTimeoutTimeNs, mPrefix);
@@ -53,8 +57,8 @@ public:
         // on initialization failure fd() returns -1.
     }
 
-    ~FdToString() {
-        for (auto &fd : mPipeFd) {
+    ~FdToStringOldImpl() {
+        for (auto& fd : mPipeFd) {
             if (fd >= 0) {
                 close(fd);
                 fd = -1;
@@ -64,21 +68,19 @@ public:
 
     /**
      * Returns the write end of the pipe as a file descriptor or -1 if invalid or already closed.
-     *
      * Do not close this fd directly as this class should own the fd. Instead, use
-     * getStringAndClose() to close the fd and return the string.
+     * closeAndGetString() to close the fd and return the string.
      */
-    int fd() const {
-        return mPipeFd[1];
-    }
+    int borrowFdUnsafe() const { return mPipeFd[1]; }
 
     /**
-     * Returns the string representation of data written to the fd.
+     * Returns the string representation of data written to the fd. Awaits reader thread.
      *
-     * An empty string is returned on failure (or timeout).  It is acceptable to call this
-     * method multiple times to obtain the final string; the fd is closed after the first call.
+     * All writers should have returned by this point.
+     *
+     * An empty string is returned on initialization failure or timeout. Closes fd.
      */
-    std::string getStringAndClose() {
+    std::string closeAndGetString() {
         if (!mOutput.valid()) return "";
         if (mPipeFd[1] >= 0) {
             close(mPipeFd[1]);
@@ -89,7 +91,7 @@ public:
         return status == std::future_status::ready ? mOutput.get() : "";
     }
 
-private:
+  private:
     static std::string reader(int fd, int64_t timeoutTimeNs, std::string prefix) {
         char buf[4096];
         int red;
@@ -98,18 +100,19 @@ private:
 
         while (true) {
             struct pollfd pfd = {
-                .fd = fd,
-                .events = POLLIN | POLLRDHUP,
+                    .fd = fd,
+                    .events = POLLIN | POLLRDHUP,
             };
             const int waitMs = toMillisecondTimeoutDelay(systemTime(), timeoutTimeNs);
             // ALOGD("waitMs: %d", waitMs);
             if (waitMs <= 0) break;
             const int retval = poll(&pfd, 1 /* nfds*/, waitMs);
-            if (retval <= 0 || (pfd.revents & POLLIN) != POLLIN) break; // error or timeout
-            // data is available
+            // error, timeout, or hangup (without data to read)
+            if (retval <= 0 || (pfd.revents & POLLIN) != POLLIN) break;
+            // data should be available
             if ((red = read(fd, buf, sizeof(buf))) <= 0) break;
             char *delim, *bptr = buf;
-            while (!prefix.empty() && (delim = (char *)memchr(bptr, '\n', red)) != nullptr) {
+            while (!prefix.empty() && (delim = (char*)memchr(bptr, '\n', red)) != nullptr) {
                 if (requiresPrefix) ss << prefix;
                 const size_t line = delim - bptr + 1;
                 ss.write(bptr, line);
@@ -132,7 +135,137 @@ private:
     std::future<std::string> mOutput;
 };
 
-} // namespace audio_utils
-} // namespace android
+/**
+ * Launch reader task which accumulates data written to the fd that this class exposes.
+ * Usage as follows:
+ *  {
+ *     writer = FdToString::createWriter(); // fork point, reader launched
+ *     sendFdToWriters(writer.borrowFdUnsafe()); // fd is safe while writer is valid
+ *     st = FdToString::closeWriterAndGetString(std::move(writer));
+ *     // join point (writers must be done)
+ *  } // writer dtor closes fd, joins reader if close not called
+ *
+ * This class expects that the write fd is unduped when close is called, otherwise the reader will
+ * always hit the timeout. We implicitly trust that the borrowed fd won't be duped (or that its
+ * dupes will be closed by closeWriterAndGetString()).
+ * Note, the reader closes the fd to signal which closes the read end of the pipe. If the writer is
+ * living in a process without signal(SIGPIPE, SIGIGN), they will crash.
+ */
+class FdToString {
+  public:
+    class Writer {
+      public:
+        /**
+         * Returns the write end of the pipe as a file descriptor.
+         * Non-Owning reference! This object must be valid to keep accessing the fd.
+         * Do not close this fd directly as this class should own the fd.
+         * Leaking dupes of this fd will keep the reader alive.
+         * Use closeWriterAndGetString(Writer&& w) to consume this object and return the string.
+         * The fd returned by this method is invalid after this point.
+         */
+        int borrowFdUnsafe() const { return mWriteFd.get(); }
 
-#endif // !ANDROID_AUDIO_FD_TO_STRING_H
+        const android::base::unique_fd& getFd() const { return mWriteFd; }
+
+      private:
+        friend FdToString;
+        // Pre-condition: fd and future both valid. Should only be called from create.
+        Writer(android::base::unique_fd writeFd, std::future<std::string> output)
+            : mOutput(std::move(output)), mWriteFd(std::move(writeFd)) {}
+
+        std::future<std::string> mOutput;
+        android::base::unique_fd mWriteFd;  // order important! must be destroyed first to join
+    };
+
+  public:
+    /**
+     * Factory method for Writer object. Launches the async reader.
+     * \param prefix is the prefix string prepended to each new line.
+     * \param timeoutMs is the total timeout to wait for obtaining data in milliseconds.
+     * \returns nullopt on init error.
+     */
+    static std::optional<Writer> createWriter(
+            std::string_view prefix_ = "- ",
+            std::chrono::milliseconds timeout = std::chrono::milliseconds{200}) {
+        android::base::unique_fd readFd, writeFd;
+        if (!android::base::Pipe(&readFd, &writeFd)) return {};
+        const auto flags = fcntl(readFd.get(), F_GETFL);
+        if (flags < 0) return {};
+        // Set (only) the reader as non-blocking. We want to only read until the deadline.
+        if (fcntl(readFd, F_SETFL, flags | O_NONBLOCK) < 0) return {};
+        const auto deadline = systemTime() + std::chrono::nanoseconds{timeout}.count();
+        // Launch async reader task, will return after deadline
+        return Writer{
+                std::move(writeFd),
+                std::async(std::launch::async,
+                           // reader task to follow, logically oneshot
+                           [fd = std::move(readFd), deadline,
+                            prefix = std::string{prefix_}]() mutable {
+                               char buf[4096];
+                               std::string out;
+                               bool requiresPrefix = true;
+
+                               while (true) {
+                                   struct pollfd pfd = {
+                                           .fd = fd.get(),
+                                           .events = POLLIN | POLLRDHUP,
+                                   };
+                                   const int waitMs =
+                                           toMillisecondTimeoutDelay(systemTime(), deadline);
+                                   if (waitMs <= 0) break;
+                                   const int retval = poll(&pfd, 1 /* nfds*/, waitMs);
+                                   // break on error or timeout
+                                   if (retval <= 0 || (pfd.revents & POLLIN) != POLLIN) break;
+                                   // data is available
+                                   int red = read(fd, buf, sizeof(buf));
+                                   if (red < 0) {
+                                       break;
+                                   } else if (red == 0) {
+                                       continue;
+                                   }
+
+                                   std::string_view sv{buf, static_cast<size_t>(red)};
+
+                                   if (!prefix.empty()) {
+                                       size_t ind;
+                                       while ((ind = sv.find('\n', 0)) != std::string_view::npos) {
+                                           if (requiresPrefix) {
+                                               out.append(prefix);
+                                           }
+                                           out.append(sv.data(), ind + 1);
+                                           sv.remove_prefix(ind + 1);
+                                           requiresPrefix = true;
+                                       }
+                                       if (sv.length() > 0) {
+                                           out.append(sv);
+                                           requiresPrefix = false;
+                                       }
+                                   } else {
+                                       out.append(sv);
+                                   }
+                               }
+                               // Explicit clear, because state is kept until future consumption
+                               fd.reset();
+                               return out;
+                           })};
+    }
+
+    /**
+     * Closes the write side. Returns the string representation of data written to the fd.
+     * Awaits reader thread.
+     *
+     * All writers should have returned by this point.
+     *
+     */
+    static std::string closeWriterAndGetString(Writer&& writer) {
+        // Closes the fd, which finishes the reader
+        writer.mWriteFd.reset();
+        // moved out of future + NVRO
+        return writer.mOutput.get();
+    }
+};
+
+}  // namespace audio_utils
+}  // namespace android
+
+#endif  // !ANDROID_AUDIO_FD_TO_STRING_H

@@ -253,6 +253,7 @@
                 </restriction>
             </simpleType>
         </attribute>
+        <attribute name="aconfig_flag" type="string" />
     </complexType>
 
     <complexType name="EnumType">
@@ -327,6 +328,7 @@
         </attribute>
         <attribute name="id" type="string" />
         <attribute name="hal_version" type="decimal" default="3.2" />
+        <attribute name="aconfig_flag" type="string" />
     </complexType>
 
     <complexType name="CloneType">

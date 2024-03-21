@@ -141,7 +141,12 @@ message CameraDeviceInfo {
     optional RangeFloat android_control_zoomRatioRange = 131090;
     repeated int32 android_control_availableSettingsOverrides = 131091;
     optional bool android_control_autoframingAvailable = 131092;
+    optional RangeFloat android_control_lowLightBoostInfoLuminanceRange = 131093;
     repeated int32 android_edge_availableEdgeModes = 262144;
+    optional int32 android_flash_singleStrengthMaxLevel = 327680;
+    optional int32 android_flash_singleStrengthDefaultLevel = 327681;
+    optional int32 android_flash_torchStrengthMaxLevel = 327682;
+    optional int32 android_flash_torchStrengthDefaultLevel = 327683;
     optional bool android_flash_info_available = 393216;
     optional int32 android_flash_info_strengthMaximumLevel = 393217;
     optional int32 android_flash_info_strengthDefaultLevel = 393218;
@@ -223,6 +228,7 @@ message CameraDeviceInfo {
     optional int32 android_info_supportedHardwareLevel = 1441792;
     optional string android_info_version = 1441793;
     optional DeviceStateSensorOrientationMap android_info_deviceStateSensorOrientationMap = 1441794;
+    optional int32 android_info_sessionConfigurationQueryVersion = 1441795;
     optional int32 android_sync_maxLatency = 1572864;
     optional int32 android_reprocess_maxCaptureStall = 1638400;
     optional bool android_depth_depthIsExclusive = 1703936;

@@ -300,7 +300,6 @@ static SNDFILE *sf_open_write(const char *path, SF_INFO *info)
     if (!(
             (info->samplerate > 0) &&
             (info->channels > 0 && info->channels <= FCC_LIMIT) &&
-            ((info->format & SF_FORMAT_TYPEMASK) == SF_FORMAT_WAV) &&
             (sub == SF_FORMAT_PCM_16 || sub == SF_FORMAT_PCM_U8 || sub == SF_FORMAT_FLOAT ||
                 sub == SF_FORMAT_PCM_24 || sub == SF_FORMAT_PCM_32)
           )) {
@@ -313,21 +312,7 @@ static SNDFILE *sf_open_write(const char *path, SF_INFO *info)
 #endif
         return NULL;
     }
-    unsigned char wav[58];
-    memset(wav, 0, sizeof(wav));
-    memcpy(wav, "RIFF", 4);
-    memcpy(&wav[8], "WAVEfmt ", 8);
-    if (sub == SF_FORMAT_FLOAT) {
-        wav[4] = 50;    // riffSize
-        wav[16] = 18;   // fmtSize
-        wav[20] = WAVE_FORMAT_IEEE_FLOAT;
-    } else {
-        wav[4] = 36;    // riffSize
-        wav[16] = 16;   // fmtSize
-        wav[20] = WAVE_FORMAT_PCM;
-    }
-    wav[22] = info->channels;
-    write4u(&wav[24], info->samplerate);
+
     unsigned bitsPerSample;
     switch (sub) {
     case SF_FORMAT_PCM_16:
@@ -350,20 +335,37 @@ static SNDFILE *sf_open_write(const char *path, SF_INFO *info)
         break;
     }
     unsigned blockAlignment = (bitsPerSample >> 3) * info->channels;
-    unsigned byteRate = info->samplerate * blockAlignment;
-    write4u(&wav[28], byteRate);
-    wav[32] = blockAlignment;
-    wav[34] = bitsPerSample;
-    size_t extra = 0;
-    if (sub == SF_FORMAT_FLOAT) {
-        memcpy(&wav[38], "fact", 4);
-        wav[42] = 4;
-        memcpy(&wav[50], "data", 4);
-        extra = 14;
-    } else
-        memcpy(&wav[36], "data", 4);
-    // dataSize is initially zero
-    (void) fwrite(wav, 44 + extra, 1, stream);
+    if ((info->format & SF_FORMAT_TYPEMASK) == SF_FORMAT_WAV) {
+        unsigned char wav[58];
+        memset(wav, 0, sizeof(wav));
+        memcpy(wav, "RIFF", 4);
+        memcpy(&wav[8], "WAVEfmt ", 8);
+        if (sub == SF_FORMAT_FLOAT) {
+            wav[4] = 50;    // riffSize
+            wav[16] = 18;   // fmtSize
+            wav[20] = WAVE_FORMAT_IEEE_FLOAT;
+        } else {
+            wav[4] = 36;    // riffSize
+            wav[16] = 16;   // fmtSize
+            wav[20] = WAVE_FORMAT_PCM;
+        }
+        wav[22] = info->channels;
+        write4u(&wav[24], info->samplerate);
+        unsigned byteRate = info->samplerate * blockAlignment;
+        write4u(&wav[28], byteRate);
+        wav[32] = blockAlignment;
+        wav[34] = bitsPerSample;
+        size_t extra = 0;
+        if (sub == SF_FORMAT_FLOAT) {
+            memcpy(&wav[38], "fact", 4);
+            wav[42] = 4;
+            memcpy(&wav[50], "data", 4);
+            extra = 14;
+        } else
+            memcpy(&wav[36], "data", 4);
+        // dataSize is initially zero
+        (void) fwrite(wav, 44 + extra, 1, stream);
+    }
     SNDFILE *handle = (SNDFILE *) malloc(sizeof(SNDFILE));
     handle->mode = SFM_WRITE;
     handle->temp = NULL;
@@ -402,15 +404,17 @@ void sf_close(SNDFILE *handle)
     free(handle->temp);
     if (handle->mode == SFM_WRITE) {
         (void) fflush(handle->stream);
-        rewind(handle->stream);
-        unsigned char wav[58];
-        size_t extra = (handle->info.format & SF_FORMAT_SUBMASK) == SF_FORMAT_FLOAT ? 14 : 0;
-        (void) fread(wav, 44 + extra, 1, handle->stream);
-        unsigned dataSize = handle->remaining * handle->bytesPerFrame;
-        write4u(&wav[4], dataSize + 36 + extra);    // riffSize
-        write4u(&wav[40 + extra], dataSize);        // dataSize
-        rewind(handle->stream);
-        (void) fwrite(wav, 44 + extra, 1, handle->stream);
+        if ((handle->info.format & SF_FORMAT_TYPEMASK) == SF_FORMAT_WAV) {
+            rewind(handle->stream);
+            unsigned char wav[58];
+            size_t extra = (handle->info.format & SF_FORMAT_SUBMASK) == SF_FORMAT_FLOAT ? 14 : 0;
+            (void) fread(wav, 44 + extra, 1, handle->stream);
+            unsigned dataSize = handle->remaining * handle->bytesPerFrame;
+            write4u(&wav[4], dataSize + 36 + extra);    // riffSize
+            write4u(&wav[40 + extra], dataSize);        // dataSize
+            rewind(handle->stream);
+            (void) fwrite(wav, 44 + extra, 1, handle->stream);
+        }
     }
     (void) fclose(handle->stream);
     free(handle);

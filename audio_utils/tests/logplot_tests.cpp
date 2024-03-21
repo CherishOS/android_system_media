@@ -14,24 +14,31 @@
  * limitations under the License.
  */
 
+#include <audio_utils/LogPlot.h>
+
+#include <gtest/gtest.h>
+
 #include <iostream>
 #include <vector>
 
-#include <audio_utils/LogPlot.h>
-
-// TODO Make more rigorous unit tests.
-int main()
-{
-    static const float data[] = {-61.4, -61.7, -56.2, -54.5, -47.7, -51.1, -49.7, -47.2,
+TEST(audio_utils_logplot, basic) {
+    static constexpr float data[] = {-61.4, -61.7, -56.2, -54.5, -47.7, -51.1, -49.7, -47.2,
         -47.8, -42.3, -38.9, -40.5, -39.4, -33.9, -26.3, -20.9};
-    size_t data_size = sizeof(data) / sizeof(*data);
     std::vector<std::pair<float, bool>> vdata;
-    for (size_t i = 0; i < data_size; i++) {
+    for (size_t i = 0; i < std::size(data); ++i) {
         vdata.emplace_back(data[i], (i + 1) % 10 == 0);
     }
 
-    std::string graphstr = audio_utils_log_plot(vdata.begin(), vdata.end());
-    std::cout << graphstr << std::endl;
+    const std::string graphstr = audio_utils_log_plot(vdata.begin(), vdata.end());
 
-    return EXIT_SUCCESS;
+    // Show on host log, or if one of the asserts fails.
+    std::cerr << graphstr << std::endl;
+
+    // Must have at least 3 rows.
+    const auto rows = count(graphstr.begin(), graphstr.end(), '\n');
+    ASSERT_GE(rows, 3);
+
+    // Approximate the number of cols (note top and bottom row are empty currently).
+    const auto cols = graphstr.size() / (rows - 2);
+    ASSERT_GE(cols, std::size(data) / 2);  // Graph cols filled at least by half.
 }

@@ -35,11 +35,11 @@ typedef enum
     SPATIALIZER_PARAM_HEADTRACKING_SUPPORTED,
     SPATIALIZER_PARAM_HEADTRACKING_MODE,            // See SpatializerHeadTrackingMode.aidl
     // list of supported input channel masks:
-    //  first unit32_t is the number of channel masks followed by the corresponding
+    //  first uint32_t is the number of channel masks followed by the corresponding
     // number of audio_channel_mask_t.
     SPATIALIZER_PARAM_SUPPORTED_CHANNEL_MASKS,
     // list of supported spatialization modes:
-    //  first unit32_t is the number of modes followed by the corresponding
+    //  first uint32_t is the number of modes followed by the corresponding
     // number of spatialization_mode_t.
     SPATIALIZER_PARAM_SUPPORTED_SPATIALIZATION_MODES,
     // Vector of 6 floats representing the head to stage pose:
@@ -68,6 +68,25 @@ typedef enum
     // The open/closed logical state differs than the hinge angle,
     // which may be reported by a hinge sensor.
     SPATIALIZER_PARAM_FOLD_STATE,
+
+    // Query the list of supported connection modes for head tracking data
+    // - FRAMEWORK_PROCESSED: the audio framework provides pre processed IMU data via
+    //   SPATIALIZER_PARAM_HEAD_TO_STAGE. This is the default and typically used for software
+    //   effect implementations (not offloaded to a DSP).
+    // - DIRECT_TO_SENSOR_SW: the audio framework just controls the enabled state of the sensor.
+    //   The Spatializer effect directly connects to the sensor via the sensor software stack.
+    //   Can be used by software implementations which do not want to benefit from the
+    //   preprocessing done on IMU data by AOSP libheadtracking. Can also be used by DSP
+    //   offloaded implementations.
+    // - DIRECT_TO_SENSOR_TUNNEL: the audio framework just controls the enabled state of the
+    //   sensor. The Spatializer effect directly connects to the sensor via hardware tunneling.
+    //   This mode is reserved for DSP offloaded implementations when the offload mode is enabled
+    //   by the framework.
+    SPATIALIZER_PARAM_SUPPORTED_HEADTRACKING_CONNECTION,
+
+    // Set/get the head tracking data connection mode: passes the mode followed by the sensor ID
+    // on uint32_t
+    SPATIALIZER_PARAM_HEADTRACKING_CONNECTION
 } t_virtualizer_stage_params;
 
 // See SpatializationLevel.aidl
@@ -81,6 +100,13 @@ typedef enum {
     SPATIALIZATION_MODE_BINAURAL = 0,
     SPATIALIZATION_MODE_TRANSAURAL = 1,
 } spatialization_mode_t;
+
+//TODO b/273373363: use AIDL enum when available
+typedef enum {
+    HEADTRACKING_CONNECTION_FRAMEWORK_PROCESSED = 0,
+    HEADTRACKING_CONNECTION_DIRECT_TO_SENSOR_SW = 1,
+    HEADTRACKING_CONNECTION_DIRECT_TO_SENSOR_TUNNEL = 2,
+} headtracking_connection_t;
 
 #if __cplusplus
 }  // extern "C"

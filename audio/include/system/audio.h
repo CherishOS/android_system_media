@@ -2017,8 +2017,13 @@ static inline size_t audio_bytes_per_sample(audio_format_t format)
 
 static inline size_t audio_bytes_per_frame(uint32_t channel_count, audio_format_t format)
 {
-    // cannot overflow for reasonable channel_count
-    return channel_count * audio_bytes_per_sample(format);
+    if (audio_has_proportional_frames(format)) {
+        // cannot overflow for reasonable channel_count
+        return channel_count * audio_bytes_per_sample(format);
+    } else {
+        // compressed formats have a frame size of 1 by convention.
+        return sizeof(uint8_t);
+    }
 }
 
 /* converts device address to string sent to audio HAL via set_parameters */
@@ -2417,6 +2422,11 @@ __END_DECLS
 
 /* Query if HwModule supports variable Bluetooth latency control */
 #define AUDIO_PARAMETER_BT_VARIABLE_LATENCY_SUPPORTED "isBtVariableLatencySupported"
+
+/* Reconfigure offloaded LE codec */
+#define AUDIO_PARAMETER_RECONFIG_LE "reconfigLe"
+/* Query if HwModule supports reconfiguration of offloaded LE codec */
+#define AUDIO_PARAMETER_LE_RECONFIG_SUPPORTED "isReconfigLeSupported"
 
 /**
  * For querying device supported encapsulation capabilities. All returned values are integer,

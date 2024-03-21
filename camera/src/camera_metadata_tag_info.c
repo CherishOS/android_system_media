@@ -279,6 +279,11 @@ static tag_info_t android_control[ANDROID_CONTROL_END -
     { "autoframingAvailable",          TYPE_BYTE   },
     [ ANDROID_CONTROL_AUTOFRAMING_STATE - ANDROID_CONTROL_START ] =
     { "autoframingState",              TYPE_BYTE   },
+    [ ANDROID_CONTROL_LOW_LIGHT_BOOST_INFO_LUMINANCE_RANGE - ANDROID_CONTROL_START ] =
+    { "lowLightBoostInfoLuminanceRange",
+                                        TYPE_FLOAT  },
+    [ ANDROID_CONTROL_LOW_LIGHT_BOOST_STATE - ANDROID_CONTROL_START ] =
+    { "lowLightBoostState",            TYPE_BYTE   },
 };
 
 static tag_info_t android_demosaic[ANDROID_DEMOSAIC_END -
@@ -311,6 +316,16 @@ static tag_info_t android_flash[ANDROID_FLASH_END -
     { "maxEnergy",                     TYPE_BYTE   },
     [ ANDROID_FLASH_STATE - ANDROID_FLASH_START ] =
     { "state",                         TYPE_BYTE   },
+    [ ANDROID_FLASH_STRENGTH_LEVEL - ANDROID_FLASH_START ] =
+    { "strengthLevel",                 TYPE_INT32  },
+    [ ANDROID_FLASH_SINGLE_STRENGTH_MAX_LEVEL - ANDROID_FLASH_START ] =
+    { "singleStrengthMaxLevel",        TYPE_INT32  },
+    [ ANDROID_FLASH_SINGLE_STRENGTH_DEFAULT_LEVEL - ANDROID_FLASH_START ] =
+    { "singleStrengthDefaultLevel",    TYPE_INT32  },
+    [ ANDROID_FLASH_TORCH_STRENGTH_MAX_LEVEL - ANDROID_FLASH_START ] =
+    { "torchStrengthMaxLevel",         TYPE_INT32  },
+    [ ANDROID_FLASH_TORCH_STRENGTH_DEFAULT_LEVEL - ANDROID_FLASH_START ] =
+    { "torchStrengthDefaultLevel",     TYPE_INT32  },
 };
 
 static tag_info_t android_flash_info[ANDROID_FLASH_INFO_END -
@@ -736,6 +751,10 @@ static tag_info_t android_statistics[ANDROID_STATISTICS_END -
     { "oisXShifts",                    TYPE_FLOAT  },
     [ ANDROID_STATISTICS_OIS_Y_SHIFTS - ANDROID_STATISTICS_START ] =
     { "oisYShifts",                    TYPE_FLOAT  },
+    [ ANDROID_STATISTICS_LENS_INTRINSIC_TIMESTAMPS - ANDROID_STATISTICS_START ] =
+    { "lensIntrinsicTimestamps",       TYPE_INT64  },
+    [ ANDROID_STATISTICS_LENS_INTRINSIC_SAMPLES - ANDROID_STATISTICS_START ] =
+    { "lensIntrinsicSamples",          TYPE_FLOAT  },
 };
 
 static tag_info_t android_statistics_info[ANDROID_STATISTICS_INFO_END -
@@ -799,6 +818,9 @@ static tag_info_t android_info[ANDROID_INFO_END -
                                         TYPE_BYTE   },
     [ ANDROID_INFO_DEVICE_STATE_ORIENTATIONS - ANDROID_INFO_START ] =
     { "deviceStateOrientations",       TYPE_INT64  },
+    [ ANDROID_INFO_SESSION_CONFIGURATION_QUERY_VERSION - ANDROID_INFO_START ] =
+    { "sessionConfigurationQueryVersion",
+                                        TYPE_INT32  },
 };
 
 static tag_info_t android_black_level[ANDROID_BLACK_LEVEL_END -
@@ -877,6 +899,9 @@ static tag_info_t android_logical_multi_camera[ANDROID_LOGICAL_MULTI_CAMERA_END 
     { "sensorSyncType",                TYPE_BYTE   },
     [ ANDROID_LOGICAL_MULTI_CAMERA_ACTIVE_PHYSICAL_ID - ANDROID_LOGICAL_MULTI_CAMERA_START ] =
     { "activePhysicalId",              TYPE_BYTE   },
+    [ ANDROID_LOGICAL_MULTI_CAMERA_ACTIVE_PHYSICAL_SENSOR_CROP_REGION - ANDROID_LOGICAL_MULTI_CAMERA_START ] =
+    { "activePhysicalSensorCropRegion",
+                                        TYPE_INT32  },
 };
 
 static tag_info_t android_distortion_correction[ANDROID_DISTORTION_CORRECTION_END -
@@ -1137,6 +1162,10 @@ int camera_metadata_enum_snprint(uint32_t tag,
                     break;
                 case ANDROID_CONTROL_AE_MODE_ON_EXTERNAL_FLASH:
                     msg = "ON_EXTERNAL_FLASH";
+                    ret = 0;
+                    break;
+                case ANDROID_CONTROL_AE_MODE_ON_LOW_LIGHT_BOOST_BRIGHTNESS_PRIORITY:
+                    msg = "ON_LOW_LIGHT_BOOST_BRIGHTNESS_PRIORITY";
                     ret = 0;
                     break;
                 default:
@@ -1870,6 +1899,24 @@ int camera_metadata_enum_snprint(uint32_t tag,
             }
             break;
         }
+        case ANDROID_CONTROL_LOW_LIGHT_BOOST_INFO_LUMINANCE_RANGE: {
+            break;
+        }
+        case ANDROID_CONTROL_LOW_LIGHT_BOOST_STATE: {
+            switch (value) {
+                case ANDROID_CONTROL_LOW_LIGHT_BOOST_STATE_INACTIVE:
+                    msg = "INACTIVE";
+                    ret = 0;
+                    break;
+                case ANDROID_CONTROL_LOW_LIGHT_BOOST_STATE_ACTIVE:
+                    msg = "ACTIVE";
+                    ret = 0;
+                    break;
+                default:
+                    msg = "error: enum value out of range";
+            }
+            break;
+        }
 
         case ANDROID_DEMOSAIC_MODE: {
             switch (value) {
@@ -1973,6 +2020,21 @@ int camera_metadata_enum_snprint(uint32_t tag,
                 default:
                     msg = "error: enum value out of range";
             }
+            break;
+        }
+        case ANDROID_FLASH_STRENGTH_LEVEL: {
+            break;
+        }
+        case ANDROID_FLASH_SINGLE_STRENGTH_MAX_LEVEL: {
+            break;
+        }
+        case ANDROID_FLASH_SINGLE_STRENGTH_DEFAULT_LEVEL: {
+            break;
+        }
+        case ANDROID_FLASH_TORCH_STRENGTH_MAX_LEVEL: {
+            break;
+        }
+        case ANDROID_FLASH_TORCH_STRENGTH_DEFAULT_LEVEL: {
             break;
         }
 
@@ -3368,6 +3430,12 @@ int camera_metadata_enum_snprint(uint32_t tag,
         case ANDROID_STATISTICS_OIS_Y_SHIFTS: {
             break;
         }
+        case ANDROID_STATISTICS_LENS_INTRINSIC_TIMESTAMPS: {
+            break;
+        }
+        case ANDROID_STATISTICS_LENS_INTRINSIC_SAMPLES: {
+            break;
+        }
 
         case ANDROID_STATISTICS_INFO_AVAILABLE_FACE_DETECT_MODES: {
             break;
@@ -3521,12 +3589,31 @@ int camera_metadata_enum_snprint(uint32_t tag,
                     msg = "HIDL_DEVICE_3_5";
                     ret = 0;
                     break;
+                case ANDROID_INFO_SUPPORTED_BUFFER_MANAGEMENT_VERSION_SESSION_CONFIGURABLE:
+                    msg = "SESSION_CONFIGURABLE";
+                    ret = 0;
+                    break;
                 default:
                     msg = "error: enum value out of range";
             }
             break;
         }
         case ANDROID_INFO_DEVICE_STATE_ORIENTATIONS: {
+            break;
+        }
+        case ANDROID_INFO_SESSION_CONFIGURATION_QUERY_VERSION: {
+            switch (value) {
+                case ANDROID_INFO_SESSION_CONFIGURATION_QUERY_VERSION_UPSIDE_DOWN_CAKE:
+                    msg = "UPSIDE_DOWN_CAKE";
+                    ret = 0;
+                    break;
+                case ANDROID_INFO_SESSION_CONFIGURATION_QUERY_VERSION_VANILLA_ICE_CREAM:
+                    msg = "VANILLA_ICE_CREAM";
+                    ret = 0;
+                    break;
+                default:
+                    msg = "error: enum value out of range";
+            }
             break;
         }
 
@@ -3709,6 +3796,9 @@ int camera_metadata_enum_snprint(uint32_t tag,
             break;
         }
         case ANDROID_LOGICAL_MULTI_CAMERA_ACTIVE_PHYSICAL_ID: {
+            break;
+        }
+        case ANDROID_LOGICAL_MULTI_CAMERA_ACTIVE_PHYSICAL_SENSOR_CROP_REGION: {
             break;
         }
 
@@ -4118,6 +4208,12 @@ int camera_metadata_enum_value(uint32_t tag,
                 enumName = "ON_EXTERNAL_FLASH";
                 if (strncmp(name, enumName, size) == 0) {
                     *value = ANDROID_CONTROL_AE_MODE_ON_EXTERNAL_FLASH;
+                    ret = 0;
+                    break;
+                }
+                enumName = "ON_LOW_LIGHT_BOOST_BRIGHTNESS_PRIORITY";
+                if (strncmp(name, enumName, size) == 0) {
+                    *value = ANDROID_CONTROL_AE_MODE_ON_LOW_LIGHT_BOOST_BRIGHTNESS_PRIORITY;
                     ret = 0;
                     break;
                 }
@@ -4981,6 +5077,24 @@ int camera_metadata_enum_value(uint32_t tag,
                 }
             break;
         }
+        case ANDROID_CONTROL_LOW_LIGHT_BOOST_INFO_LUMINANCE_RANGE: {
+            break;
+        }
+        case ANDROID_CONTROL_LOW_LIGHT_BOOST_STATE: {
+                enumName = "INACTIVE";
+                if (strncmp(name, enumName, size) == 0) {
+                    *value = ANDROID_CONTROL_LOW_LIGHT_BOOST_STATE_INACTIVE;
+                    ret = 0;
+                    break;
+                }
+                enumName = "ACTIVE";
+                if (strncmp(name, enumName, size) == 0) {
+                    *value = ANDROID_CONTROL_LOW_LIGHT_BOOST_STATE_ACTIVE;
+                    ret = 0;
+                    break;
+                }
+            break;
+        }
 
         case ANDROID_DEMOSAIC_MODE: {
                 enumName = "FAST";
@@ -5096,6 +5210,21 @@ int camera_metadata_enum_value(uint32_t tag,
                     ret = 0;
                     break;
                 }
+            break;
+        }
+        case ANDROID_FLASH_STRENGTH_LEVEL: {
+            break;
+        }
+        case ANDROID_FLASH_SINGLE_STRENGTH_MAX_LEVEL: {
+            break;
+        }
+        case ANDROID_FLASH_SINGLE_STRENGTH_DEFAULT_LEVEL: {
+            break;
+        }
+        case ANDROID_FLASH_TORCH_STRENGTH_MAX_LEVEL: {
+            break;
+        }
+        case ANDROID_FLASH_TORCH_STRENGTH_DEFAULT_LEVEL: {
             break;
         }
 
@@ -6683,6 +6812,12 @@ int camera_metadata_enum_value(uint32_t tag,
         case ANDROID_STATISTICS_OIS_Y_SHIFTS: {
             break;
         }
+        case ANDROID_STATISTICS_LENS_INTRINSIC_TIMESTAMPS: {
+            break;
+        }
+        case ANDROID_STATISTICS_LENS_INTRINSIC_SAMPLES: {
+            break;
+        }
 
         case ANDROID_STATISTICS_INFO_AVAILABLE_FACE_DETECT_MODES: {
             break;
@@ -6847,9 +6982,30 @@ int camera_metadata_enum_value(uint32_t tag,
                     ret = 0;
                     break;
                 }
+                enumName = "SESSION_CONFIGURABLE";
+                if (strncmp(name, enumName, size) == 0) {
+                    *value = ANDROID_INFO_SUPPORTED_BUFFER_MANAGEMENT_VERSION_SESSION_CONFIGURABLE;
+                    ret = 0;
+                    break;
+                }
             break;
         }
         case ANDROID_INFO_DEVICE_STATE_ORIENTATIONS: {
+            break;
+        }
+        case ANDROID_INFO_SESSION_CONFIGURATION_QUERY_VERSION: {
+                enumName = "UPSIDE_DOWN_CAKE";
+                if (strncmp(name, enumName, size) == 0) {
+                    *value = ANDROID_INFO_SESSION_CONFIGURATION_QUERY_VERSION_UPSIDE_DOWN_CAKE;
+                    ret = 0;
+                    break;
+                }
+                enumName = "VANILLA_ICE_CREAM";
+                if (strncmp(name, enumName, size) == 0) {
+                    *value = ANDROID_INFO_SESSION_CONFIGURATION_QUERY_VERSION_VANILLA_ICE_CREAM;
+                    ret = 0;
+                    break;
+                }
             break;
         }
 
@@ -7032,6 +7188,9 @@ int camera_metadata_enum_value(uint32_t tag,
             break;
         }
         case ANDROID_LOGICAL_MULTI_CAMERA_ACTIVE_PHYSICAL_ID: {
+            break;
+        }
+        case ANDROID_LOGICAL_MULTI_CAMERA_ACTIVE_PHYSICAL_SENSOR_CROP_REGION: {
             break;
         }
 
@@ -7342,4 +7501,4 @@ int camera_metadata_enum_value(uint32_t tag,
 }
 
 
-#define CAMERA_METADATA_ENUM_STRING_MAX_SIZE 29
+#define CAMERA_METADATA_ENUM_STRING_MAX_SIZE 39

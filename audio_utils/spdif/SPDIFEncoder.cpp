@@ -18,6 +18,7 @@
 #include <string.h>
 
 #define LOG_TAG "AudioSPDIF"
+//#define LOG_NDEBUG 0
 #include <log/log.h>
 #include <audio_utils/spdif/SPDIFEncoder.h>
 

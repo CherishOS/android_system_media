@@ -189,6 +189,7 @@ def protobuf_type(entry):
     "deviceStateSensorOrientationMap"  : "DeviceStateSensorOrientationMap",
     "dynamicRangeProfiles"   : "DynamicRangeProfiles",
     "colorSpaceProfiles"     : "ColorSpaceProfiles",
+    "versionCode"            : "int32",
   }
 
   if typeName not in typename_to_protobuftype:
@@ -768,7 +769,7 @@ def generate_extra_javadoc_detail(entry):
     if entry.enum and not (entry.typedef and entry.typedef.languages.get('java')):
       text += '\n\n<b>Possible values:</b>\n<ul>\n'
       for value in entry.enum.values:
-        if not value.hidden:
+        if not value.hidden and (value.aconfig_flag == entry.aconfig_flag):
           text += '  <li>{@link #%s %s}</li>\n' % ( jenum_value(entry, value ), value.name )
       text += '</ul>\n'
     if entry.range:

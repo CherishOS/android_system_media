@@ -106,6 +106,9 @@ static inline std::string audio_get_audio_policy_config_file() {
     } else if (property_get_bool("persist.bluetooth.bluetooth_audio_hal.disabled", false)) {
         audioPolicyXmlConfigFile = audio_find_readable_configuration_file(
                 apmBluetoothLegacyHalXmlConfigFileName);
+    } else {
+        audioPolicyXmlConfigFile = audio_find_readable_configuration_file(
+                apmA2dpOffloadDisabledXmlConfigFileName);
     }
     return audioPolicyXmlConfigFile.empty() ?
             audio_find_readable_configuration_file(apmXmlConfigFileName) : audioPolicyXmlConfigFile;

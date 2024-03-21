@@ -17,7 +17,7 @@
 #ifndef __AUDIO_UTIL_SNDFILE_H
 #define __AUDIO_UTIL_SNDFILE_H
 
-// This is a C library for reading and writing PCM .wav files.  It is
+// This is a C library for reading of PCM .wav and writing of PCM .wav and .raw files. It is
 // influenced by other libraries such as libsndfile and audiofile, except is
 // much smaller and has an Apache 2.0 license.
 // The API should be familiar to clients of similar libraries, but there is
@@ -51,7 +51,7 @@ typedef struct SNDFILE_ SNDFILE;
 
 // Format
 #define SF_FORMAT_TYPEMASK  1
-#define SF_FORMAT_WAV       1
+#define SF_FORMAT_WAV       1 // without this bit set, raw data is written
 #define SF_FORMAT_SUBMASK   14
 #define SF_FORMAT_PCM_16    2
 #define SF_FORMAT_PCM_U8    4

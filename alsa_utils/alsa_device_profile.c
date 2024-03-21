@@ -709,7 +709,7 @@ void profile_dump(const alsa_device_profile* profile, int fd)
     /* formats */
     dprintf(fd, "  Formats: ");
     for (int fmtIndex = 0;
-          profile->formats[fmtIndex] != PCM_FORMAT_INVALID && fmtIndex < MAX_PROFILE_FORMATS;
+          fmtIndex < MAX_PROFILE_FORMATS && profile->formats[fmtIndex] != PCM_FORMAT_INVALID;
           fmtIndex++) {
         dprintf(fd, "%d ", profile->formats[fmtIndex]);
     }
@@ -718,7 +718,7 @@ void profile_dump(const alsa_device_profile* profile, int fd)
     /* sample rates */
     dprintf(fd, "  Rates: ");
     for (int rateIndex = 0;
-          profile->sample_rates[rateIndex] != 0 && rateIndex < MAX_PROFILE_SAMPLE_RATES;
+          rateIndex < MAX_PROFILE_SAMPLE_RATES && profile->sample_rates[rateIndex] != 0;
           rateIndex++) {
         dprintf(fd, "%u ", profile->sample_rates[rateIndex]);
     }
@@ -727,7 +727,7 @@ void profile_dump(const alsa_device_profile* profile, int fd)
     // channel counts
     dprintf(fd, "  Channel Counts: ");
     for (int cntIndex = 0;
-          profile->channel_counts[cntIndex] != 0 && cntIndex < MAX_PROFILE_CHANNEL_COUNTS;
+          cntIndex < MAX_PROFILE_CHANNEL_COUNTS && profile->channel_counts[cntIndex] != 0;
           cntIndex++) {
         dprintf(fd, "%u ", profile->channel_counts[cntIndex]);
     }
